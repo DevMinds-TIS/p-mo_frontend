@@ -1,12 +1,13 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+//import "./prueba.css"; // Asegúrate de que esta línea esté descomentada si necesitas estilos globales
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Login",
-  description: "Página de login o página principal",
+  title: "Registrar equipo",
+  description: "Página para registro de equipos",
 };
 
 export default function RootLayout({
@@ -20,3 +21,4 @@ export default function RootLayout({
     </html>
   );
 }
+
