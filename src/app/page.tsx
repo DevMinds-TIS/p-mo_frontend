@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
+import { getUser, createRegister, login } from '../../api/register.api';
+
 
 export default function Home() {
   const router = useRouter(); // Crear instancia del router
@@ -32,7 +34,7 @@ export default function Home() {
 
   const [registerErrors, setRegisterErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validar si el correo tiene un dominio válido
@@ -43,13 +45,32 @@ export default function Home() {
       setError('El correo o la contraseña son incorrectos');
     } else {
       setError('');
+      try {
+
+        const response = await login(email, password);
+        console.log('Inicio de sesión exitoso:', response.data);
+
+        // Redirigir solo si el componente está montado
+        if (isMounted) {
+          router.push('/componentes/home');
+        }
+      } catch (err) {
+        // Manejo de errores
+        console.error('Error al iniciar sesión:', err);
+        setError('Correo o contraseña incorrectos');
+        if (isMounted) {
+          router.push('/componentes/home');
+        }
+
+      }
+
       console.log('Email:', email);
       console.log('Password:', password);
-      
+
       // Redirigir solo si el componente está montado
-      if (isMounted) {
-        router.push('/componentes/home');
-      }
+      // if (isMounted) {
+      //   router.push('/componentes/home');
+      // }
     }
   };
 
@@ -74,14 +95,32 @@ export default function Home() {
     return errors;
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     const errors = validateRegisterForm();
-    
+
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
     } else {
+      try {
+        const registerData = {
+          nombreactor: name,
+          apellidoactor: lastName,
+          correoactor: registerEmail,
+          claveactor: registerPassword,
+          fotoperfilactor: "https://example.com/fotos/juan_perez.jpg",
+        };
+        console.log('Datos que se enviarán al backend:', JSON.stringify(registerData, null, 2));
+
+        const response = await createRegister(registerData);
+        console.log('Usuario registrado exitosamente:', response.data);
+        setShowModal(false);
+      } catch (error) {
+        console.error('Error al registrar al usuario:', error);
+        setRegisterErrors({ general: 'Hubo un error al registrar. Inténtalo de nuevo más tarde.' });
+      }
+
       setRegisterErrors({});
       console.log('Name:', name);
       console.log('LastName:', lastName);
@@ -89,6 +128,8 @@ export default function Home() {
       console.log('Password:', registerPassword);
       console.log('Role:', role);
       setShowModal(false);
+
+
     }
   };
 

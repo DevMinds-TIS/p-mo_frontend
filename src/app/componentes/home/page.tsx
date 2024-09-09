@@ -5,7 +5,7 @@ import "./home.css";
 
 export default function PruevaPage() {
   const [selected, setSelected] = useState(null);
-  const [showCrearProyecto, setShowCrearProyecto] = useState(false); 
+  const [showCrearProyecto, setShowCrearProyecto] = useState(false);
   const [proyectos, setProyectos] = useState([
     { nombre: "Proyecto 1", id: "a1" },
     { nombre: "Proyecto 2", id: "a2" },
@@ -14,18 +14,18 @@ export default function PruevaPage() {
     { nombre: "Proyecto 5", id: "a5" },
     { nombre: "Proyecto 6", id: "a6" }
   ]);
-  
+
   const handleClick = (index) => {
     setSelected(index);
     console.log(`Botón ${index} presionado`);
   };
 
   const handleAgregarProyecto = () => {
-    setShowCrearProyecto(true); 
+    setShowCrearProyecto(true);
   };
 
   const handleCancel = () => {
-    setShowCrearProyecto(false); 
+    setShowCrearProyecto(false);
   };
 
   const handleSubmit = (event) => {
@@ -63,7 +63,7 @@ export default function PruevaPage() {
             onClick={() => handleClick(index)}
           >
             <Image
-              src={`/iconos/icon${num}.svg`} 
+              src={`/iconos/icon${num}.svg`}
               alt={`Icono ${num}`}
               width={40}
               height={48}
