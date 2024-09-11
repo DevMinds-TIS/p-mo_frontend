@@ -45,9 +45,16 @@ export default function Home() {
       setError('El correo o la contraseña son incorrectos');
     } else {
       setError('');
+      console.log('email:', email);
+      console.log('pasword:', password);
       try {
-
-        const response = await login(email, password);
+        const registerData2 = {
+          correoactor: email,
+          claveactor: password,
+        };
+        console.log('Datos que se enviarán al backend:', JSON.stringify(registerData2, null, 2));
+        const response = await login(registerData2);
+        //const response = await login(email, password);
         console.log('Inicio de sesión exitoso:', response.data);
 
         // Redirigir solo si el componente está montado
@@ -58,19 +65,9 @@ export default function Home() {
         // Manejo de errores
         console.error('Error al iniciar sesión:', err);
         setError('Correo o contraseña incorrectos');
-        if (isMounted) {
-          router.push('/componentes/home');
-        }
-
       }
-
-      console.log('Email:', email);
-      console.log('Password:', password);
-
-      // Redirigir solo si el componente está montado
-      // if (isMounted) {
-      //   router.push('/componentes/home');
-      // }
+      //console.log('Email:', email);
+      //console.log('Password:', password);
     }
   };
 
