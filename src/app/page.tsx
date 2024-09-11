@@ -97,7 +97,7 @@ export default function Home() {
       <div className="contenedor-logo">
         <div className='imagen'>
           <Image
-            src="/iconos/logo.png"
+            src="/iconos/logoG.svg"
             alt="Logo de la aplicación"
             width={400}
             height={480}
