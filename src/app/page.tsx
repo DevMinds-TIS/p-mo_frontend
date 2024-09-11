@@ -14,10 +14,9 @@ export default function Home() {
     setIsMounted(true); // Indicar que el componente está montado
   }, []);
 
-  // Estados para los campos del formulario de inicio de sesión
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const [error, setError] = useState('');
 
   // Estado para alternar visibilidad de la contraseña
   const [showPassword, setShowPassword] = useState(false);
@@ -57,6 +56,18 @@ export default function Home() {
         //const response = await login(email, password);
         console.log('Inicio de sesión exitoso:', response.data);
 
+        // Almacenar los datos de usuario en sessionStorage
+        const userData = {
+          email: email,
+          id: response.data.actor.idactor,
+          nombre: response.data.actor.nombreactor,
+          apellido: response.data.actor.apellidoactor,
+          token: response.data.token, 
+          role: response.data.role,  
+        };
+        // Guardar los datos en sessionStorage
+        window.sessionStorage.setItem('userData', JSON.stringify(userData));
+
         // Redirigir solo si el componente está montado
         if (isMounted) {
           router.push('/componentes/home');
@@ -70,6 +81,21 @@ export default function Home() {
       //console.log('Password:', password);
     }
   };
+
+
+  const getUserData = () => {
+    const userDataString = window.sessionStorage.getItem('userData');
+    return userDataString ? JSON.parse(userDataString) : null;
+  };
+
+  // Ejemplo de uso
+  useEffect(() => {
+    const userData = getUserData();
+    if (userData) {
+      console.log('Usuario autenticado:', userData);
+      // Aquí puedes usar los datos del usuario, por ejemplo mostrar su nombre o rol
+    }
+  }, []);
 
   // Función para validar los campos del registro
   const validateRegisterForm = () => {

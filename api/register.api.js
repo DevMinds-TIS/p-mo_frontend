@@ -24,16 +24,11 @@ export const updateRegister = (id, data) => registersApi.put(`api/actores/${id}`
 export const updatePartialRegister = (id, data) => registersApi.patch(`api/actores/${id}`, data);
 
 export const deleteRegister = (id) => registersApi.delete(`api/actores/${id}`);
-// export const login = (email, password) => {
-//     return registersApi.post('api/login', { email, password });
-// };
-export const login = (data) => registersApi.post('api/login', data);
 
-//registro de proyecto
+export const login = (data) => registersApi.post('api/login', data);
 
 export const getAllRegisterProyect = () => registersApi.get('api/proyecto');
 
-//export const createRegisterProyect = (FormData) => registersApi.post('api/proyecto', FormData);
 
 export const createRegisterProyect = (formData) => {
     return registersApi.post('api/proyecto', formData, {
@@ -42,3 +37,19 @@ export const createRegisterProyect = (formData) => {
         }
     });
 };
+
+export const getAllRegisterEquipo = () => registersApi.get('api/equipo');
+export const createRegisterEquipo = (formData) => {
+    return registersApi.post('api/equipo', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+};
+// export const createRegisterEquipo = (formData) => {
+//     return registersApi.post('api/equipo', formData, {
+//         headers: {
+//             'Content-Type': 'multipart/form-data'
+//         }
+//     });
+// };

@@ -1,5 +1,3 @@
-
-//*************************************
 "use client";
 //import Image from 'next/image';
 import Image from 'next/image';
@@ -12,6 +10,18 @@ export default function PruevaPage() {
   const [selected, setSelected] = useState(null);
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
   const [proyectos, setProyectos] = useState([]); // Inicializa como array vacío
+  const router = useRouter();
+
+  const [userName, setUserName] = useState('');
+
+  // Obtener los datos del usuario de sessionStorage cuando el componente se monta
+  useEffect(() => {
+    const userDataString = window.sessionStorage.getItem('userData');
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      setUserName(`${userData.nombre} ${userData.apellido}`);
+    }
+  }, []);
 
   useEffect(() => {
     // Función para obtener proyectos
@@ -36,13 +46,15 @@ export default function PruevaPage() {
     setSelected(index);
     console.log(`Botón ${index} presionado`);
 
-    if (num === 6) { // Revisar si el botón es el 5
+    if (num === 5) { // Revisar si el botón es el 5
       if (isMounted) {
-        router.push('/'); // Redirige a la ruta deseada
+        window.sessionStorage.removeItem('userData');
+        router.push('/'); // Redirigir al login
+        // Redirige a la ruta deseada
       }
     }
 
-    if (num === 5) { // Revisar si el botón es el 5
+    if (num === 6) { // Revisar si el botón es el 5
       if (isMounted) {
         router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
       }
@@ -66,19 +78,20 @@ export default function PruevaPage() {
     formData.append('codigo', form.codigo.value);
     formData.append('invitacionproyecto', form.archivo1.files[0]);
     formData.append('pliegoproyecto', form.archivo2.files[0]);
-
     try {
       const response = await createRegisterProyect(formData);
-      const nuevoProyecto = {
-        nombre: form.nombre.value,
-        id: form.codigo.value
-      };
-
-      setProyectos([...proyectos, nuevoProyecto]);
-
+      if (response.data) {
+        console.log("Proyecto creado:", response.data);
+        // Refrescar la lista de proyectos
+        const updatedProyectos = await getAllRegisterProyect();
+        if (updatedProyectos.data && Array.isArray(updatedProyectos.data.actor)) {
+          setProyectos(updatedProyectos.data.actor);
+        } else {
+          console.error('Formato inesperado de datos:', updatedProyectos.data);
+        }
+      }
       form.reset();
       setShowCrearProyecto(false);
-      console.log("Proyecto creado:", nuevoProyecto);
     } catch (error) {
       console.error('Error al registrar el proyecto:', error);
     }
@@ -86,6 +99,12 @@ export default function PruevaPage() {
 
   return (
     <div className="container">
+      <header className="header">
+        <div className="user-info">
+          <p>Bienvenido: {userName}</p>
+        </div>
+      </header>
+
       <aside className="menu">
         <div className='imagen'>
           <a href='/componentes/home'>

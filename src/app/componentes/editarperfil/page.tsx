@@ -1,19 +1,37 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "./editarperfil.css";
-import Menu from '../modals/menu.jsx'; 
+import Menu from '../modals/menu.jsx';
+import { updatePartialRegister } from '../../../../api/register.api';
 
 export default function PruevaPage() {
   const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
   const [editarDatos, setEditarDatos] = useState(false);
   const [inscribirGrupo, setInscribirGrupo] = useState(false);
   const [role, setRole] = useState('');
-  
+
   // Estado para los datos personales
-  const [nombre, setNombre] = useState("Nombre 1"); // Estado para el nombre (inicialmente Nombre 1)
-  const [apellido, setApellido] = useState("Apellido 1"); // Estado para el apellido (inicialmente Apellido 1)
+  const [nombre, setNombre] = useState(" "); // Estado para el nombre (inicialmente Nombre 1)
+  const [apellido, setApellido] = useState(" ");
+  // Estado para el apellido (inicialmente Apellido 1)
   const [grupo, setGrupo] = useState("Grupo 1"); // Estado para el grupo (inicialmente Grupo 1)
   const [docente, setDocente] = useState("Docente 1"); // Estado para el nombre del docente
+
+  const [userName, setUserName] = useState('');
+  const [id, setid] = useState('');
+  // Obtener los datos del usuario de sessionStorage cuando el componente se monta
+  useEffect(() => {
+    const userDataString = window.sessionStorage.getItem('userData');
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      setUserName(`${userData.nombre} ${userData.apellido}`);
+      setNombre(userData.nombre);
+      setApellido(userData.apellido);
+      setid(userData.id);
+    }
+  }, []);
+
+
 
   // Definir la relación entre grupos y docentes
   const gruposYDocentes = {
@@ -42,9 +60,29 @@ export default function PruevaPage() {
   const handleCloseDatos = () => {
     setEditarDatos(false); // Ocultar el modal
   };
-  const handleAceptarDatos = (nuevoNombre, nuevoApellido) => {
+
+  const handleAceptarDatos = async (nuevoNombre, nuevoApellido) => {
     setNombre(nuevoNombre); // Actualizar el nombre
     setApellido(nuevoApellido); // Actualizar el apellido
+    const datosActualizados = {};
+
+    if (nuevoNombre) {
+      datosActualizados.nombreactor = nuevoNombre;
+    }
+    if (nuevoApellido) {
+      datosActualizados.apellidoactor = nuevoApellido;
+    }
+
+    // Enviar los datos a la API
+    try {
+      await updatePartialRegister(id, datosActualizados);
+      console.log("Datos personales cambiados");
+    } catch (error) {
+      console.error("Error al actualizar los datos:", error);
+    }
+
+    setEditarDatos(false); // Cerrar el modal después de aceptar
+
     console.log("Datos personales cambiados");
     setEditarDatos(false); // Cerrar el modal después de aceptar
   };
@@ -62,7 +100,7 @@ export default function PruevaPage() {
     console.log("Grupo cambiado");
     setInscribirGrupo(false); // Cerrar el modal después de aceptar
   };
-  
+
   // Función para manejar la selección del grupo y actualizar el docente automáticamente
   const handleRoleChange = (e) => {
     const selectedGroup = e.target.value;
@@ -72,6 +110,7 @@ export default function PruevaPage() {
 
   return (
     <div className='container'>
+
       <Menu />
       <main className='editardatos-container'>
         <h2>Editar datos de usuario</h2>

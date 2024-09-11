@@ -1,7 +1,7 @@
 .container {
     display: flex;
 }
-  
+
 .menu {
     width: 80px;
     background-color: black;
@@ -14,7 +14,7 @@
     top: 0;
     left: 0;
 }
-  
+
 .menu-button {
     display: flex;
     justify-content: center;
@@ -25,7 +25,7 @@
     padding: 10px;
     transition: transform 0.3s ease;
 }
-  
+
 .menu-button:hover {
     transform: scale(1.1);
     background-color: transparent;
@@ -34,16 +34,17 @@
 .imagen img:hover {
     transform: scale(1.1);
 }
-  
+
 .menu-button.active {
     transform: scale(1.2);
     filter: brightness(1.2);
 }
-  
+
 .content {
     display: flex;
     flex-direction: column;
-    margin-left: 80px; /* Espacio para el menú */
+    margin-left: 80px;
+    /* Espacio para el menú */
     padding: 20px;
     color: white;
     width: 100%;
@@ -63,14 +64,16 @@ body {
 
 .proyectos-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
-    gap: 20px; /* Espacio entre proyectos */
+    grid-template-columns: repeat(2, 1fr);
+    /* Dos columnas */
+    gap: 20px;
+    /* Espacio entre proyectos */
     width: 100%;
 }
 
 .proyecto-item {
     display: flex;
-    background-color: rgb(30,30,30);
+    background-color: rgb(30, 30, 30);
     padding: 20px;
     border-radius: 8px;
     color: white;
@@ -92,14 +95,18 @@ body {
 
 .boton-fijo {
     position: fixed;
-    bottom: 20px;  /* Distancia desde la parte inferior */
-    right: 40px;   /* Distancia desde la parte derecha */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
+    bottom: 20px;
+    /* Distancia desde la parte inferior */
+    right: 40px;
+    /* Distancia desde la parte derecha */
+    z-index: 1000;
+    /* Asegura que esté encima de otros elementos */
 }
-  
+
 .boton-fijo button {
     padding: 10px 20px;
-    background-color: rgb(254, 127, 45); /* Color del botón */
+    background-color: rgb(254, 127, 45);
+    /* Color del botón */
     color: white;
     border: none;
     border-radius: 5px;
@@ -112,7 +119,7 @@ body {
 .boton-fijo button:hover {
     background-color: rgb(255, 155, 90);
 }
-  
+
 @media (max-width: 850px) {
     .content {
         padding: 10px;
@@ -132,9 +139,12 @@ body {
 
     .boton-fijo {
         position: fixed;
-        top: 0;  /* Distancia desde la parte inferior */
-        right: 0;   /* Distancia desde la parte derecha */
-        z-index: 1000; /* Asegura que esté encima de otros elementos */
+        top: 0;
+        /* Distancia desde la parte inferior */
+        right: 0;
+        /* Distancia desde la parte derecha */
+        z-index: 1000;
+        /* Asegura que esté encima de otros elementos */
     }
 
     .crearproyectos-container {
@@ -148,6 +158,7 @@ body {
         justify-content: center;
         align-items: center;
     }
+
     .proyecto-item-info h2 {
         font-size: 15px;
     }
@@ -161,32 +172,32 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-  }
-  
+}
+
 .crearproyectos-container form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-  }
-  
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
-  }
-  
+}
+
 .form-group label {
     font-size: 1rem;
-  }
-  
+}
+
 .form-group input[type="text"],
 .form-group input[type="file"] {
     padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-  }
-  
+}
+
 .crearproyectos-container button {
     padding: 10px;
     background-color: rgb(254, 127, 45);
@@ -196,10 +207,51 @@ body {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
-  }
-  
+}
+
 .crearproyectos-container button:hover {
     background-color: rgb(255, 155, 90);
-  }
+}
 
-  
+.header {
+    display: flex;
+    /* Colocar los elementos en línea */
+    justify-content: flex-end;
+    /* Alinear el contenido al inicio (izquierda) */
+    align-items: center;
+    /* Centrar verticalmente */
+    padding: 10px;
+    /* Espaciado interno */
+    position: absolute;
+    /* Posicionar en la esquina superior izquierda */
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Asegura que ocupe todo el ancho */
+    z-index: 1000;
+    /* Asegúrate de que quede por encima de otros elementos */
+}
+
+.user-info {
+    margin-left: 10px;
+    /* Espacio entre el logo y el nombre */
+}
+
+.user-info p {
+    font-size: 16px;
+    /* Tamaño de letra */
+    color: #ffffff;
+    /* Color del texto */
+    margin: 0;
+    /* Elimina los márgenes del párrafo */
+}
+
+.imagen {
+    margin-right: 10px;
+    /* Espacio entre el logo y el nombre */
+}
+
+.menu {
+    margin-top: 60px;
+    /* Baja el menú para evitar superposición con el header */
+}
