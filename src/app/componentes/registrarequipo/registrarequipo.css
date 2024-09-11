@@ -64,6 +64,18 @@
 
 .form-container {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container button {
+    width: 90%;
+}
+
+.form {
+    display: flex;
     flex-direction: initial;
     flex: 1,1;
     width: 100%;
@@ -82,12 +94,22 @@
 }
 
 .miembros button {
-    width: 30%;
+    width: 100%;
 }
   
 .miembro-item {
     display: flex;
     gap: 5px;
+    width: 100%;
+}
+
+.miembro-item select {
+    height: 60px;
+}
+
+.miembro-item button {
+    height: 60px;
+    
 }
 
 
@@ -159,4 +181,14 @@
 .boton-fijo button:hover {
     background-color: rgb(255, 155, 90);
 }
-  
+
+@media (max-width: 850px) {
+    .form-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .datos, .miembros {
+        width: 100%;
+    }
+}
