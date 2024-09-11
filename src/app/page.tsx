@@ -1,70 +1,213 @@
-"use client"; // Asegúrate de que este archivo se trate como un componente de cliente
+"use client"; // Asegúrate de colocar esta línea al inicio del archivo
 
-import { useState } from 'react';
-import ConfirmCancelModal from '../app/components/ConfirmCancelModal';
-import ErrorModal from '../app/components/ErrorModal';
-import RegistroExitosoModal from './components/RegistroExitosoModal';
+import Image from 'next/image';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
 
-const Home = () => {
-  // Estado separado para cada modal
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+export default function Home() {
+  const router = useRouter(); // Crear instancia del router
+  const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
 
-  // Funciones para abrir y cerrar modales
-  const openConfirmModal = () => setIsConfirmModalOpen(true);
-  const closeConfirmModal = () => setIsConfirmModalOpen(false);
-  const handleConfirm = () => {
-    console.log('Acción confirmada');
-    closeConfirmModal();
+  useEffect(() => {
+    setIsMounted(true); // Indicar que el componente está montado
+  }, []);
+
+  // Estados para los campos del formulario de inicio de sesión
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // Estado para el mensaje de error
+
+  // Estado para alternar visibilidad de la contraseña
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Estado para mostrar el formulario de crear cuenta nueva
+  const [showModal, setShowModal] = useState(false);
+
+  // Estados para el formulario de registro
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [role, setRole] = useState(''); // Para el desplegable de roles
+
+  const [registerErrors, setRegisterErrors] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validar si el correo tiene un dominio válido
+    const emailDomain = email.split('@')[1]; // Obtener el dominio del correo
+    const validDomains = ['gmail.com', 'est.umss.edu'];
+
+    if (!validDomains.includes(emailDomain)) {
+      setError('El correo o la contraseña son incorrectos');
+    } else {
+      setError('');
+      console.log('Email:', email);
+      console.log('Password:', password);
+      
+      // Redirigir solo si el componente está montado
+      if (isMounted) {
+        router.push('/componentes/home');
+      }
+    }
   };
 
-  const openErrorModal = () => setIsErrorModalOpen(true);
-  const closeErrorModal = () => setIsErrorModalOpen(false);
+  // Función para validar los campos del registro
+  const validateRegisterForm = () => {
+    const errors = {};
+    if (name.length < 3) {
+      errors.name = 'El nombre debe tener al menos 3 caracteres';
+    }
+    if (lastName.length < 5) {
+      errors.lastName = 'El apellido debe tener al menos 5 caracteres';
+    }
+    if (!registerEmail.includes('@') || !registerEmail.includes('.')) {
+      errors.registerEmail = 'El correo debe tener el carácter "@" y "."';
+    }
+    if (registerPassword.length < 8) {
+      errors.registerPassword = 'La contraseña debe tener al menos 8 caracteres';
+    }
+    if (!role) {
+      errors.role = 'Debe seleccionar un rol para su registro';
+    }
+    return errors;
+  };
 
-  const openSuccessModal = () => setIsSuccessModalOpen(true);
-  const closeSuccessModal = () => setIsSuccessModalOpen(false);
+  const handleRegister = (e) => {
+    e.preventDefault();
+    
+    const errors = validateRegisterForm();
+    
+    if (Object.keys(errors).length > 0) {
+      setRegisterErrors(errors);
+    } else {
+      setRegisterErrors({});
+      console.log('Name:', name);
+      console.log('LastName:', lastName);
+      console.log('Email:', registerEmail);
+      console.log('Password:', registerPassword);
+      console.log('Role:', role);
+      setShowModal(false);
+    }
+  };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      {/* Botón para abrir el modal de confirmación */}
-      <button onClick={openConfirmModal} className="px-4 py-2 bg-blue-500 text-white rounded mb-4">
-        Abrir Confirmar Modal
-      </button>
+    <main>
+      <div className="contenedor-logo">
+        <div className='imagen'>
+          <Image
+            src="/iconos/logo.png"
+            alt="Logo de la aplicación"
+            width={400}
+            height={480}
+          />
+        </div>
+      </div>
+      <div className="contenedor-formulario">
+        <div className='formulario'>
+          <h1>Iniciar Sesión</h1>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder='Correo Electrónico'
+              required
+            />
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder='Contraseña'
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁️"} {/* Cambia el ícono */}
+              </button>
+            </div>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <button type="submit"><b>Iniciar Sesión</b></button>
+          </form>
+          <a href='/componentes/home'><p>¿Olvido su contraseña?</p></a>
+          <hr />
+          <button onClick={() => setShowModal(true)}><b>Crear una cuenta nueva</b></button>
+        </div>
+      </div>
 
-      {/* Botón para abrir el modal de error */}
-      <button onClick={openErrorModal} className="px-4 py-2 bg-red-500 text-white rounded mb-4">
-        Abrir Error Modal
-      </button>
+      {/* Formulario emergente para crear una cuenta nueva */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <button id="cerrar-registro" onClick={() => setShowModal(false)}>✖</button>
+            <div className='titulo-registro'>
+              <h1>Únete</h1>
+            </div>
+            <form onSubmit={handleRegister}>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nombre"
+                required
+              />
+              {registerErrors.name && <p style={{ color: 'red' }}>{registerErrors.name}</p>}
 
-      {/* Botón para abrir el modal de éxito */}
-      <button onClick={openSuccessModal} className="px-4 py-2 bg-green-500 text-white rounded">
-        Abrir Registro Exitoso Modal
-      </button>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Apellido"
+                required
+              />
+              {registerErrors.lastName && <p style={{ color: 'red' }}>{registerErrors.lastName}</p>}
 
-      {/* Modales */}
-      <ConfirmCancelModal
-        isOpen={isConfirmModalOpen}
-        onClose={closeConfirmModal}
-        onConfirm={handleConfirm}
-        title="Confirmar Acción"
-        message="¿Estás seguro de que deseas realizar esta acción?"
-      />
+              <input
+                type="email"
+                value={registerEmail}
+                onChange={(e) => setRegisterEmail(e.target.value)}
+                placeholder="Correo Electrónico"
+                required
+              />
+              {registerErrors.registerEmail && <p style={{ color: 'red' }}>{registerErrors.registerEmail}</p>}
 
-      <ErrorModal
-        isOpen={isErrorModalOpen}
-        onClose={closeErrorModal}
-        message="Ocurrió un error inesperado"
-      />
+              <div className="password-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={registerPassword}
+                  onChange={(e) => setRegisterPassword(e.target.value)}
+                  placeholder="Contraseña"
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
+              {registerErrors.registerPassword && <p style={{ color: 'red' }}>{registerErrors.registerPassword}</p>}
 
-      <RegistroExitosoModal
-        isOpen={isSuccessModalOpen}
-        onClose={closeSuccessModal}
-        message="El registro ha sido exitoso"
-      />
+              <select value={role} onChange={(e) => setRole(e.target.value)} required>
+                <option value="">Selecciona un rol</option>
+                <option value="docente">Docente</option>
+                <option value="estudiante">Estudiante</option>
+              </select>
+              {registerErrors.role && <p style={{ color: 'red' }}>{registerErrors.role}</p>}
+
+              <button type="submit">Registrar</button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
-};
-
-export default Home;
-
+}
