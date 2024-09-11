@@ -1,39 +1,60 @@
 "use client";
+//import Image from 'next/image';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import "./home.css";
+import { getAllRegisterProyect, createRegisterProyect } from '../../../../api/register.api';
 
 export default function PruevaPage() {
   const [selected, setSelected] = useState(null);
-  const [showCrearProyecto, setShowCrearProyecto] = useState(false); 
-  const [proyectos, setProyectos] = useState([
-    { nombre: "Proyecto 1", id: "a1" },
-    { nombre: "Proyecto 2", id: "a2" },
-    { nombre: "Proyecto 3", id: "a3" },
-    { nombre: "Proyecto 4", id: "a4" },
-    { nombre: "Proyecto 5", id: "a5" },
-    { nombre: "Proyecto 6", id: "a6" }
-  ]);
+  const [showCrearProyecto, setShowCrearProyecto] = useState(false);
+  const [proyectos, setProyectos] = useState([]); // Inicializa como array vacío
+  const router = useRouter();
 
-  const router = useRouter(); 
-  const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
+  const [userName, setUserName] = useState('');
+
+  // Obtener los datos del usuario de sessionStorage cuando el componente se monta
+  useEffect(() => {
+    const userDataString = window.sessionStorage.getItem('userData');
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      setUserName(`${userData.nombre} ${userData.apellido}`);
+    }
+  }, []);
 
   useEffect(() => {
-    setIsMounted(true); // Indicar que el componente está montado
-  }, []);
-  
+    // Función para obtener proyectos
+    const fetchProyectos = async () => {
+      try {
+        const response = await getAllRegisterProyect();
+        // Verifica que la respuesta tenga la estructura esperada
+        if (response.data && Array.isArray(response.data.actor)) {
+          setProyectos(response.data.actor);
+        } else {
+          console.error('Formato inesperado de datos:', response.data);
+        }
+      } catch (error) {
+        console.error('Error al obtener proyectos:', error);
+      }
+    };
+
+    fetchProyectos();
+  }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+
   const handleClick = (index, num) => {
     setSelected(index);
     console.log(`Botón ${index} presionado`);
-    
-    if (num === 6) { // Revisar si el botón es el 5
+
+    if (num === 5) { // Revisar si el botón es el 5
       if (isMounted) {
-        router.push('/'); // Redirige a la ruta deseada
+        window.sessionStorage.removeItem('userData');
+        router.push('/'); // Redirigir al login
+        // Redirige a la ruta deseada
       }
     }
 
-    if (num === 5) { // Revisar si el botón es el 5
+    if (num === 6) { // Revisar si el botón es el 5
       if (isMounted) {
         router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
       }
@@ -41,30 +62,49 @@ export default function PruevaPage() {
   };
 
   const handleAgregarProyecto = () => {
-    setShowCrearProyecto(true); 
+    setShowCrearProyecto(true);
   };
 
   const handleCancel = () => {
-    setShowCrearProyecto(false); 
+    setShowCrearProyecto(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
-    const nuevoProyecto = {
-      nombre: form.nombre.value,
-      id: form.codigo.value
-    };
 
-    setProyectos([...proyectos, nuevoProyecto]);
-
-    form.reset();
-    setShowCrearProyecto(false);
-    console.log("Proyecto creado:", nuevoProyecto);
+    const formData = new FormData();
+    formData.append('nombreproyecto', form.nombre.value);
+    formData.append('codigo', form.codigo.value);
+    formData.append('invitacionproyecto', form.archivo1.files[0]);
+    formData.append('pliegoproyecto', form.archivo2.files[0]);
+    try {
+      const response = await createRegisterProyect(formData);
+      if (response.data) {
+        console.log("Proyecto creado:", response.data);
+        // Refrescar la lista de proyectos
+        const updatedProyectos = await getAllRegisterProyect();
+        if (updatedProyectos.data && Array.isArray(updatedProyectos.data.actor)) {
+          setProyectos(updatedProyectos.data.actor);
+        } else {
+          console.error('Formato inesperado de datos:', updatedProyectos.data);
+        }
+      }
+      form.reset();
+      setShowCrearProyecto(false);
+    } catch (error) {
+      console.error('Error al registrar el proyecto:', error);
+    }
   };
 
   return (
     <div className="container">
+      <header className="header">
+        <div className="user-info">
+          <p>Bienvenido: {userName}</p>
+        </div>
+      </header>
+
       <aside className="menu">
         <div className='imagen'>
           <a href='/componentes/home'>
@@ -83,7 +123,7 @@ export default function PruevaPage() {
             onClick={() => handleClick(index, num)}
           >
             <Image
-              src={`/iconos/icon${num}.svg`} 
+              src={`/iconos/icon${num}.svg`}
               alt={`Icono ${num}`}
               width={40}
               height={48}
@@ -135,7 +175,6 @@ export default function PruevaPage() {
               />
             </div>
             <button type="submit">Crear Proyecto</button>
-            {/* Botón de cancelar */}
             <button type="button" onClick={handleCancel} style={{ marginTop: "10px" }}>
               Cancelar
             </button>
@@ -147,28 +186,32 @@ export default function PruevaPage() {
             <h1>Proyectos</h1>
           </div>
           <div className="proyectos-container">
-            {proyectos.map((proyecto) => (
-              <div key={proyecto.id} className="proyecto-item">
-                <Image
-                  src={`/iconos/folder.svg`}
-                  alt={`Folder`}
-                  width={40}
-                  height={48}
-                />
-                <div className='proyecto-item-info'>
-                  <a href='/componentes/registrarequipo'>
-                    <h2>{proyecto.nombre}</h2>
-                    <p>ID: {proyecto.id}</p>
-                  </a>
+            {proyectos.length > 0 ? (
+              proyectos.map((proyecto) => (
+                <div key={proyecto.idproyecto} className="proyecto-item">
+                  <Image
+                    src={`/iconos/folder.svg`}
+                    alt={`Folder`}
+                    width={40}
+                    height={48}
+                  />
+                  <div className='proyecto-item-info'>
+                    <a href='/componentes/registrarequipo'>
+                      <h2>{proyecto.nombreproyecto}</h2>
+                      <p>ID: {proyecto.codigo}</p>
+                    </a>
+                  </div>
+                  <Image
+                    src={`/iconos/puntos.svg`}
+                    alt={`Menu`}
+                    width={40}
+                    height={48}
+                  />
                 </div>
-                <Image
-                  src={`/iconos/puntos.svg`}
-                  alt={`Menu`}
-                  width={40}
-                  height={48}
-                />
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No hay proyectos disponibles.</p>
+            )}
           </div>
           <div className="boton-fijo">
             <button onClick={handleAgregarProyecto}><b>Agregar proyecto</b></button>
@@ -178,3 +221,4 @@ export default function PruevaPage() {
     </div>
   );
 }
+

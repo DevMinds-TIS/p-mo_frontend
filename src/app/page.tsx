@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
+import { getUser, createRegister, login } from '../../api/register.api';
+
 
 export default function Home() {
   const router = useRouter(); // Crear instancia del router
@@ -12,10 +14,9 @@ export default function Home() {
     setIsMounted(true); // Indicar que el componente está montado
   }, []);
 
-  // Estados para los campos del formulario de inicio de sesión
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const [error, setError] = useState('');
 
   // Estado para alternar visibilidad de la contraseña
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,7 @@ export default function Home() {
 
   const [registerErrors, setRegisterErrors] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validar si el correo tiene un dominio válido
@@ -43,15 +44,58 @@ export default function Home() {
       setError('El correo o la contraseña son incorrectos');
     } else {
       setError('');
-      console.log('Email:', email);
-      console.log('Password:', password);
-      
-      // Redirigir solo si el componente está montado
-      if (isMounted) {
-        router.push('/componentes/home');
+      console.log('email:', email);
+      console.log('pasword:', password);
+      try {
+        const registerData2 = {
+          correoactor: email,
+          claveactor: password,
+        };
+        console.log('Datos que se enviarán al backend:', JSON.stringify(registerData2, null, 2));
+        const response = await login(registerData2);
+        //const response = await login(email, password);
+        console.log('Inicio de sesión exitoso:', response.data);
+
+        // Almacenar los datos de usuario en sessionStorage
+        const userData = {
+          email: email,
+          id: response.data.actor.idactor,
+          nombre: response.data.actor.nombreactor,
+          apellido: response.data.actor.apellidoactor,
+          token: response.data.token, 
+          role: response.data.role,  
+        };
+        // Guardar los datos en sessionStorage
+        window.sessionStorage.setItem('userData', JSON.stringify(userData));
+
+        // Redirigir solo si el componente está montado
+        if (isMounted) {
+          router.push('/componentes/home');
+        }
+      } catch (err) {
+        // Manejo de errores
+        console.error('Error al iniciar sesión:', err);
+        setError('Correo o contraseña incorrectos');
       }
+      //console.log('Email:', email);
+      //console.log('Password:', password);
     }
   };
+
+
+  const getUserData = () => {
+    const userDataString = window.sessionStorage.getItem('userData');
+    return userDataString ? JSON.parse(userDataString) : null;
+  };
+
+  // Ejemplo de uso
+  useEffect(() => {
+    const userData = getUserData();
+    if (userData) {
+      console.log('Usuario autenticado:', userData);
+      // Aquí puedes usar los datos del usuario, por ejemplo mostrar su nombre o rol
+    }
+  }, []);
 
   // Función para validar los campos del registro
   const validateRegisterForm = () => {
@@ -74,14 +118,32 @@ export default function Home() {
     return errors;
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     const errors = validateRegisterForm();
-    
+
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
     } else {
+      try {
+        const registerData = {
+          nombreactor: name,
+          apellidoactor: lastName,
+          correoactor: registerEmail,
+          claveactor: registerPassword,
+          fotoperfilactor: "https://example.com/fotos/juan_perez.jpg",
+        };
+        console.log('Datos que se enviarán al backend:', JSON.stringify(registerData, null, 2));
+
+        const response = await createRegister(registerData);
+        console.log('Usuario registrado exitosamente:', response.data);
+        setShowModal(false);
+      } catch (error) {
+        console.error('Error al registrar al usuario:', error);
+        setRegisterErrors({ general: 'Hubo un error al registrar. Inténtalo de nuevo más tarde.' });
+      }
+
       setRegisterErrors({});
       console.log('Name:', name);
       console.log('LastName:', lastName);
@@ -89,6 +151,8 @@ export default function Home() {
       console.log('Password:', registerPassword);
       console.log('Role:', role);
       setShowModal(false);
+
+
     }
   };
 
