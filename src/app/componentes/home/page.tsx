@@ -3,16 +3,24 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Menu from '../modals/menu/menu.jsx';
+import ModalMensaje from '../modals/mensajes/mensaje.jsx';
+import HeaderName from '../modals/usuario/nombre.jsx';
 import "./home.css";
 import { getAllRegisterProyect, createRegisterProyect } from '../../../../api/register.api';
 
 export default function PruevaPage() {
-  const [selected, setSelected] = useState(null);
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
   const [proyectos, setProyectos] = useState([]); // Inicializa como array vacío
-  const router = useRouter();
-
   const [userName, setUserName] = useState('');
+
+  //mensaje
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
 
   // Obtener los datos del usuario de sessionStorage cuando el componente se monta
   useEffect(() => {
@@ -41,25 +49,6 @@ export default function PruevaPage() {
 
     fetchProyectos();
   }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
-
-  const handleClick = (index, num) => {
-    setSelected(index);
-    console.log(`Botón ${index} presionado`);
-
-    if (num === 5) { // Revisar si el botón es el 5
-      if (isMounted) {
-        window.sessionStorage.removeItem('userData');
-        router.push('/'); // Redirigir al login
-        // Redirige a la ruta deseada
-      }
-    }
-
-    if (num === 6) { // Revisar si el botón es el 5
-      if (isMounted) {
-        router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
-      }
-    }
-  };
 
   const handleAgregarProyecto = () => {
     setShowCrearProyecto(true);
@@ -92,6 +81,9 @@ export default function PruevaPage() {
       }
       form.reset();
       setShowCrearProyecto(false);
+      //mensaje
+      setMensajeModal("Se a creado el proeyecto correctamente");
+      setMostrarModal(true);
     } catch (error) {
       console.error('Error al registrar el proyecto:', error);
     }
@@ -99,39 +91,8 @@ export default function PruevaPage() {
 
   return (
     <div className="container">
-      <header className="header">
-        <div className="user-info">
-          <p>Bienvenido: {userName}</p>
-        </div>
-      </header>
-
-      <aside className="menu">
-        <div className='imagen'>
-          <a href='/componentes/home'>
-            <Image
-              src="/iconos/logomenu.svg"
-              alt="Logo de la aplicación"
-              width={40}
-              height={50}
-            />
-          </a>
-        </div>
-        {[1, 2, 3, 4, 5, 6].map((num, index) => (
-          <button
-            key={index}
-            className={`menu-button ${selected === index ? 'active' : ''}`}
-            onClick={() => handleClick(index, num)}
-          >
-            <Image
-              src={`/iconos/icon${num}.svg`}
-              alt={`Icono ${num}`}
-              width={40}
-              height={48}
-            />
-          </button>
-        ))}
-      </aside>
-
+      <Menu/>
+      <a href='/componentes/editarperfil'><HeaderName name={userName} /></a>
       {showCrearProyecto ? (
         <main className="crearproyectos-container">
           <h2>Crear Proyecto</h2>
@@ -218,6 +179,7 @@ export default function PruevaPage() {
           </div>
         </main>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal}/>
     </div>
   );
 }

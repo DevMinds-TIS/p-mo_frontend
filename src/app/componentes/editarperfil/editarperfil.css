@@ -6,29 +6,27 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  height: auto;
 }
 
 .form-container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  gap: 20px;
-  /* Espacio entre las partes */
+  gap: 20px; /* Espacio entre las partes */
   justify-content: center;
   align-items: center;
 }
 
-.parte1,
-.parte2 {
+.parte1, .parte2 {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  /* Cada parte tomará el 50% del espacio disponible */
+  flex: 1; /* Cada parte tomará el 50% del espacio disponible */
   justify-content: center;
   align-items: center;
 }
 
-.parte1 input {
+.parte1 input{
   width: 90%;
 }
 
@@ -38,66 +36,83 @@
 }
 
 .label-imagen {
-  width: 90%;
-  height: 330px;
-  background-color: #191919;
-  background-image: url('/iconos/camera.svg');
-  /* Ruta de la imagen de la cámara */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  border-radius: 100%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+width: 330px;
+height: 330px;
+background-color: #191919;
+border-radius: 100%;
+cursor: pointer;
+margin: 10px;
 }
 
 .label-imagen:hover {
-  border-color: #999;
-  /* Cambia el color al pasar el mouse */
+border-color: #999; /* Cambia el color al pasar el mouse */
 }
 
-/*Modal 1*/
+/*Modal*/
 /* Estilos para el overlay que cubrirá toda la pantalla */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+overflow-y: auto; /* Para manejar el scroll si el contenido es más grande que la pantalla */
 }
 
 .modal-content {
-  position: relative;
-  /* Asegura que los elementos hijos con position:absolute se posicionen respecto a este contenedor */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: black;
-  color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+position: relative;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background-color: black;
+color: white;
+padding: 20px;
+border-radius: 5px;
+width: 90%;
+max-width: 400px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .modal-item {
-  width: 100%;
+width: 100%;
+margin-bottom: 10px; /* Espacio entre los items */
 }
 
 .modal-item input {
-  width: 100%;
+width: 94%;
+padding: 10px;
+margin-bottom: 10px;
+border-radius: 3px;
+background-color: rgb(30, 30, 30);
+color: white;
 }
 
 .modal-item select {
+width: 100%;
+}
+
+@media (max-width: 850px) {
+.modal-content {
+  width: 95%; /* Asegura que se vea bien en pantallas pequeñas */
+}
+
+.form-container {
+  flex-direction: column; /* Cambia el diseño a columna para dispositivos pequeños */
+  align-items: center; /* Alinea al centro para una mejor vista en móvil */
+  gap: 10px; /* Ajusta el espacio entre partes */
+}
+
+.parte1, .parte2 {
   width: 100%;
 }
 
+.parte2 button {
+  width: 90%;
+}
+}

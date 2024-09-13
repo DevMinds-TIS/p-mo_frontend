@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import "./editarperfil.css";
-import Menu from '../modals/menu.jsx';
+import Menu from '../modals/menu/menu.jsx';
 import { updatePartialRegister } from '../../../../api/register.api';
 
 export default function PruevaPage() {
@@ -9,6 +10,8 @@ export default function PruevaPage() {
   const [editarDatos, setEditarDatos] = useState(false);
   const [inscribirGrupo, setInscribirGrupo] = useState(false);
   const [role, setRole] = useState('');
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   // Estado para los datos personales
   const [nombre, setNombre] = useState(" "); // Estado para el nombre (inicialmente Nombre 1)
@@ -30,8 +33,6 @@ export default function PruevaPage() {
       setid(userData.id);
     }
   }, []);
-
-
 
   // Definir la relación entre grupos y docentes
   const gruposYDocentes = {
@@ -108,16 +109,60 @@ export default function PruevaPage() {
     setDocente(gruposYDocentes[selectedGroup] || ""); // Actualizar el nombre del docente basado en el grupo
   };
 
+  const handleClick = () => {
+    if (isMounted) {
+      router.push('/componentes/home');
+    }
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Estado para imagen y errores
+  const [imagenUrl, setImagenUrl] = useState('');
+  const [imagenError, setImagenError] = useState(''); // Error de imagen
+
+  // Validar y cambiar la imagen
+  const handleImagenChange = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = ['image/png', 'image/jpg', 'image/jpeg'];
+
+    if (file && allowedExtensions.includes(file.type)) {
+      setImagenUrl(URL.createObjectURL(file)); // Crear URL temporal
+      setImagenError(''); // Limpiar error si el archivo es válido
+    } else {
+      setImagenUrl('');
+      setImagenError('Solo se permiten imágenes en formato PNG, JPG o JPEG.');
+    }
+  };
+
   return (
     <div className='container'>
-
       <Menu />
       <main className='editardatos-container'>
         <h2>Editar datos de usuario</h2>
         <form className="form-container">
           <div className='parte1'>
-            <label htmlFor="imagen" className="label-imagen"></label>
-            <input type="file" id="imagen" name="imagen" accept="image/*" disabled /> {/* Deshabilitar la edición de la imagen */}
+          <label htmlFor="imagen"><b>Imagen de perfil</b></label>
+            <label
+              htmlFor="imagen"
+              className="label-imagen"
+              style={{
+                backgroundImage: imagenUrl ? `url(${imagenUrl})` : `url('/iconos/camera.svg')`,
+                backgroundSize: imagenUrl ? `cover` : `auto`,
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+            ></label>
+            <input
+              type="file"
+              id="imagen"
+              name="imagen"
+              accept="image/*"
+              onChange={handleImagenChange}
+            />
+            {imagenError && <label className="error">{imagenError}</label>} {/* Mostrar error de imagen */}
             <input type="text" id="nombre" name="nombre" value={nombre} readOnly /> {/* Campo de solo lectura para el nombre */}
             <input type="text" id="apellido" name="apellido" value={apellido} readOnly /> {/* Campo de solo lectura para el apellido */}
             <input type="text" id="grupo" name="grupo" value={grupo} readOnly /> {/* Campo de solo lectura para el grupo */}
@@ -128,7 +173,7 @@ export default function PruevaPage() {
             <button type="button" onClick={handleGrupo}>Incribirse a un grupo</button>
           </div>
         </form>
-        <button>Confirmar</button>
+        <button onClick={handleClick}>Confirmar</button>
       </main>
 
       {/* Modal cambiar contraseña */}
