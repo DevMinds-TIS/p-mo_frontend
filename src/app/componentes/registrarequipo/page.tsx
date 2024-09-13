@@ -2,21 +2,24 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Menu from '../modals/menu/menu.jsx';
+import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import "./registrarequipo.css";
 import { getAllRegisterEquipo, createRegisterEquipo } from '../../../../api/register.api';
 
 export default function PruevaPage() {
-  const [selected, setSelected] = useState(null);
   const [showCrearEquipo, setShowCrearEquipo] = useState(false);
   const [equipos, setEquipos] = useState([]); // Inicializa como array vacío
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
-  const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
   const [userName, setUserName] = useState('');
-  
-  useEffect(() => {
-    setIsMounted(true); // Cambia el estado a true cuando el componente se monta
-  }, []);
+
+  //mensaje
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
 
   useEffect(() => {
     const userDataString = window.sessionStorage.getItem('userData');
@@ -25,8 +28,6 @@ export default function PruevaPage() {
       setUserName(`${userData.nombre} ${userData.apellido}`);
     }
   }, []);
-
-
 
   useEffect(() => {
     const fetchEquipos = async () => {
@@ -45,29 +46,6 @@ export default function PruevaPage() {
 
     fetchEquipos();
   }, []);
-
-
-  const handleClick = (index, num) => {
-    setSelected(index);
-    console.log(`Botón ${index} presionado`);
-
-    if (num === 5) {
-      if (isMounted) {
-        
-          window.sessionStorage.removeItem('userData');
-          router.push('/'); // Redirigir al login
-        
-
-       // router.push('/');
-      }
-    }
-
-    if (num === 6) {
-      if (isMounted) {
-        router.push('/componentes/editarperfil');
-      }
-    }
-  };
 
   const handleRegistrarEquipo = () => {
     setShowCrearEquipo(true);
@@ -134,42 +112,35 @@ export default function PruevaPage() {
       }
       form.reset();
       setShowCrearEquipo(false);
+      //mensaje
+      setMensajeModal("Se ha registrado el equipo correctamente");
+      setMostrarModal(true);
     } catch (error) {
       console.error('Error al registrar el equipo:', error);
     }
   };
 
-
+   // Estado para imagen y errores
+   const [imagenUrl, setImagenUrl] = useState('');
+   const [imagenError, setImagenError] = useState(''); // Error de imagen
+ 
+   // Validar y cambiar la imagen
+   const handleImagenChange = (e) => {
+     const file = e.target.files[0];
+     const allowedExtensions = ['image/png', 'image/jpg', 'image/jpeg'];
+ 
+     if (file && allowedExtensions.includes(file.type)) {
+       setImagenUrl(URL.createObjectURL(file)); // Crear URL temporal
+       setImagenError(''); // Limpiar error si el archivo es válido
+     } else {
+       setImagenUrl('');
+       setImagenError('Solo se permiten imágenes en formato PNG, JPG o JPEG.');
+     }
+   };
 
   return (
     <div className="container">
-      <aside className="menu">
-        <div className='imagen'>
-          <a href='/componentes/home'>
-            <Image
-              src="/iconos/logomenu.svg"
-              alt="Logo de la aplicación"
-              width={40}
-              height={50}
-            />
-          </a>
-        </div>
-        {[1, 2, 3, 4, 5, 6].map((num, index) => (
-          <button
-            key={index}
-            className={`menu-button ${selected === index ? 'active' : ''}`}
-            onClick={() => handleClick(index, num)}
-          >
-            <Image
-              src={`/iconos/icon${num}.svg`}
-              alt={`Icono ${num}`}
-              width={40}
-              height={48}
-            />
-          </button>
-        ))}
-      </aside>
-
+      <Menu/>
       {showCrearEquipo ? (
         <main className="registrarequipos-container">
           <h2>Registrar Equipo</h2>
@@ -177,22 +148,34 @@ export default function PruevaPage() {
             <div className='form'>
               <div className="datos">
                 {/* Espacio para introducir una imagen */}
-                <label htmlFor="imagen">Subir Logo:</label>
-                <input type="file" id="imagen" name="imagen" accept="image/*" />
-
+                <label htmlFor="imagen"><b>Subir Logo:</b></label>
+                <div className='logo-empresa'>
+                  <label
+                    htmlFor="imagen"
+                    className="label-imagen"
+                    style={{
+                      backgroundImage: imagenUrl ? `url(${imagenUrl})` : `url('/iconos/camera.svg')`,
+                      backgroundSize: imagenUrl ? `cover` : `auto`,
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }}
+                  ></label>
+                  <input
+                    type="file"
+                    id="imagen"
+                    name="imagen"
+                    accept="image/*"
+                    onChange={handleImagenChange}
+                  />
+                </div>
                 {/* Inputs para nombres */}
-                <label htmlFor="nombreEquipo">Nombre del Equipo:</label>
                 <input type="text" id="nombreEquipo" name="nombreEquipo" placeholder="Nombre del equipo" />
-
-                <label htmlFor="descripcionEquipo">Nombre largo del equipo:</label>
                 <input type="text" id="descripcionEquipo" name="descripcionEquipo" placeholder="Nombre largo del equipo" />
               </div>
-
               <div className="miembros">
                 <h3>Miembros del Equipo</h3>
                 {miembros.map((miembro, index) => (
                   <div key={index} className="miembro-item">
-
                     <input
                       type="email"
                       id={`email-${index}`}
@@ -201,7 +184,6 @@ export default function PruevaPage() {
                       value={miembro.email}
                       onChange={(e) => handleMiembroChange(index, 'email', e.target.value)}
                     />
-
                     <select
                       id={`rol-${index}`}
                       name={`rol-${index}`}
@@ -212,7 +194,6 @@ export default function PruevaPage() {
                       <option value="productOwner">Product Owner</option>
                       <option value="scrumMaster">Scrum Master</option>
                     </select>
-
                     {/* Botón para eliminar miembro */}
                     {miembros.length > 1 && (
                       <button
@@ -270,6 +251,7 @@ export default function PruevaPage() {
           </div>
         </main>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </div>
   );
 }

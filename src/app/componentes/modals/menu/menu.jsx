@@ -16,13 +16,10 @@ export default function Menu() {
   const handleClick = (index, num) => {
     setSelected(index);
     console.log(`Botón ${index} presionado`);
-
+    
     if (num === 6) { // Revisar si el botón es el 5
       if (isMounted) {
-        
-          window.sessionStorage.removeItem('userData');
-          router.push('/'); // Redirigir al login
-         // Redirige a la ruta deseada
+        router.push('/'); // Redirige a la ruta deseada
       }
     }
 
@@ -52,7 +49,7 @@ export default function Menu() {
           onClick={() => handleClick(index, num)}
         >
           <Image
-            src={`/iconos/icon${num}.svg`}
+            src={`/iconos/icon${num}.svg`} 
             alt={`Icono ${num}`}
             width={40}
             height={48}
