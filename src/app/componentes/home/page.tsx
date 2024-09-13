@@ -1,11 +1,20 @@
 "use client";
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Menu from '../modals/menu/menu.jsx';
+import ModalMensaje from '../modals/mensajes/mensaje.jsx';
+import HeaderName from '../modals/usuario/nombre.jsx';
 import "./home.css";
 
 export default function PruevaPage() {
-  const [selected, setSelected] = useState(null);
+  //mensaje
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+  //pagina home
   const [showCrearProyecto, setShowCrearProyecto] = useState(false); 
   const [proyectos, setProyectos] = useState([
     { nombre: "Proyecto 1", id: "a1" },
@@ -15,30 +24,6 @@ export default function PruevaPage() {
     { nombre: "Proyecto 5", id: "a5" },
     { nombre: "Proyecto 6", id: "a6" }
   ]);
-
-  const router = useRouter(); 
-  const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
-
-  useEffect(() => {
-    setIsMounted(true); // Indicar que el componente está montado
-  }, []);
-  
-  const handleClick = (index, num) => {
-    setSelected(index);
-    console.log(`Botón ${index} presionado`);
-    
-    if (num === 6) { // Revisar si el botón es el 5
-      if (isMounted) {
-        router.push('/'); // Redirige a la ruta deseada
-      }
-    }
-
-    if (num === 5) { // Revisar si el botón es el 5
-      if (isMounted) {
-        router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
-      }
-    }
-  };
 
   const handleAgregarProyecto = () => {
     setShowCrearProyecto(true); 
@@ -61,37 +46,15 @@ export default function PruevaPage() {
     form.reset();
     setShowCrearProyecto(false);
     console.log("Proyecto creado:", nuevoProyecto);
+    //mensaje
+    setMensajeModal("Se a creado el proeyecto correctamente");
+    setMostrarModal(true);
   };
 
   return (
     <div className="container">
-      <aside className="menu">
-        <div className='imagen'>
-          <a href='/componentes/home'>
-            <Image
-              src="/iconos/logomenu.svg"
-              alt="Logo de la aplicación"
-              width={40}
-              height={50}
-            />
-          </a>
-        </div>
-        {[1, 2, 3, 4, 5, 6].map((num, index) => (
-          <button
-            key={index}
-            className={`menu-button ${selected === index ? 'active' : ''}`}
-            onClick={() => handleClick(index, num)}
-          >
-            <Image
-              src={`/iconos/icon${num}.svg`} 
-              alt={`Icono ${num}`}
-              width={40}
-              height={48}
-            />
-          </button>
-        ))}
-      </aside>
-
+      <Menu/>
+      <a href='/componentes/editarperfil'><HeaderName name="Nombre de usuario" /></a>
       {showCrearProyecto ? (
         <main className="crearproyectos-container">
           <h2>Crear Proyecto</h2>
@@ -175,6 +138,7 @@ export default function PruevaPage() {
           </div>
         </main>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal}/>
     </div>
   );
 }

@@ -1,11 +1,20 @@
 "use client";
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import Menu from '../modals/menu/menu.jsx';
+import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import "./registrarequipo.css";
 
 export default function PruevaPage() {
-  const [selected, setSelected] = useState(null);
+  //mensaje
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+
+  //pagina registrar
   const [showCrearEquipo, setShowCrearEquipo] = useState(false);
   const [equipos, setEquipos] = useState([
     { nombre: "Equipo 1", id: "e1" },
@@ -13,38 +22,36 @@ export default function PruevaPage() {
     { nombre: "Equipo 3", id: "e3" },
     { nombre: "Equipo 4", id: "e4" }
   ]);
-  const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
-  const router = useRouter(); 
-  const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
 
-  useEffect(() => {
-    setIsMounted(true); // Indicar que el componente está montado
-  }, []);
+  // Estado para imagen y errores
+  const [imagenUrl, setImagenUrl] = useState('');
+  const [imagenError, setImagenError] = useState(''); // Error de imagen
 
-  // Acción de los botones en la parte izquierda
-  const handleClick = (index, num) => {
-    setSelected(index);
-    console.log(`Botón ${index} presionado`);
-    
-    if (num === 6) { // Revisar si el botón es el 5
-      if (isMounted) {
-        router.push('/'); // Redirige a la ruta deseada
-      }
-    }
+  // Validar y cambiar la imagen
+  const handleImagenChange = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = ['image/png', 'image/jpg', 'image/jpeg'];
 
-    if (num === 5) { // Revisar si el botón es el 5
-      if (isMounted) {
-        router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
-      }
+    if (file && allowedExtensions.includes(file.type)) {
+      setImagenUrl(URL.createObjectURL(file)); // Crear URL temporal
+      setImagenError(''); // Limpiar error si el archivo es válido
+    } else {
+      setImagenUrl('');
+      setImagenError('Solo se permiten imágenes en formato PNG, JPG o JPEG.');
     }
   };
 
+  // Estado para capturar los datos del nuevo equipo
+  const [nombreEquipo, setNombreEquipo] = useState("");
+  const [descripcionEquipo, setDescripcionEquipo] = useState("");
+  const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
+
   const handleRegistrarEquipo = () => {
-    setShowCrearEquipo(true); 
+    setShowCrearEquipo(true);
   };
 
   const handleCancel = () => {
-    setShowCrearEquipo(false); 
+    setShowCrearEquipo(false);
   };
 
   const handleMiembroChange = (index, field, value) => {
@@ -65,58 +72,84 @@ export default function PruevaPage() {
     setMiembros(nuevosMiembros);
   };
 
+  const handleRegister = (e) => {
+    e.preventDefault();
+    // Crear un nuevo equipo con los datos actuales
+    const nuevoEquipo = {
+      nombre: nombreEquipo,
+      descripcion: descripcionEquipo,
+      miembros: miembros,
+    };
+    // Imprimir los datos en la consola
+    console.log("Datos del equipo registrado:", nuevoEquipo);
+    // Agregar el nuevo equipo a la lista de equipos
+    setEquipos([...equipos, { nombre: nombreEquipo, id: `e${equipos.length + 1}` }]);
+    //mensaje
+    setMensajeModal("Se ha registrado el equipo correctamente");
+    setMostrarModal(true);
+    // Limpiar el formulario
+    setNombreEquipo("");
+    setDescripcionEquipo("");
+    setMiembros([{ email: "", rol: "miembro" }]);
+    setShowCrearEquipo(false);
+  };
+
   return (
     <div className="container">
-      <aside className="menu">
-        <div className='imagen'>
-          <a href='/componentes/home'>
-            <Image
-              src="/iconos/logomenu.svg"
-              alt="Logo de la aplicación"
-              width={40}
-              height={50}
-            />
-          </a>
-        </div>
-        {[1, 2, 3, 4, 5, 6].map((num, index) => (
-          <button
-            key={index}
-            className={`menu-button ${selected === index ? 'active' : ''}`}
-            onClick={() => handleClick(index, num)}
-          >
-            <Image
-              src={`/iconos/icon${num}.svg`} 
-              alt={`Icono ${num}`}
-              width={40}
-              height={48}
-            />
-          </button>
-        ))}
-      </aside>
-
+      <Menu/>
       {showCrearEquipo ? (
         <main className="registrarequipos-container">
           <h2>Registrar Equipo</h2>
-          <form className="form-container">
+          <form className="form-container" onSubmit={handleRegister}>
             <div className='form'>
               <div className="datos">
                 {/* Espacio para introducir una imagen */}
-                <label htmlFor="imagen">Subir Logo:</label>
-                <input type="file" id="imagen" name="imagen" accept="image/*" />
-                
+                <label htmlFor="imagen"><b>Subir Logo:</b></label>
+                <div className='logo-empresa'>
+                  <label
+                    htmlFor="imagen"
+                    className="label-imagen"
+                    style={{
+                      backgroundImage: imagenUrl ? `url(${imagenUrl})` : `url('/iconos/camera.svg')`,
+                      backgroundSize: imagenUrl ? `cover` : `auto`,
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }}
+                  ></label>
+                  <input
+                    type="file"
+                    id="imagen"
+                    name="imagen"
+                    accept="image/*"
+                    onChange={handleImagenChange}
+                  />
+                </div>
                 {/* Inputs para nombres */}
-                <label htmlFor="nombreEquipo">Nombre del Equipo:</label>
-                <input type="text" id="nombreEquipo" name="nombreEquipo" placeholder="Nombre del equipo" />
+                <input
+                  type="text"
+                  id="nombreEquipo"
+                  name="nombreEquipo"
+                  placeholder="Nombre del equipo"
+                  value={nombreEquipo}
+                  onChange={(e) => setNombreEquipo(e.target.value)}
+                  required
+                />
                 
-                <label htmlFor="descripcionEquipo">Nombre largo del equipo:</label>
-                <input type="text" id="descripcionEquipo" name="descripcionEquipo" placeholder="Nombre largo del equipo" />
+                <input
+                  type="text"
+                  id="descripcionEquipo"
+                  name="descripcionEquipo"
+                  placeholder="Nombre largo del equipo"
+                  value={descripcionEquipo}
+                  onChange={(e) => setDescripcionEquipo(e.target.value)}
+                  required
+                />
               </div>
 
               <div className="miembros">
                 <h3>Miembros del Equipo</h3>
                 {miembros.map((miembro, index) => (
                   <div key={index} className="miembro-item">
-                    
                     <input
                       type="email"
                       id={`email-${index}`}
@@ -124,6 +157,7 @@ export default function PruevaPage() {
                       placeholder="Correo del miembro"
                       value={miembro.email}
                       onChange={(e) => handleMiembroChange(index, 'email', e.target.value)}
+                      required
                     />
 
                     <select
@@ -131,6 +165,7 @@ export default function PruevaPage() {
                       name={`rol-${index}`}
                       value={miembro.rol}
                       onChange={(e) => handleMiembroChange(index, 'rol', e.target.value)}
+                      required
                     >
                       <option value="miembro">Miembro</option>
                       <option value="productOwner">Product Owner</option>
@@ -194,6 +229,7 @@ export default function PruevaPage() {
           </div>
         </main>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </div>
   );
 }

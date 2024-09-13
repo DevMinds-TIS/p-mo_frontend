@@ -3,9 +3,19 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
+import ModalMensaje from './componentes/modals/mensajes/mensaje.jsx';
 
 export default function Home() {
-  const router = useRouter(); // Crear instancia del router
+  //mensaje
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+
+  //pagina
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
 
   useEffect(() => {
@@ -81,6 +91,9 @@ export default function Home() {
     
     if (Object.keys(errors).length > 0) {
       setRegisterErrors(errors);
+      //mensaje
+      setMensajeModal("A cocurrido un error intente de nuevo");
+      setMostrarModal(true);
     } else {
       setRegisterErrors({});
       console.log('Name:', name);
@@ -89,6 +102,9 @@ export default function Home() {
       console.log('Password:', registerPassword);
       console.log('Role:', role);
       setShowModal(false);
+      //mensaje
+      setMensajeModal("Se a registrado correctamente");
+      setMostrarModal(true);
     }
   };
 
@@ -208,6 +224,7 @@ export default function Home() {
           </div>
         </div>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </main>
   );
 }

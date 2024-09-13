@@ -2,44 +2,6 @@
     display: flex;
 }
   
-.menu {
-    width: 80px;
-    background-color: black;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-  
-.menu-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    transition: transform 0.3s ease;
-}
-  
-.menu-button:hover {
-    transform: scale(1.1);
-    background-color: transparent;
-}
-
-.imagen img:hover {
-    transform: scale(1.1);
-}
-  
-.menu-button.active {
-    transform: scale(1.2);
-    filter: brightness(1.2);
-}
-  
 .content {
     display: flex;
     flex-direction: column;
@@ -117,7 +79,7 @@ body {
     .content {
         padding: 10px;
         margin-top: 10px;
-        margin-bottom: 10px;
+        margin-bottom: 30px;
     }
 
     .proyectos-container {
@@ -125,14 +87,9 @@ body {
         flex-direction: column;
     }
 
-    .imagen img {
-        width: 25px;
-        height: 35px;
-    }
-
     .boton-fijo {
         position: fixed;
-        top: 0;  /* Distancia desde la parte inferior */
+        bottom: 10px;  /* Distancia desde la parte inferior */
         right: 0;   /* Distancia desde la parte derecha */
         z-index: 1000; /* Asegura que esté encima de otros elementos */
     }
