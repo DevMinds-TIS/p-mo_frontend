@@ -1,8 +1,7 @@
 "use client";
-//import Image from 'next/image';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import HeaderName from '../modals/usuario/nombre.jsx';
@@ -10,19 +9,19 @@ import "./home.css";
 import { getAllRegisterProyect, createRegisterProyect } from '../../../../api/register.api';
 
 export default function PruevaPage() {
+  const router = useRouter(); // Asegúrate de que useRouter esté aquí
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
-  const [proyectos, setProyectos] = useState([]); // Inicializa como array vacío
+  const [proyectos, setProyectos] = useState([]); 
   const [userName, setUserName] = useState('');
 
-  //mensaje
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
+  const [idproyct, setIdproyct] = useState([]);
 
   const handleCerrarModal = () => {
     setMostrarModal(false);
   };
 
-  // Obtener los datos del usuario de sessionStorage cuando el componente se monta
   useEffect(() => {
     const userDataString = window.sessionStorage.getItem('userData');
     if (userDataString) {
@@ -32,11 +31,9 @@ export default function PruevaPage() {
   }, []);
 
   useEffect(() => {
-    // Función para obtener proyectos
     const fetchProyectos = async () => {
       try {
         const response = await getAllRegisterProyect();
-        // Verifica que la respuesta tenga la estructura esperada
         if (response.data && Array.isArray(response.data.actor)) {
           setProyectos(response.data.actor);
         } else {
@@ -48,7 +45,7 @@ export default function PruevaPage() {
     };
 
     fetchProyectos();
-  }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+  }, []); 
 
   const handleAgregarProyecto = () => {
     setShowCrearProyecto(true);
@@ -71,7 +68,6 @@ export default function PruevaPage() {
       const response = await createRegisterProyect(formData);
       if (response.data) {
         console.log("Proyecto creado:", response.data);
-        // Refrescar la lista de proyectos
         const updatedProyectos = await getAllRegisterProyect();
         if (updatedProyectos.data && Array.isArray(updatedProyectos.data.actor)) {
           setProyectos(updatedProyectos.data.actor);
@@ -81,17 +77,21 @@ export default function PruevaPage() {
       }
       form.reset();
       setShowCrearProyecto(false);
-      //mensaje
-      setMensajeModal("Se a creado el proeyecto correctamente");
+      setMensajeModal("Se ha creado el proyecto correctamente");
       setMostrarModal(true);
     } catch (error) {
       console.error('Error al registrar el proyecto:', error);
     }
   };
 
+  // Define handleClickProyecto aquí
+  const handleClickProyecto = (idproyecto) => {
+    router.push(`/componentes/registrarequipo?id=${idproyecto}`);
+  };
+
   return (
     <div className="container">
-      <Menu/>
+      <Menu />
       <a href='/componentes/editarperfil'><HeaderName name={userName} /></a>
       {showCrearProyecto ? (
         <main className="crearproyectos-container">
@@ -156,11 +156,12 @@ export default function PruevaPage() {
                     width={40}
                     height={48}
                   />
-                  <div className='proyecto-item-info'>
-                    <a href='/componentes/registrarequipo'>
-                      <h2>{proyecto.nombreproyecto}</h2>
-                      <p>ID: {proyecto.codigo}</p>
-                    </a>
+                  <div
+                    className='proyecto-item-info'
+                    onClick={() => handleClickProyecto(proyecto.idproyecto)}
+                  >
+                    <h2>{proyecto.nombreproyecto}</h2>
+                    <p>ID: {proyecto.codigo}</p>
                   </div>
                   <Image
                     src={`/iconos/puntos.svg`}
@@ -179,8 +180,7 @@ export default function PruevaPage() {
           </div>
         </main>
       )}
-      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal}/>
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </div>
   );
 }
-

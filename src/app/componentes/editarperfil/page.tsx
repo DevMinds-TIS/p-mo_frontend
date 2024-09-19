@@ -16,6 +16,9 @@ export default function PruevaPage() {
   // Estado para los datos personales
   const [nombre, setNombre] = useState(" "); // Estado para el nombre (inicialmente Nombre 1)
   const [apellido, setApellido] = useState(" ");
+  const [contraseña, setContraseña] = useState(" "); // Estado para el nombre (inicialmente Nombre 1)
+
+
   // Estado para el apellido (inicialmente Apellido 1)
   const [grupo, setGrupo] = useState("Grupo 1"); // Estado para el grupo (inicialmente Grupo 1)
   const [docente, setDocente] = useState("Docente 1"); // Estado para el nombre del docente
@@ -49,7 +52,11 @@ export default function PruevaPage() {
   const handleCloseModal = () => {
     setShowModal(false); // Ocultar el modal
   };
-  const handleAccept = () => {
+  const handleAccept = (contraseñaActual, contraseñaNueva) => {
+
+    setContraseña(contraseñaNueva);
+
+
     console.log("Contraseña cambiada");
     setShowModal(false); // Cerrar el modal después de aceptar
   };
@@ -144,7 +151,7 @@ export default function PruevaPage() {
         <h2>Editar datos de usuario</h2>
         <form className="form-container">
           <div className='parte1'>
-          <label htmlFor="imagen"><b>Imagen de perfil</b></label>
+            <label htmlFor="imagen"><b>Imagen de perfil</b></label>
             <label
               htmlFor="imagen"
               className="label-imagen"
@@ -181,12 +188,15 @@ export default function PruevaPage() {
         <div className="modal">
           <div className="modal-content">
             <h3>Cambiar Contraseña</h3>
-            <form>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handleAccept(e.target.currentpassword.value, e.target.newpassword.value);
+            }}>
               <div className="modal-item">
-                <input type="password" id="current-password" name="current-password" placeholder="Contraseña actual" />
+                <input type="password" id="currentpassword" name="currentpassword" placeholder="Contraseña actual" />
               </div>
               <div className="modal-item">
-                <input type="password" id="new-password" name="new-password" placeholder="Nueva contraseña" />
+                <input type="password" id="newpassword" name="newpassword" placeholder="Nueva contraseña" />
               </div>
               <div className="modal-item">
                 <button type="button" className="cancel-button" onClick={handleCloseModal}>Cancelar</button>

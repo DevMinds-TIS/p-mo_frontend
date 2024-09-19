@@ -1,0 +1,23 @@
+2024-09-18 21:35:27.886 GMT [30736] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-18 21:35:27.889 GMT [30736] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2024-09-18 21:35:27.890 GMT [30736] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2024-09-18 21:35:27.958 GMT [34712] LOG:  el sistema de bases de datos fue interrumpido; última vez en funcionamiento en 2024-09-18 21:28:39 GMT
+2024-09-18 21:35:30.841 GMT [34712] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se está efectuando la recuperación automática
+2024-09-18 21:35:30.848 GMT [34712] LOG:  largo de registro no válido en 0/1B58F18: se esperaba 24, se obtuvo 0
+2024-09-18 21:35:30.848 GMT [34712] LOG:  no se requiere redo
+2024-09-18 21:35:30.900 GMT [30736] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2024-09-18 22:57:40.761 GMT [12224] LOG:  no se pudo recibir datos del cliente: An existing connection was forcibly closed by the remote host.
+	
+2024-09-18 22:57:40.761 GMT [6592] LOG:  no se pudo recibir datos del cliente: An existing connection was forcibly closed by the remote host.
+	
+2024-09-18 22:57:40.761 GMT [5972] LOG:  no se pudo recibir datos del cliente: An existing connection was forcibly closed by the remote host.
+	
+2024-09-19 16:45:00.254 GMT [13324] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-19 16:45:00.263 GMT [13324] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2024-09-19 16:45:00.263 GMT [13324] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2024-09-19 16:45:00.406 GMT [32144] LOG:  el sistema de bases de datos fue interrumpido; última vez en funcionamiento en 2024-09-18 22:10:32 GMT
+2024-09-19 16:45:03.831 GMT [32144] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se está efectuando la recuperación automática
+2024-09-19 16:45:03.844 GMT [32144] LOG:  redo comienza en 0/1B5C600
+2024-09-19 16:45:03.844 GMT [32144] LOG:  largo de registro no válido en 0/1B5C6E8: se esperaba 24, se obtuvo 0
+2024-09-19 16:45:03.844 GMT [32144] LOG:  redo listo en 0/1B5C6B0
+2024-09-19 16:45:03.947 GMT [13324] LOG:  el sistema de bases de datos está listo para aceptar conexiones

@@ -1,13 +1,16 @@
 "use client";
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import "./registrarequipo.css";
 import { getAllRegisterEquipo, createRegisterEquipo } from '../../../../api/register.api';
 
 export default function PruevaPage() {
+  const searchParams = useSearchParams();
+  const [proyectoId, setProyectoId] = useState(null);
+
   const [showCrearEquipo, setShowCrearEquipo] = useState(false);
   const [equipos, setEquipos] = useState([]); // Inicializa como array vacío
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
@@ -30,12 +33,24 @@ export default function PruevaPage() {
   }, []);
 
   useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      setProyectoId(id);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     const fetchEquipos = async () => {
       try {
         const response = await getAllRegisterEquipo();
         console.log('Datos de equipos:', response.data);
+
         if (response.data && Array.isArray(response.data.equipos)) {
-          setEquipos(response.data.equipos);
+          const equiposFiltrados = response.data.equipos.filter(
+            equipo => equipo.idproyecto?.toString() === proyectoId
+          );
+          setEquipos(equiposFiltrados);
+          console.log('Datos filtrados:', equiposFiltrados);
         } else {
           console.error('Formato inesperado de datos:', response.data);
         }
@@ -43,9 +58,12 @@ export default function PruevaPage() {
         console.error('Error al obtener equipos:', error);
       }
     };
+    if (proyectoId) {
+      fetchEquipos();
+    }
 
-    fetchEquipos();
-  }, []);
+  }, [proyectoId]);
+
 
   const handleRegistrarEquipo = () => {
     setShowCrearEquipo(true);
@@ -84,23 +102,22 @@ export default function PruevaPage() {
     formData.append('Nombredelequipo', form.nombreEquipo.value);
     formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
 
-    // Comprobar si el archivo ha sido seleccionado
     if (form.imagen.files.length > 0) {
       console.log('Imagen seleccionada:', form.imagen.files[0]);
       formData.append('fotodelogoEquipo', form.imagen.files[0]); // Añadir archivo al FormData
     } else {
       console.log('No se seleccionó ninguna imagen');
-      formData.append('fotodelogoEquipo', null); // Enviar null si no hay imagen seleccionada
+      formData.append('fotodelogoEquipo', null);
     }
 
     try {
       const response = await fetch('http://localhost:8000/api/equipo', {
         method: 'POST',
-        body: formData, // No uses JSON.stringify aquí porque estás enviando archivos
+        body: formData,
       });
 
       const data = await response.json();
-      console.log('Respuesta del servidor:', data); // Ver respuesta del servidor
+      console.log('Respuesta del servidor:', data);
 
       if (response.ok) {
         console.log("Equipo creado correctamente");
@@ -120,36 +137,35 @@ export default function PruevaPage() {
     }
   };
 
-   // Estado para imagen y errores
-   const [imagenUrl, setImagenUrl] = useState('');
-   const [imagenError, setImagenError] = useState(''); // Error de imagen
- 
-   // Validar y cambiar la imagen
-   const handleImagenChange = (e) => {
-     const file = e.target.files[0];
-     const allowedExtensions = ['image/png', 'image/jpg', 'image/jpeg'];
- 
-     if (file && allowedExtensions.includes(file.type)) {
-       setImagenUrl(URL.createObjectURL(file)); // Crear URL temporal
-       setImagenError(''); // Limpiar error si el archivo es válido
-     } else {
-       setImagenUrl('');
-       setImagenError('Solo se permiten imágenes en formato PNG, JPG o JPEG.');
-     }
-   };
+
+  const [imagenUrl, setImagenUrl] = useState('');
+  const [imagenError, setImagenError] = useState('');
+
+  const handleImagenChange = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = ['image/png', 'image/jpg', 'image/jpeg'];
+
+    if (file && allowedExtensions.includes(file.type)) {
+      setImagenUrl(URL.createObjectURL(file));
+      setImagenError('');
+    } else {
+      setImagenUrl('');
+      setImagenError('Solo se permiten imágenes en formato PNG, JPG o JPEG.');
+    }
+  };
 
   return (
     <div className="container">
-      <Menu/>
+      <Menu />
       {showCrearEquipo ? (
         <main className="registrarequipos-container">
           <h2>Registrar Equipo</h2>
           <form className="form-container" onSubmit={handleSubmit}>
-            <div className='form'>
+            <div className="form">
               <div className="datos">
                 {/* Espacio para introducir una imagen */}
                 <label htmlFor="imagen"><b>Subir Logo:</b></label>
-                <div className='logo-empresa'>
+                <div className="logo-empresa">
                   <label
                     htmlFor="imagen"
                     className="label-imagen"
@@ -169,8 +185,18 @@ export default function PruevaPage() {
                   />
                 </div>
                 {/* Inputs para nombres */}
-                <input type="text" id="nombreEquipo" name="nombreEquipo" placeholder="Nombre del equipo" />
-                <input type="text" id="descripcionEquipo" name="descripcionEquipo" placeholder="Nombre largo del equipo" />
+                <input
+                  type="text"
+                  id="nombreEquipo"
+                  name="nombreEquipo"
+                  placeholder="Nombre del equipo"
+                />
+                <input
+                  type="text"
+                  id="descripcionEquipo"
+                  name="descripcionEquipo"
+                  placeholder="Nombre largo del equipo"
+                />
               </div>
               <div className="miembros">
                 <h3>Miembros del Equipo</h3>
@@ -206,7 +232,6 @@ export default function PruevaPage() {
                     )}
                   </div>
                 ))}
-
                 {/* Botón para agregar nuevo miembro */}
                 {miembros.length < 6 && (
                   <button type="button" onClick={handleAgregarMiembro} style={{ marginTop: "10px" }}>
@@ -217,7 +242,6 @@ export default function PruevaPage() {
             </div>
             <button type="submit">Registrar</button>
           </form>
-
           {/* Botón de cancelar */}
           <button type="button" onClick={handleCancel} style={{ marginTop: "10px" }}>
             Cancelar
@@ -225,29 +249,35 @@ export default function PruevaPage() {
         </main>
       ) : (
         <main className="content">
-          <div className='titulo-equipos'>
+          <div className="titulo-equipos">
             <h1>Equipos</h1>
           </div>
           <div className="equipos-container">
-            {equipos.map((equipo) => (
-              <div key={equipo.idequipo} className="equipo-item">
-                <Image
-                  src={`/iconos/folder.svg`}
-                  alt={`Folder`}
-                  width={40}
-                  height={48}
-                />
-                <div className='equipo-item-info'>
-                  <a href='/componentes/registrarequipo'>
-                    <h2>{equipo.Nombredelequipo}</h2>
-                    <p>ID: {equipo.idequipo}</p>
-                  </a>
+            {equipos.length > 0 ? (
+              equipos.map((equipo) => (
+                <div key={equipo.idequipo} className="equipo-item">
+                  <Image
+                    src={`/iconos/folder.svg`}
+                    alt="Folder"
+                    width={40}
+                    height={48}
+                  />
+                  <div className="equipo-item-info">
+                    <a href={`/componentes/registrarequipo/${equipo.idequipo}`}>
+                      <h2>{equipo.Nombredelequipo}</h2>
+                      <p>ID: {equipo.idequipo}</p>
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No hay equipo registrado.</p>
+            )}
           </div>
           <div className="boton-fijo">
-            <button onClick={handleRegistrarEquipo}><b>Registrar Equipo</b></button>
+            <button onClick={handleRegistrarEquipo}>
+              <b>Registrar Equipo</b>
+            </button>
           </div>
         </main>
       )}
