@@ -62,8 +62,8 @@ export default function Home() {
           id: response.data.actor.idactor,
           nombre: response.data.actor.nombreactor,
           apellido: response.data.actor.apellidoactor,
-          token: response.data.token, 
-          role: response.data.role,  
+          token: response.data.token,
+          role: response.data.role,
         };
         // Guardar los datos en sessionStorage
         window.sessionStorage.setItem('userData', JSON.stringify(userData));
@@ -106,8 +106,8 @@ export default function Home() {
     if (lastName.length < 5) {
       errors.lastName = 'El apellido debe tener al menos 5 caracteres';
     }
-    if (!registerEmail.includes('@') || !registerEmail.includes('.')) {
-      errors.registerEmail = 'El correo debe tener el carácter "@" y "."';
+    if (!registerEmail.includes('@est.umss.edu') || !registerEmail.includes('.')) {
+      errors.registerEmail = 'El correo debe tener el carácter "@est.umss.edu" y "."';
     }
     if (registerPassword.length < 8) {
       errors.registerPassword = 'La contraseña debe tener al menos 8 caracteres';
