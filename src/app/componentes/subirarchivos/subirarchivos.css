@@ -1,0 +1,108 @@
+.container {
+    display: flex;
+}
+
+.subirarchivos-container {
+    padding: 20px;
+    color: white;
+    margin-left: 70px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: auto;
+  }
+
+.formulario-subida {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.lado-izquierdo{
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group textarea{
+    height: 100px;
+}
+
+.label-archivo {
+    width: 450px;
+    height: 330px;
+    background-color: #191919;
+    border-radius: 1%;
+    cursor: pointer;
+    margin: 10px;
+    }
+
+.lado-derecho {
+    display: flex;
+    flex-direction: column;
+}
+
+.fecha-entrega {
+    display: flex;
+    justify-content: center;
+}
+
+#fechaEntrega {
+    width: 35%;
+}
+/*mostrar archivos*/
+.archivos-seccion {
+    background-color: #1E1E1E;
+}
+
+.archivo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.archivo-item button {
+    width: 50px;
+    margin-top: 0;
+}
+
+/*Comentarios*/
+.comentarios-seccion {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+.comentarios-caja {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #1E1E1E;
+    height: 100px;
+    width: 500px;
+}
+
+textarea {
+    background-color: #1E1E1E;
+    color: white;
+    width: 100%;
+}
+
+.comentarios-seccion button {
+    width: 50%;
+}
