@@ -28,6 +28,13 @@ export default function Menu() {
         router.push('/componentes/editarperfil'); // Redirige a la ruta deseada
       }
     }
+
+    if (num === 2) { // Revisar si el botón es el 5
+      if (isMounted) {
+        router.push('/componentes/subirarchivos'); // Redirige a la ruta deseada
+      }
+    }
+
   };
 
   return (

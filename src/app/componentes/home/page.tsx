@@ -135,6 +135,34 @@ export default function PruevaPage() {
                 required
               />
             </div>
+
+            <div className="form-group">
+              <label htmlFor="archivo3">Arrastre y suelte la lista de inscritos</label>
+              <input
+                type="file"
+                id="archivo3"
+                name="archivo3"
+                required
+              />
+            </div>
+            <div className="fechas-group">
+              <div className="fecha-item">
+                <label htmlFor="fechaProyecto">Fecha de duración del proyecto</label>
+                <div className="fecha-inputs">
+                  <input type="date" id="fechaIniProyecto" name="fechaIniProyecto" placeholder="Fecha Inicio" />
+                  <input type="date" id="fechaFinProyecto" name="fechaFinProyecto" placeholder="Fecha Fin" />
+                </div>
+              </div>
+
+              <div className="fecha-item">
+                <label htmlFor="fechaInscripciones">Duración de inscripciones</label>
+                <div className="fecha-inputs">
+                  <input type="date" id="fechaIniInscripciones" name="fechaIniInscripciones" placeholder="Fecha Inicio" />
+                  <input type="date" id="fechaFinInscripciones" name="fechaFinInscripciones" placeholder="Fecha Fin" />
+                </div>
+              </div>
+            </div>
+
             <button type="submit">Crear Proyecto</button>
             <button type="button" onClick={handleCancel} style={{ marginTop: "10px" }}>
               Cancelar
@@ -163,12 +191,14 @@ export default function PruevaPage() {
                     <h2>{proyecto.nombreproyecto}</h2>
                     <p>ID: {proyecto.codigo}</p>
                   </div>
+                  <a href='/componentes/editarproyecto'>
                   <Image
-                    src={`/iconos/puntos.svg`}
+                    src={`/iconos/editarProyecto.svg`}
                     alt={`Menu`}
                     width={40}
                     height={48}
                   />
+                  </a>
                 </div>
               ))
             ) : (
