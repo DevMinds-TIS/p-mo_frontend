@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
-import { getUser, createRegister, login } from '../../api/register.api';
 import ModalMensaje from './componentes/modals/mensajes/mensaje.jsx';
 import { getUser, createRegister, login, createRegisterDocentes, createRegisterEstudiantes } from '../../api/register.api';
 
