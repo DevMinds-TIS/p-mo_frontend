@@ -100,6 +100,7 @@ export default function PruevaPage() {
 
     const formData = new FormData();
     formData.append('Nombredelequipo', form.nombreEquipo.value);
+    formData.append('idproyecto', proyectoId);
     formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
 
     if (form.imagen.files.length > 0) {

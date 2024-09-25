@@ -53,3 +53,9 @@ export const createRegisterEquipo = (formData) => {
 //         }
 //     });
 // };
+
+export const getAllRegisterEstudiantes = () => registersApi.get('api/estudiantes');
+export const createRegisterEstudiantes = (data) => registersApi.post('api/estudiantes', data);
+
+export const getAllRegisterDocentes = () => registersApi.get('api/docentes');
+export const createRegisterDocentes = (data) => registersApi.post('api/docentes', data);

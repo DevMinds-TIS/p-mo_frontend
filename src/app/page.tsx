@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
-import { getUser, createRegister, login } from '../../api/register.api';
+import { getUser, createRegister, login, createRegisterDocentes, createRegisterEstudiantes } from '../../api/register.api';
 
 
 export default function Home() {
@@ -107,7 +107,7 @@ export default function Home() {
       errors.lastName = 'El apellido debe tener al menos 5 caracteres';
     }
     if (!registerEmail.includes('@est.umss.edu') || !registerEmail.includes('.')) {
-      errors.registerEmail = 'El correo debe tener el carácter "@est.umss.edu" y "."';
+      errors.registerEmail = 'El correo debe tener el formato "@est.umss.edu"';
     }
     if (registerPassword.length < 8) {
       errors.registerPassword = 'La contraseña debe tener al menos 8 caracteres';
@@ -136,7 +136,16 @@ export default function Home() {
         };
         console.log('Datos que se enviarán al backend:', JSON.stringify(registerData, null, 2));
 
-        const response = await createRegister(registerData);
+        let response;
+
+        if (role === 'docente') {
+          response = await createRegisterDocentes(registerData);
+        } else if (role === 'estudiante') {
+          response = await createRegisterEstudiantes(registerData);
+        }
+
+
+        //const response = await createRegister(registerData);
         console.log('Usuario registrado exitosamente:', response.data);
         setShowModal(false);
       } catch (error) {
