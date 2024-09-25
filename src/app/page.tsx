@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
+import { getUser, createRegister, login } from '../../api/register.api';
+import ModalMensaje from './componentes/modals/mensajes/mensaje.jsx';
 import { getUser, createRegister, login, createRegisterDocentes, createRegisterEstudiantes } from '../../api/register.api';
 
 
@@ -160,11 +162,17 @@ export default function Home() {
       console.log('Password:', registerPassword);
       console.log('Role:', role);
       setShowModal(false);
-
-
+      setMensajeModal("Se a registrado la cuenta correctamente");
+      setMostrarModal(true);
     }
   };
+  //Mensajes
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mensajeModal, setMensajeModal] = useState('');
 
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
   return (
     <main>
       <div className="contenedor-logo">
@@ -281,6 +289,7 @@ export default function Home() {
           </div>
         </div>
       )}
+      <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </main>
   );
 }

@@ -116,6 +116,7 @@ body {
     color: white;
     margin-left: 80px;
     width: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
   }
@@ -158,3 +159,24 @@ body {
 .crearproyectos-container button:hover {
     background-color: rgb(255, 155, 90);
   }
+
+/*Fechas*/
+.fechas-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Espacio entre cada grupo de fecha */
+  }
+  
+  .fecha-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre el label y los inputs */
+  }
+  
+  .fecha-inputs {
+    display: flex;
+    gap: 30px; /* Espacio entre los inputs de fecha inicio y fin */
+  }
+  

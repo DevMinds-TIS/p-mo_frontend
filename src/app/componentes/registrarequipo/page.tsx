@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
+import HeaderName from '../modals/usuario/nombre.jsx';
 import "./registrarequipo.css";
 import { getAllRegisterEquipo, createRegisterEquipo } from '../../../../api/register.api';
 
@@ -102,6 +103,7 @@ export default function PruevaPage() {
     formData.append('Nombredelequipo', form.nombreEquipo.value);
     formData.append('idproyecto', proyectoId);
     formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
+    formData.append('idproyecto', proyectoId);
 
     if (form.imagen.files.length > 0) {
       console.log('Imagen seleccionada:', form.imagen.files[0]);
@@ -158,6 +160,7 @@ export default function PruevaPage() {
   return (
     <div className="container">
       <Menu />
+      <a href='/componentes/editarperfil'><HeaderName name={userName} /></a>
       {showCrearEquipo ? (
         <main className="registrarequipos-container">
           <h2>Registrar Equipo</h2>
