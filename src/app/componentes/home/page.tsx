@@ -13,6 +13,7 @@ export default function PruevaPage() {
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
   const [proyectos, setProyectos] = useState([]);
   const [userName, setUserName] = useState('');
+  const [tipoUsuario, setTipoUsuario] = useState('docente');
 
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
@@ -207,6 +208,7 @@ export default function PruevaPage() {
                     <h2>{proyecto.nombreproyecto}</h2>
                     <p>ID: {proyecto.codigo}</p>
                   </div>
+                  {tipoUsuario === 'docente' && (
                   <a href='/componentes/editarproyecto'>
                     <Image
                       src={`/iconos/editarProyecto.svg`}
@@ -215,15 +217,18 @@ export default function PruevaPage() {
                       height={48}
                     />
                   </a>
+                  )}
                 </div>
               ))
             ) : (
               <p>No hay proyectos disponibles.</p>
             )}
           </div>
+          {tipoUsuario === 'docente' && (
           <div className="boton-fijo">
             <button onClick={handleAgregarProyecto}><b>Agregar proyecto</b></button>
           </div>
+          )}
         </main>
       )}
       <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
