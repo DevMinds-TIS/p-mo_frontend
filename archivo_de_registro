@@ -75,3 +75,39 @@
 2024-09-23 06:14:08.341 GMT [25756] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
 2024-09-23 06:14:08.378 GMT [30176] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
 2024-09-23 06:14:08.378 GMT [31996] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 02:02:27.535 GMT [28784] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-25 02:02:27.540 GMT [28784] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2024-09-25 02:02:27.540 GMT [28784] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2024-09-25 02:02:27.732 GMT [26148] LOG:  el sistema de bases de datos fue interrumpido; última vez en funcionamiento en 2024-09-23 02:03:58 GMT
+2024-09-25 02:02:28.844 GMT [26148] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se está efectuando la recuperación automática
+2024-09-25 02:02:28.848 GMT [26148] LOG:  redo comienza en 0/1BD4E90
+2024-09-25 02:02:28.848 GMT [26148] LOG:  largo de registro no válido en 0/1BD4EC8: se esperaba 24, se obtuvo 0
+2024-09-25 02:02:28.848 GMT [26148] LOG:  redo listo en 0/1BD4E90
+2024-09-25 02:02:28.898 GMT [28784] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2024-09-25 02:04:00.805 GMT [10632] FATAL:  la autentificación password falló para el usuario «postgres»
+2024-09-25 02:04:00.805 GMT [10632] DETALLE:  La contraseña no coincide para el usuario «postgres».
+	La conexión coincidió con la línea 86 de pg_hba.conf: «host    all             all             ::1/128                 password»
+2024-09-25 02:04:00.834 GMT [22244] FATAL:  la autentificación password falló para el usuario «postgres»
+2024-09-25 02:04:00.834 GMT [22244] DETALLE:  La contraseña no coincide para el usuario «postgres».
+	La conexión coincidió con la línea 86 de pg_hba.conf: «host    all             all             ::1/128                 password»
+2024-09-25 02:04:00.969 GMT [20400] FATAL:  la autentificación password falló para el usuario «postgres»
+2024-09-25 02:04:00.969 GMT [20400] DETALLE:  La contraseña no coincide para el usuario «postgres».
+	La conexión coincidió con la línea 86 de pg_hba.conf: «host    all             all             ::1/128                 password»
+2024-09-25 02:25:11.310 GMT [34500] ERROR:  la sintaxis de entrada no es vÃ¡lida para tipo bigint: Â«ut-121Â»
+2024-09-25 02:25:11.310 GMT [34500] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-25 10:56:10.983 GMT [27860] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 10:56:10.984 GMT [13340] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 10:56:10.985 GMT [23228] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 10:56:10.984 GMT [20020] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 22:29:32.629 GMT [21532] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-25 22:29:32.632 GMT [21532] LOG:  escuchando en la dirección IPv6 «::1», port 5432
+2024-09-25 22:29:32.632 GMT [21532] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5432
+2024-09-25 22:29:32.686 GMT [8408] LOG:  el sistema de bases de datos fue interrumpido; última vez en funcionamiento en 2024-09-25 12:59:40 GMT
+2024-09-25 22:29:33.636 GMT [8408] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se está efectuando la recuperación automática
+2024-09-25 22:29:33.640 GMT [8408] LOG:  redo comienza en 0/1BDF4D0
+2024-09-25 22:29:33.641 GMT [8408] LOG:  largo de registro no válido en 0/1BDF508: se esperaba 24, se obtuvo 0
+2024-09-25 22:29:33.641 GMT [8408] LOG:  redo listo en 0/1BDF4D0
+2024-09-25 22:29:33.695 GMT [21532] LOG:  el sistema de bases de datos está listo para aceptar conexiones
+2024-09-25 22:42:15.094 GMT [25940] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 22:42:15.094 GMT [4956] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-09-25 22:42:15.094 GMT [34028] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster

@@ -38,6 +38,9 @@ export const createRegisterProyect = (formData) => {
     });
 };
 
+export const getProyectID = (id) => registersApi.get(`api/proyectos/${id}`);
+
+
 export const getAllRegisterEquipo = () => registersApi.get('api/equipo');
 export const createRegisterEquipo = (formData) => {
     return registersApi.post('api/equipo', formData, {

@@ -1,7 +1,7 @@
 "use client";
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import HeaderName from '../modals/usuario/nombre.jsx';
@@ -11,7 +11,7 @@ import { getAllRegisterProyect, createRegisterProyect } from '../../../../api/re
 export default function PruevaPage() {
   const router = useRouter(); // Asegúrate de que useRouter esté aquí
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
-  const [proyectos, setProyectos] = useState([]); 
+  const [proyectos, setProyectos] = useState([]);
   const [userName, setUserName] = useState('');
 
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -34,8 +34,11 @@ export default function PruevaPage() {
     const fetchProyectos = async () => {
       try {
         const response = await getAllRegisterProyect();
-        if (response.data && Array.isArray(response.data.actor)) {
-          setProyectos(response.data.actor);
+        console.log("Respuesta del backend:", response.data);
+
+        // Acceder a los proyectos en response.data.proyecto
+        if (response.data && Array.isArray(response.data.proyecto)) {
+          setProyectos(response.data.proyecto);
         } else {
           console.error('Formato inesperado de datos:', response.data);
         }
@@ -45,7 +48,7 @@ export default function PruevaPage() {
     };
 
     fetchProyectos();
-  }, []); 
+  }, []);
 
   const handleAgregarProyecto = () => {
     setShowCrearProyecto(true);
@@ -58,13 +61,26 @@ export default function PruevaPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
+    console.log(form.fechaIniProyecto.value); // Debería mostrar la fecha seleccionada o una cadena vacía
+    console.log(form.fechaFinProyecto.value);
+    console.log(form.fechaIniInscripciones.value); // Debería mostrar la fecha seleccionada o una cadena vacía
+    console.log(form.fechaFinInscripciones.value);
 
     const formData = new FormData();
     formData.append('nombreproyecto', form.nombre.value);
     formData.append('codigo', form.codigo.value);
     formData.append('invitacionproyecto', form.archivo1.files[0]);
     formData.append('pliegoproyecto', form.archivo2.files[0]);
+    formData.append('listaInscrito', form.archivo3.files[0]);
+
+    formData.append('fechainicioproyecto', form.fechaIniProyecto.value);
+    formData.append('fechafinproyecto', form.fechaFinProyecto.value);
+    formData.append('fechainicioinscripcion', form.fechaIniInscripciones.value);
+    formData.append('fechafininscripcion', form.fechaFinInscripciones.value);
+
     try {
+      // console.log("ASD" , form.fechaIniProyecto.value); // Verifica si muestra un valor válido, como "2024-09-26"
+
       const response = await createRegisterProyect(formData);
       if (response.data) {
         console.log("Proyecto creado:", response.data);
@@ -192,12 +208,12 @@ export default function PruevaPage() {
                     <p>ID: {proyecto.codigo}</p>
                   </div>
                   <a href='/componentes/editarproyecto'>
-                  <Image
-                    src={`/iconos/editarProyecto.svg`}
-                    alt={`Menu`}
-                    width={40}
-                    height={48}
-                  />
+                    <Image
+                      src={`/iconos/editarProyecto.svg`}
+                      alt={`Menu`}
+                      width={40}
+                      height={48}
+                    />
                   </a>
                 </div>
               ))
