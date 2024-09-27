@@ -7,7 +7,7 @@ import {Button} from "@nextui-org/button";
 import {Link} from "@nextui-org/react";
 import {Divider} from "@nextui-org/divider";
 import React from "react";
-import userForms from "@/app/lib/hooks/landing/userForm";
+import userForms from "@/app/_lib/landing/userForm";
 import SingUp from "./SingUp";
 
 export default function LogIn(){
