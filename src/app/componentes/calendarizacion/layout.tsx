@@ -6,8 +6,8 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Subir Archivos",
-  description: "Página para subir archivos de los sprints",
+  title: "Calendarizacón",
+  description: "Página donde los equipos pueden poner su calendarización y su plan de trabajo",
 };
 
 export default function RootLayout({
@@ -21,4 +21,3 @@ export default function RootLayout({
     </html>
   );
 }
-

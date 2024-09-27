@@ -29,9 +29,9 @@ export default function Menu() {
       }
     }
 
-    if (num === 2) { // Revisar si el botón es el 5
+    if (num === 1) {
       if (isMounted) {
-        router.push('/componentes/subirarchivos'); // Redirige a la ruta deseada
+        router.push('/componentes/calendarizacion'); // Redirige a la ruta deseada
       }
     }
 
