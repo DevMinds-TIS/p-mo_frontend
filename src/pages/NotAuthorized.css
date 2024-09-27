@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    /* Remove default margin */
+    padding: 0;
+    /* Remove default padding */
+    box-sizing: border-box;
+    /* Ensure consistent box sizing */
+}
+
+html,
+body {
+    height: 100%;
+    /* Ensure the body takes full height */
+}
+
+.not-authorized-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Full height */
+    background-color: black;
+    /* Black background */
+    color: white;
+    /* Text color */
+    text-align: center;
+    /* Center text */
+    font-family: 'Arial', sans-serif;
+    /* Font style */
+}
+
+.not-authorized-title {
+    font-size: 4rem;
+    /* Large title */
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(255, 0, 0, 0.8);
+    /* Epic glow effect */
+}
+
+.not-authorized-message {
+    font-size: 1.5rem;
+    /* Medium message size */
+    opacity: 0.8;
+    /* Slightly transparent */
+    text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.5);
+    /* Soft glow effect */
+}

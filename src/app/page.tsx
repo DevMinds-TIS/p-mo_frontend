@@ -1,15 +1,16 @@
+
 "use client"; // Asegúrate de colocar esta línea al inicio del archivo
 
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // Importar useRouter desde 'next/navigation'
 import ModalMensaje from './componentes/modals/mensajes/mensaje.jsx';
-import { createRegister, login, createRegisterDocentes, createRegisterEstudiantes } from '../../api/register.api';
+import { createRegister, login, createRegisterDocentes, createRegisterEstudiantes, getValidationUser } from '../../api/register.api';
 //getUser
 
 export default function Home() {
-  const router = useRouter(); // Crear instancia del router
-  const [isMounted, setIsMounted] = useState(false); // Verificar si el componente está montado en el cliente
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true); // Indicar que el componente está montado
@@ -18,35 +19,40 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  // Estado para alternar visibilidad de la contraseña
   const [showPassword, setShowPassword] = useState(false);
-
-  // Estado para mostrar el formulario de crear cuenta nueva
   const [showModal, setShowModal] = useState(false);
 
-  // Estados para el formulario de registro
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [iduser, setIduser] = useState(null);
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
-  const [role, setRole] = useState(''); // Para el desplegable de roles
+  const [role, setRole] = useState('');
 
   const [registerErrors, setRegisterErrors] = useState({});
 
+  useEffect(() => {
+    if (iduser !== null) {
+      const fetchUserData = async () => {
+        try {
+          const user = await getUserData(iduser);
+          console.log('Datos del usuario:', user.data);
+        } catch (error) {
+          console.error('Error al obtener datos del usuario:', error);
+        }
+      };
+      fetchUserData();
+    }
+  }, [iduser]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validar si el correo tiene un dominio válido
     const emailDomain = email.split('@')[1]; // Obtener el dominio del correo
     const validDomains = ['gmail.com', 'est.umss.edu'];
-
     if (!validDomains.includes(emailDomain)) {
       setError('El correo o la contraseña son incorrectos');
     } else {
       setError('');
-      console.log('email:', email);
-      console.log('pasword:', password);
       try {
         const registerData2 = {
           correoactor: email,
@@ -54,34 +60,44 @@ export default function Home() {
         };
         console.log('Datos que se enviarán al backend:', JSON.stringify(registerData2, null, 2));
         const response = await login(registerData2);
-        //const response = await login(email, password);
-        console.log('Inicio de sesión exitoso:', response.data);
+        if (response && response.data) {
+          // Accedemos directamente a la respuesta del servidor
+          const userData1 = {
+            id: response.data.actor.idactor,
+          }
+          const idact = userData1.id;
+          const respon = await getValidationUser(idact);
+          console.log('Respuesta del servidor:', respon.data);
 
-        // Almacenar los datos de usuario en sessionStorage
-        const userData = {
-          email: email,
-          id: response.data.actor.idactor,
-          nombre: response.data.actor.nombreactor,
-          apellido: response.data.actor.apellidoactor,
-          token: response.data.token,
-          role: response.data.role,
-        };
-        // Guardar los datos en sessionStorage
-        window.sessionStorage.setItem('userData', JSON.stringify(userData));
+          const userData = {
+            email: respon.data.actor.correoactor,
+            id: response.data.actor.id,
+            nombre: response.data.actor.nombreactor,
+            apellido: response.data.actor.apellidoactor,
+            token: response.data.token,
+            role: respon.data.actor.tipo,
+          };
 
-        // Redirigir solo si el componente está montado
-        if (isMounted) {
-          router.push('/componentes/home');
+          console.log('Datos de inicio de sesión:', userData);
+
+          // Guardamos la información del usuario en sessionStorage
+          window.sessionStorage.setItem('userData', JSON.stringify(userData));
+
+          if (isMounted) {
+            // Redireccionamos si todo está correcto
+            router.push('/componentes/home');
+          }
+        } else {
+          console.log('Inicio de sesión fallido:', response);
+          setError('Correo o contraseña incorrectos');
         }
       } catch (err) {
-        // Manejo de errores
         console.error('Error al iniciar sesión:', err);
         setError('Correo o contraseña incorrectos');
       }
-      //console.log('Email:', email);
-      //console.log('Password:', password);
     }
   };
+
 
 
   const getUserData = () => {
@@ -89,39 +105,29 @@ export default function Home() {
     return userDataString ? JSON.parse(userDataString) : null;
   };
 
-  // Ejemplo de uso
   useEffect(() => {
     const userData = getUserData();
     if (userData) {
       console.log('Usuario autenticado:', userData);
-      // Aquí puedes usar los datos del usuario, por ejemplo mostrar su nombre o rol
     }
   }, []);
 
-  // Función para validar los campos del registro
   const validateRegisterForm = () => {
     const errors = {};
-    if (name.length < 3) {
-      errors.name = 'El nombre debe tener al menos 3 caracteres';
-    }
-    if (lastName.length < 5) {
-      errors.lastName = 'El apellido debe tener al menos 5 caracteres';
-    }
+    if (name.length < 3) errors.name = 'El nombre debe tener al menos 3 caracteres';
+    if (lastName.length < 5) errors.lastName = 'El apellido debe tener al menos 5 caracteres';
     if (!registerEmail.includes('@est.umss.edu') || !registerEmail.includes('.')) {
       errors.registerEmail = 'El correo debe tener el formato "@est.umss.edu"';
     }
     if (registerPassword.length < 8) {
       errors.registerPassword = 'La contraseña debe tener al menos 8 caracteres';
     }
-    if (!role) {
-      errors.role = 'Debe seleccionar un rol para su registro';
-    }
+    if (!role) errors.role = 'Debe seleccionar un rol para su registro';
     return errors;
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     const errors = validateRegisterForm();
 
     if (Object.keys(errors).length > 0) {
@@ -135,43 +141,27 @@ export default function Home() {
           claveactor: registerPassword,
           fotoperfilactor: "https://example.com/fotos/juan_perez.jpg",
         };
-        console.log('Datos que se enviarán al backend:', JSON.stringify(registerData, null, 2));
 
         let response;
+        if (role === 'docente') response = await createRegisterDocentes(registerData);
+        else if (role === 'estudiante') response = await createRegisterEstudiantes(registerData);
 
-        if (role === 'docente') {
-          response = await createRegisterDocentes(registerData);
-        } else if (role === 'estudiante') {
-          response = await createRegisterEstudiantes(registerData);
-        }
-
-
-        //const response = await createRegister(registerData);
-        console.log('Usuario registrado exitosamente:', response.data);
         setShowModal(false);
       } catch (error) {
-        console.error('Error al registrar al usuario:', error);
         setRegisterErrors({ general: 'Hubo un error al registrar. Inténtalo de nuevo más tarde.' });
       }
 
       setRegisterErrors({});
-      console.log('Name:', name);
-      console.log('LastName:', lastName);
-      console.log('Email:', registerEmail);
-      console.log('Password:', registerPassword);
-      console.log('Role:', role);
-      setShowModal(false);
-      setMensajeModal("Se a registrado la cuenta correctamente");
+      setMensajeModal("Se ha registrado la cuenta correctamente");
       setMostrarModal(true);
     }
   };
-  //Mensajes
+
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
 
-  const handleCerrarModal = () => {
-    setMostrarModal(false);
-  };
+  const handleCerrarModal = () => setMostrarModal(false);
+
   return (
     <main>
       <div className="contenedor-logo">

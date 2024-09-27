@@ -62,3 +62,5 @@ export const createRegisterEstudiantes = (data) => registersApi.post('api/estudi
 
 export const getAllRegisterDocentes = () => registersApi.get('api/docentes');
 export const createRegisterDocentes = (data) => registersApi.post('api/docentes', data);
+
+export const getValidationUser = (id) => registersApi.get(`api/actors/${id}`);

@@ -17,7 +17,7 @@ export default function PruevaPage() {
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
   const [userName, setUserName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('docente');
-
+  const [role, setRole] = useState('');
   //mensaje
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
@@ -33,6 +33,7 @@ export default function PruevaPage() {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       setUserName(`${userData.nombre} ${userData.apellido}`);
+      setRole(userData.role);
     }
   }, []);
 
@@ -296,14 +297,16 @@ export default function PruevaPage() {
             )}
           </div>
           <div className="boton-fijo">
-            {{ tipoUsuario !== 'docente' && (
-              registroDisponible ? (
+            {registroDisponible ? (
+              role === "estudiante" ? (
                 <button onClick={handleRegistrarEquipo}>
                   <b>Registrar Equipo</b>
                 </button>
               ) : (
-                <p>Fecha de inscripción de equipos finalizada</p>
+                <p>El rol de docente no puede crear equipos</p>
               )
+            ) : (
+              <p>Fecha de inscripción de equipos finalizada</p>
             )}
           </div>
         </main>
