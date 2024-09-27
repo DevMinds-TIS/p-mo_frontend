@@ -8,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='es'>
-      <body className={`${amiko.className} antialiased`}>
+      <body className={`${amiko.className} antialiased bg-[#101010] h-screen`}>
         {children}
       </body>
   </html>

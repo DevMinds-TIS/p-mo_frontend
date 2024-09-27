@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 import { Avatar, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
-import { Calendar03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
+import { Calendar03Icon, FolderLibraryIcon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
 import { useState } from "react";
 
 export default function DashboardLayout(
@@ -15,9 +15,9 @@ export default function DashboardLayout(
 
     return (
       <html lang="en">
-        <body className="bg-[#101010] h-screen">
+        <body className="bg-[#101010]">
           <main className="h-full">
-            <section className="flex flex-col">
+            <section className="flex flex-col h-full">
               <Navbar isBordered className="bg-[#101010] border-white py-2 flex" maxWidth="full" height={"100%"} classNames={{wrapper:"px-2"}}>
                 <NavbarBrand className="">
                   <Menu01Icon 
@@ -36,7 +36,7 @@ export default function DashboardLayout(
                   <p className="font-bold text-inherit text-white">P-MO</p>
                 </NavbarBrand>
               </Navbar>
-              <section className="flex">
+              <section className="flex h-full">
                 <Navbar className={`flex flex-col ${isExpanded ? 'w-56' : 'w-16'} h-full bg-[#101010] border-white border-r-1`} height={"100%"} classNames={{wrapper:"flex flex-col h-full"}}>
                   <NavbarContent className="flex-col w-auto mt-10 items-start">
                     <NavbarItem className="hover:bg-[#2c2c2c] hover:rounded-lg">
@@ -76,6 +76,15 @@ export default function DashboardLayout(
                       </Link>
                     </NavbarItem>
                     <NavbarItem className="hover:bg-[#2c2c2c] hover:rounded-lg">
+                        <Link className="gap-x-5">
+                            <FolderLibraryIcon
+                                size={40} 
+                                color={"#ffffff"}
+                            />
+                            <p className={`text-white text-xl ${isExpanded ? 'block' : 'hidden'}`}>Proyectos</p>
+                        </Link>
+                    </NavbarItem>
+                    <NavbarItem className="hover:bg-[#2c2c2c] hover:rounded-lg">
                       <Link className="gap-x-5">
                         <Notification03Icon
                           size={40} 
@@ -92,7 +101,9 @@ export default function DashboardLayout(
                     </NavbarItem>
                   </NavbarContent>
                 </Navbar>
-                {children}
+                <section className="ml-2 mt-2">
+                  {children}
+                </section>
               </section>
             </section>
           </main>
