@@ -16,6 +16,7 @@ export default function PruevaPage() {
   const [equipos, setEquipos] = useState([]); // Inicializa como array vacío
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
   const [userName, setUserName] = useState('');
+  const [tipoUsuario, setTipoUsuario] = useState('docente');
 
   //mensaje
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -278,9 +279,11 @@ export default function PruevaPage() {
             )}
           </div>
           <div className="boton-fijo">
+          {tipoUsuario !== 'docente' && (
             <button onClick={handleRegistrarEquipo}>
               <b>Registrar Equipo</b>
             </button>
+          )}
           </div>
         </main>
       )}
