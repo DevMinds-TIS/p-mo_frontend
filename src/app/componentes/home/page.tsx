@@ -1,23 +1,24 @@
 "use client";
+
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import HeaderName from '../modals/usuario/nombre.jsx';
 import "./home.css";
 import { getAllRegisterProyect, createRegisterProyect } from '../../../../api/register.api';
-
-export default function PruevaPage() {
-  const router = useRouter(); // Asegúrate de que useRouter esté aquí
+import withAuth from '../../../hoc/withAuth';
+function PruevaPage() {
+  const router = useRouter();
   const [showCrearProyecto, setShowCrearProyecto] = useState(false);
-  const [proyectos, setProyectos] = useState([]); 
+  const [proyectos, setProyectos] = useState([]);
   const [userName, setUserName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('docente');
+  const [role, setRole] = useState('');
 
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
-  const [idproyct, setIdproyct] = useState([]);
 
   const handleCerrarModal = () => {
     setMostrarModal(false);
@@ -28,6 +29,7 @@ export default function PruevaPage() {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       setUserName(`${userData.nombre} ${userData.apellido}`);
+      setRole(userData.role);
     }
   }, []);
 
@@ -35,8 +37,10 @@ export default function PruevaPage() {
     const fetchProyectos = async () => {
       try {
         const response = await getAllRegisterProyect();
-        if (response.data && Array.isArray(response.data.actor)) {
-          setProyectos(response.data.actor);
+        console.log("Respuesta del backend:", response.data);
+
+        if (response.data && Array.isArray(response.data.proyecto)) {
+          setProyectos(response.data.proyecto);
         } else {
           console.error('Formato inesperado de datos:', response.data);
         }
@@ -46,7 +50,7 @@ export default function PruevaPage() {
     };
 
     fetchProyectos();
-  }, []); 
+  }, []);
 
   const handleAgregarProyecto = () => {
     setShowCrearProyecto(true);
@@ -56,15 +60,21 @@ export default function PruevaPage() {
     setShowCrearProyecto(false);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.target;
+    const form = event.currentTarget;
 
     const formData = new FormData();
     formData.append('nombreproyecto', form.nombre.value);
     formData.append('codigo', form.codigo.value);
     formData.append('invitacionproyecto', form.archivo1.files[0]);
     formData.append('pliegoproyecto', form.archivo2.files[0]);
+    formData.append('listaInscrito', form.archivo3.files[0]);
+    formData.append('fechainicioproyecto', form.fechaIniProyecto.value);
+    formData.append('fechafinproyecto', form.fechaFinProyecto.value);
+    formData.append('fechainicioinscripcion', form.fechaIniInscripciones.value);
+    formData.append('fechafininscripcion', form.fechaFinInscripciones.value);
+
     try {
       const response = await createRegisterProyect(formData);
       if (response.data) {
@@ -85,8 +95,7 @@ export default function PruevaPage() {
     }
   };
 
-  // Define handleClickProyecto aquí
-  const handleClickProyecto = (idproyecto) => {
+  const handleClickProyecto = (idproyecto: string) => {
     router.push(`/componentes/registrarequipo?id=${idproyecto}`);
   };
 
@@ -94,7 +103,8 @@ export default function PruevaPage() {
     <div className="container">
       <Menu />
       <a href='/componentes/editarperfil'><HeaderName name={userName} /></a>
-      {showCrearProyecto ? (
+
+      {role === 'docente' && showCrearProyecto ? (
         <main className="crearproyectos-container">
           <h2>Crear Proyecto</h2>
           <form onSubmit={handleSubmit}>
@@ -136,7 +146,6 @@ export default function PruevaPage() {
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="archivo3">Arrastre y suelte la lista de inscritos</label>
               <input
@@ -154,7 +163,6 @@ export default function PruevaPage() {
                   <input type="date" id="fechaFinProyecto" name="fechaFinProyecto" placeholder="Fecha Fin" />
                 </div>
               </div>
-
               <div className="fecha-item">
                 <label htmlFor="fechaInscripciones">Duración de inscripciones</label>
                 <div className="fecha-inputs">
@@ -177,7 +185,7 @@ export default function PruevaPage() {
           </div>
           <div className="proyectos-container">
             {proyectos.length > 0 ? (
-              proyectos.map((proyecto) => (
+              proyectos.map((proyecto: any) => (
                 <div key={proyecto.idproyecto} className="proyecto-item">
                   <Image
                     src={`/iconos/folder.svg`}
@@ -192,30 +200,37 @@ export default function PruevaPage() {
                     <h2>{proyecto.nombreproyecto}</h2>
                     <p>ID: {proyecto.codigo}</p>
                   </div>
-                  {tipoUsuario === 'docente' && (
-                  <a href='/componentes/editarproyecto'>
-                  <Image
-                    src={`/iconos/editarProyecto.svg`}
-                    alt={`Menu`}
-                    width={40}
-                    height={48}
-                  />
-                  </a>
+                  {/* Mostrar el enlace de editar proyecto solo si el usuario es docente */}
+                  {role === 'docente' && (
+                    <a href={`/componentes/editarproyecto?id=${proyecto.idproyecto}`}>
+                      <Image
+                        src={`/iconos/editarProyecto.svg`}
+                        alt={`Menu`}
+                        width={40}
+                        height={48}
+                      />
+                    </a>
                   )}
+                  {/* Si es estudiante, no mostrar nada aquí */}
                 </div>
               ))
             ) : (
               <p>No hay proyectos disponibles.</p>
             )}
           </div>
-          {tipoUsuario === 'docente' && (
           <div className="boton-fijo">
-            <button onClick={handleAgregarProyecto}><b>Agregar proyecto</b></button>
+            {role === 'estudiante' ? (
+              <p>Los estudiantes no pueden crear proyectos</p>
+            ) : (
+              <button onClick={handleAgregarProyecto}><b>Agregar proyecto</b></button>
+            )}
           </div>
-          )}
         </main>
       )}
       <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </div>
   );
+
 }
+
+export default withAuth(PruevaPage); 

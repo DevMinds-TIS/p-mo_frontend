@@ -6,7 +6,7 @@ import Menu from '../modals/menu/menu.jsx';
 import ModalMensaje from '../modals/mensajes/mensaje.jsx';
 import HeaderName from '../modals/usuario/nombre.jsx';
 import "./registrarequipo.css";
-import { getAllRegisterEquipo, createRegisterEquipo } from '../../../../api/register.api';
+import { getAllRegisterEquipo, createRegisterEquipo, getProyectID } from '../../../../api/register.api';
 
 export default function PruevaPage() {
   const searchParams = useSearchParams();
@@ -17,10 +17,12 @@ export default function PruevaPage() {
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
   const [userName, setUserName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('docente');
-
+  const [role, setRole] = useState('');
   //mensaje
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
+  const [registroDisponible, setRegistroDisponible] = useState(false);
+  const [proyecto, setProyecto] = useState(null);
 
   const handleCerrarModal = () => {
     setMostrarModal(false);
@@ -31,6 +33,7 @@ export default function PruevaPage() {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       setUserName(`${userData.nombre} ${userData.apellido}`);
+      setRole(userData.role);
     }
   }, []);
 
@@ -42,11 +45,32 @@ export default function PruevaPage() {
   }, [searchParams]);
 
   useEffect(() => {
+    const fetchProyecto = async () => {
+      try {
+        if (proyectoId) {
+          const response = await getProyectID(proyectoId);
+          setProyecto(response.data.proyecto);
+
+          // Calcula si la fecha de inscripción ha pasado
+          const fechaFinInscripcion = new Date(response.data.proyecto.fechafininscripcion);
+          const fechaActual = new Date();
+          setRegistroDisponible(fechaActual <= fechaFinInscripcion);
+        }
+      } catch (error) {
+        console.error('Error al obtener los datos del proyecto:', error);
+      }
+    };
+
+    fetchProyecto();
+  }, [proyectoId]);
+
+
+
+  useEffect(() => {
     const fetchEquipos = async () => {
       try {
         const response = await getAllRegisterEquipo();
         console.log('Datos de equipos:', response.data);
-
         if (response.data && Array.isArray(response.data.equipos)) {
           const equiposFiltrados = response.data.equipos.filter(
             equipo => equipo.idproyecto?.toString() === proyectoId
@@ -63,7 +87,6 @@ export default function PruevaPage() {
     if (proyectoId) {
       fetchEquipos();
     }
-
   }, [proyectoId]);
 
 
@@ -99,9 +122,9 @@ export default function PruevaPage() {
     console.log('Formulario enviado'); // Verificar si la función se ejecuta
 
     const form = event.target;
-
     const formData = new FormData();
     formData.append('Nombredelequipo', form.nombreEquipo.value);
+    formData.append('idproyecto', proyectoId);
     formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
     formData.append('idproyecto', proyectoId);
 
@@ -167,7 +190,6 @@ export default function PruevaPage() {
           <form className="form-container" onSubmit={handleSubmit}>
             <div className="form">
               <div className="datos">
-                {/* Espacio para introducir una imagen */}
                 <label htmlFor="imagen"><b>Subir Logo:</b></label>
                 <div className="logo-empresa">
                   <label
@@ -188,7 +210,6 @@ export default function PruevaPage() {
                     onChange={handleImagenChange}
                   />
                 </div>
-                {/* Inputs para nombres */}
                 <input
                   type="text"
                   id="nombreEquipo"
@@ -224,7 +245,6 @@ export default function PruevaPage() {
                       <option value="productOwner">Product Owner</option>
                       <option value="scrumMaster">Scrum Master</option>
                     </select>
-                    {/* Botón para eliminar miembro */}
                     {miembros.length > 1 && (
                       <button
                         type="button"
@@ -236,7 +256,6 @@ export default function PruevaPage() {
                     )}
                   </div>
                 ))}
-                {/* Botón para agregar nuevo miembro */}
                 {miembros.length < 6 && (
                   <button type="button" onClick={handleAgregarMiembro} style={{ marginTop: "10px" }}>
                     Agregar Miembro
@@ -246,7 +265,6 @@ export default function PruevaPage() {
             </div>
             <button type="submit">Registrar</button>
           </form>
-          {/* Botón de cancelar */}
           <button type="button" onClick={handleCancel} style={{ marginTop: "10px" }}>
             Cancelar
           </button>
@@ -279,11 +297,17 @@ export default function PruevaPage() {
             )}
           </div>
           <div className="boton-fijo">
-          {tipoUsuario !== 'docente' && (
-            <button onClick={handleRegistrarEquipo}>
-              <b>Registrar Equipo</b>
-            </button>
-          )}
+            {registroDisponible ? (
+              role === "estudiante" ? (
+                <button onClick={handleRegistrarEquipo}>
+                  <b>Registrar Equipo</b>
+                </button>
+              ) : (
+                <p>El rol de docente no puede crear equipos</p>
+              )
+            ) : (
+              <p>Fecha de inscripción de equipos finalizada</p>
+            )}
           </div>
         </main>
       )}
