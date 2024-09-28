@@ -202,7 +202,7 @@ function PruevaPage() {
                   </div>
                   {/* Mostrar el enlace de editar proyecto solo si el usuario es docente */}
                   {role === 'docente' && (
-                    <a href='/componentes/editarproyecto'>
+                    <a href={`/componentes/editarproyecto?id=${proyecto.idproyecto}`}>
                       <Image
                         src={`/iconos/editarProyecto.svg`}
                         alt={`Menu`}

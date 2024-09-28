@@ -27,7 +27,7 @@ export const deleteRegister = (id) => registersApi.delete(`api/actores/${id}`);
 
 export const login = (data) => registersApi.post('api/login', data);
 
-export const getAllRegisterProyect = () => registersApi.get('api/proyecto');
+export const getAllRegisterProyect = () => registersApi.get('api/proyectos');
 
 
 export const createRegisterProyect = (formData) => {
@@ -39,6 +39,9 @@ export const createRegisterProyect = (formData) => {
 };
 
 export const getProyectID = (id) => registersApi.get(`api/proyectos/${id}`);
+
+export const updatePartialProyect = (id, data) => registersApi.patch(`api/proyecto/${id}`, data);
+
 
 
 export const getAllRegisterEquipo = () => registersApi.get('api/equipo');
@@ -64,3 +67,4 @@ export const getAllRegisterDocentes = () => registersApi.get('api/docentes');
 export const createRegisterDocentes = (data) => registersApi.post('api/docentes', data);
 
 export const getValidationUser = (id) => registersApi.get(`api/actors/${id}`);
+

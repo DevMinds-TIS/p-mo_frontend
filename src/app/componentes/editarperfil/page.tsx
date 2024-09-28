@@ -1,9 +1,10 @@
+
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import "./editarperfil.css";
 import Menu from '../modals/menu/menu.jsx';
-import { updatePartialRegister } from '../../../../api/register.api';
+import { updatePartialRegister, getProyectID } from '../../../../api/register.api';
 
 export default function PruevaPage() {
   const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
@@ -25,6 +26,10 @@ export default function PruevaPage() {
 
   const [userName, setUserName] = useState('');
   const [id, setid] = useState('');
+
+  // Estado para los datos del proyecto
+  const [proyecto, setProyecto] = useState({});
+
   // Obtener los datos del usuario de sessionStorage cuando el componente se monta
   useEffect(() => {
     const userDataString = window.sessionStorage.getItem('userData');
@@ -34,6 +39,16 @@ export default function PruevaPage() {
       setNombre(userData.nombre);
       setApellido(userData.apellido);
       setid(userData.id);
+      getProyectID(userData.id)
+        .then(response => {
+          setProyecto(response.data);
+          // Puedes asignar valores específicos si los campos de la respuesta coinciden
+          setGrupo(response.data.grupo || 'Grupo 1');
+          setDocente(response.data.docente || 'Docente 1');
+        })
+        .catch(error => {
+          console.error("Error al obtener los datos del proyecto:", error);
+        });
     }
   }, []);
 

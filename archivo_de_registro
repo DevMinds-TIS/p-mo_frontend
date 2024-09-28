@@ -111,3 +111,24 @@
 2024-09-25 22:42:15.094 GMT [25940] FATAL:  terminando la conexión debido al término inesperado de postmaster
 2024-09-25 22:42:15.094 GMT [4956] FATAL:  terminando la conexión debido al término inesperado de postmaster
 2024-09-25 22:42:15.094 GMT [34028] FATAL:  terminando la conexión debido al término inesperado de postmaster
+2024-09-28 01:27:49.838 GMT [38316] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-28 01:27:49.842 GMT [38316] LOG:  escuchando en la direcci�n IPv6 �::1�, port 5432
+2024-09-28 01:27:49.842 GMT [38316] LOG:  escuchando en la direcci�n IPv4 �127.0.0.1�, port 5432
+2024-09-28 01:27:49.912 GMT [39900] LOG:  el sistema de bases de datos fue interrumpido; �ltima vez en funcionamiento en 2024-09-27 17:59:47 GMT
+2024-09-28 01:27:51.162 GMT [39900] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se est� efectuando la recuperaci�n autom�tica
+2024-09-28 01:27:51.169 GMT [39900] LOG:  redo comienza en 0/1BF61F8
+2024-09-28 01:27:51.169 GMT [39900] LOG:  largo de registro no v�lido en 0/1BF62E0: se esperaba 24, se obtuvo 0
+2024-09-28 01:27:51.169 GMT [39900] LOG:  redo listo en 0/1BF62A8
+2024-09-28 01:27:51.218 GMT [38316] LOG:  el sistema de bases de datos est� listo para aceptar conexiones
+2024-09-28 02:09:02.394 GMT [40216] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:09:02.394 GMT [40216] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-28 02:09:03.132 GMT [41956] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:09:03.132 GMT [41956] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-28 02:09:07.248 GMT [22800] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:09:07.248 GMT [22800] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-28 02:09:07.501 GMT [22940] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:09:07.501 GMT [22940] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-28 02:22:04.119 GMT [39432] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:22:04.119 GMT [39432] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-28 02:22:04.569 GMT [40048] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-28 02:22:04.569 GMT [40048] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
