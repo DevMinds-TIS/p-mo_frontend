@@ -1,16 +1,16 @@
 import { amiko } from "./fonts";
 import "./globals.css";
+import { Providers } from "./provider";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout(
+  { children }: { children: React.ReactNode; }) {
   return (
     <html lang='es'>
-      <body className={`${amiko.className} antialiased bg-[#101010] h-screen`}>
-        {children}
+      <body className={`${amiko.className} antialiased `}>
+        <Providers>
+          {children}
+        </Providers>
       </body>
-  </html>
+    </html>
   );
 }

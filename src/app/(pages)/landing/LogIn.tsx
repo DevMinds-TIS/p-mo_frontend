@@ -1,11 +1,8 @@
 "use client";
 import Image from "next/image";
-import {Input} from "@nextui-org/react";
+import {Button, Divider, Input, Link} from "@nextui-org/react";
 import {EyeFilledIcon} from "@nextui-org/shared-icons";
 import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
-import {Button} from "@nextui-org/button";
-import {Link} from "@nextui-org/react";
-import {Divider} from "@nextui-org/divider";
 import React from "react";
 import userForms from "@/app/_lib/landing/userForm";
 import SingUp from "./SingUp";
@@ -31,7 +28,7 @@ export default function LogIn(){
     } = userForms();
 
     return(
-        <section className="flex md:flex-row flex-col justify-center gap-10 bg-[#101010] h-screen">
+        <section className="flex md:flex-row flex-col justify-center gap-10 h-screen">
             <div className="flex md:flex-col justify-center gap-4">
                 <Image
                     src="/p-mo.svg"
@@ -41,12 +38,12 @@ export default function LogIn(){
                     className="md:h-[60%] md:w-auto"
                 />
                 <div className="flex flex-col md:text-center">
-                    <h1 className="text-white text-3xl md:text-5xl">P-MO</h1>
+                    <h1 className="text-3xl md:text-5xl">P-MO</h1>
                     <p className="text-[#777777]">PROJECT MANAGEMENT OFFICER</p>
                 </div>
             </div>
             <div className="flex flex-col md:justify-center items-center self-center gap-4 md:w-[30%] w-[90%]">
-                <h1 className="text-white text-5xl">Inicia Sesión</h1>
+                <h1 className="text-5xl">Inicia Sesión</h1>
                 <form action="" className="w-full space-y-4">
                     <Input
                         value={email}
@@ -89,7 +86,7 @@ export default function LogIn(){
                     </Button>
                 </form>
                 <Link href="#" className="h-8 text-[#777777]">¿Olvidó su contraseña?</Link>
-                <Divider className="my-4 bg-white"/>
+                <Divider className="my-4"/>
                 <SingUp />
             </div>
         </section>

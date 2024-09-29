@@ -94,7 +94,6 @@ export default function StudentSignIn() {
                 items={teachers}
                 label="Docente"
                 placeholder="Seleccione a su tutor/docente"
-                className="bg-[#1e1e1e]"
             >
                 {(teacher) => <SelectItem key={teacher.key}>{teacher.label}</SelectItem>}
             </Select>
