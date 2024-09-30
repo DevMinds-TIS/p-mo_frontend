@@ -2,8 +2,7 @@
 import Image from "next/image";
 import { Avatar, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 import { Calendar03Icon, FolderLibraryIcon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
-import { useEffect, useState } from 'react';
-import { NextUIProvider } from "@nextui-org/react";
+import { useState } from 'react';
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 
 export default function DashboardLayout(
@@ -19,13 +18,13 @@ export default function DashboardLayout(
   return (
     <main className="h-screen overflow-hidden">
       <section className="flex flex-col h-full">
-        <Navbar isBordered className="py-2 flex" maxWidth="full" height={"100%"} classNames={{ wrapper: "px-2" }}>
+        <Navbar isBordered className="py-2 flex" maxWidth="full" height={"100%"} classNames={{ wrapper: "px-2 justify-normal", brand: "flex grow-0" }}>
           <Menu01Icon
             size={40}
             className="ml-1 hover:cursor-pointer"
             onClick={toggleNavbar}
           />
-          <NavbarBrand className="ml-4 flex items-center">
+          <NavbarBrand className="ml-4 w-fit">
             <Image
               src="/p-mo.svg"
               alt="Logo de la aplicación"
@@ -35,7 +34,7 @@ export default function DashboardLayout(
             />
             <p className="font-bold text-inherit flex">P-MO</p>
           </NavbarBrand>
-          <div className="flex justify-end">
+          <div className="flex ml-auto">
             <ThemeSwitcher />
           </div>
         </Navbar>
@@ -51,7 +50,7 @@ export default function DashboardLayout(
                 </Link>
               </NavbarItem>
               <NavbarItem className="hover:rounded-lg flex content-center w-full hover:scale-105 p-2">
-                <Link href="" className="gap-x-4" color="foreground">
+                <Link href="/dashboard/test" className="gap-x-4" color="foreground">
                   <TaskDaily01Icon
                     size={40}
                   />
@@ -59,7 +58,7 @@ export default function DashboardLayout(
                 </Link>
               </NavbarItem>
               <NavbarItem className="hover:rounded-lg flex content-center w-full hover:scale-105 p-2">
-                <Link href="" className="gap-x-4" color="foreground">
+                <Link href="/dashboard/planning" className="gap-x-4" color="foreground">
                   <Calendar03Icon
                     size={40}
                   />
@@ -67,7 +66,7 @@ export default function DashboardLayout(
                 </Link>
               </NavbarItem>
               <NavbarItem className="hover:rounded-lg flex content-center w-full hover:scale-105 p-2">
-                <Link href="" className="gap-x-4" color="foreground">
+                <Link href="/dashboard/team" className="gap-x-4" color="foreground">
                   <UserGroupIcon
                     size={40}
                   />

@@ -1,10 +1,7 @@
 'use client';
 import {Input} from "@nextui-org/react";
 import { SearchIcon } from "@nextui-org/shared-icons";
-import { AddSquareIcon } from "hugeicons-react";
 import NewProject from "./NewProject";
-import SingUp from "@/app/(pages)/landing/SingUp";
-
 
 export default function ProjectsPage(){
 

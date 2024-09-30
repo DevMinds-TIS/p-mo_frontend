@@ -6,7 +6,7 @@ export default function SingUp() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   return (
-    <section>
+    <section className="w-full">
       <Button onPress={onOpen} className="w-full h-14 bg-[#fe7f2d] text-white">
           Crea una nueva cuenta
         </Button>
