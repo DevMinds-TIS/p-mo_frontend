@@ -1,9 +1,10 @@
 "use client";
 
-import { Link, RangeCalendar } from "@nextui-org/react";
+import { RangeCalendar } from "@nextui-org/react";
 import NewSprint from "./NewSprint";
 import { isWeekend, parseDate } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
+import Link from "next/link";
 
 
 export default function PlanningPage() {
@@ -13,14 +14,14 @@ export default function PlanningPage() {
 
     return (
         <section className="flex flex-col gap-y-8">
-            <section className="flex w-full h-10 justify-between">
-                <h1 className="text-4xl">Sprint's</h1>
+            <section className="flex w-full h-10 justify-between items-center">
+                <h1 className="text-3xl">Sprint's</h1>
                 <NewSprint />
             </section>
             <section className="flex flex-col w-fit space-y-4">
                 <Link
                     href="/dashboard/planning/details"
-                    className="bg-[#EA6611] rounded-lg justify-center p-4 text-white"
+                    className="bg-[#EA6611] rounded-lg text-center p-4 text-white"
                 >
                     Sprint #1
                 </Link>

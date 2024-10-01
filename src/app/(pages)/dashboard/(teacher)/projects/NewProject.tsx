@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, ModalProps } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, ModalProps, Input } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
@@ -24,8 +24,8 @@ export default function NewProject() {
 
     return (
         <section>
-            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent">
-                <AddSquareIcon className="w-fit h-full" />
+            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
+                <AddSquareIcon size={30}/>
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="center">
                 <ModalContent>
@@ -33,6 +33,10 @@ export default function NewProject() {
                         <div>
                             <ModalHeader className="flex flex-col gap-1">Crear espacio</ModalHeader>
                             <ModalBody>
+                                <Input
+                                    label="Código del proyecto"
+                                    placeholder="Escribe el código para enlazar al proyecto general"
+                                />
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -55,6 +59,10 @@ export default function NewProject() {
                                         pageBehavior="single"
                                     />
                                 </I18nProvider>
+                                <Input
+                                    label="Limite de integrantes"
+                                    placeholder="Digite el limite de integrantes para sus equipos"
+                                />
                                 <div>
                                     <p>Lista de alumnos</p>
                                     <FileUpload/>

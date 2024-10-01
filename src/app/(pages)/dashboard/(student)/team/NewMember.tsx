@@ -8,8 +8,8 @@ export default function NewMember() {
 
     return (
         <section>
-            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent">
-                <AddSquareIcon className="w-fit h-full" />
+            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
+                <AddSquareIcon size={30}/>
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="bottom">
                 <ModalContent>
