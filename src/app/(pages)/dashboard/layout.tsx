@@ -9,12 +9,12 @@ import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "", icon: Megaphone01Icon, label: "Anuncios" },
+  { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
   { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
   { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
   { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
   { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-  { href: "", icon: Notification03Icon, label: "Notificaciones" },
+  { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
   // { href: "", icon: Avatar, label: "Perfil", isAvatar: true }
 ];
 
@@ -79,8 +79,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       </Tooltip>
                     </Link>
                     <Button className="bg-[#FF0000] min-w-1 text-white">
-                        <Logout03Icon  />
-                        <p>Cerrar sesión</p>
+                      <Logout03Icon />
+                      <p>Cerrar sesión</p>
                     </Button>
                   </div>
                 </PopoverContent>

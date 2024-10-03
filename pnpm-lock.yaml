@@ -17,6 +17,9 @@ importers:
       '@nextui-org/shared-icons':
         specifier: ^2.0.9
         version: 2.0.9(react@18.3.1)
+      '@react-aria/i18n':
+        specifier: ^3.12.3
+        version: 3.12.3(react@18.3.1)
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -4282,7 +4285,7 @@ snapshots:
   '@react-aria/calendar@3.5.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@internationalized/date': 3.5.6
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/interactions': 3.21.3(react@18.3.1)
       '@react-aria/live-announcer': 3.4.0
       '@react-aria/utils': 3.24.1(react@18.3.1)
@@ -4311,7 +4314,7 @@ snapshots:
 
   '@react-aria/combobox@3.9.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/listbox': 3.13.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/live-announcer': 3.4.0
       '@react-aria/menu': 3.15.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4336,7 +4339,7 @@ snapshots:
       '@internationalized/string': 3.2.4
       '@react-aria/focus': 3.18.3(react@18.3.1)
       '@react-aria/form': 3.0.9(react@18.3.1)
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/interactions': 3.22.3(react@18.3.1)
       '@react-aria/label': 3.7.12(react@18.3.1)
       '@react-aria/spinbutton': 3.6.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4593,7 +4596,7 @@ snapshots:
 
   '@react-aria/progress@3.4.13(react@18.3.1)':
     dependencies:
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/label': 3.7.12(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-types/progress': 3.5.4(react@18.3.1)
@@ -4618,7 +4621,7 @@ snapshots:
   '@react-aria/selection@3.18.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.17.1(react@18.3.1)
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/interactions': 3.21.3(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-stately/selection': 3.17.0(react@18.3.1)
@@ -4642,7 +4645,7 @@ snapshots:
   '@react-aria/slider@3.7.8(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.17.1(react@18.3.1)
-      '@react-aria/i18n': 3.11.1(react@18.3.1)
+      '@react-aria/i18n': 3.12.3(react@18.3.1)
       '@react-aria/interactions': 3.21.3(react@18.3.1)
       '@react-aria/label': 3.7.12(react@18.3.1)
       '@react-aria/utils': 3.24.1(react@18.3.1)

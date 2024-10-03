@@ -3,14 +3,13 @@
 import { RangeCalendar } from "@nextui-org/react";
 import NewSprint from "./NewSprint";
 import { isWeekend, parseDate } from "@internationalized/date";
-import { useLocale } from "@react-aria/i18n";
+import { I18nProvider } from "@react-aria/i18n";
 import Link from "next/link";
 
 
 export default function PlanningPage() {
     const minDate = parseDate("2024-09-02");
     const maxDate = parseDate("2024-09-13");
-    let { locale } = useLocale();
 
     return (
         <section className="flex flex-col gap-y-8">
@@ -25,16 +24,18 @@ export default function PlanningPage() {
                 >
                     Sprint #1
                 </Link>
-                <RangeCalendar
-                    aria-label="Date (Read Only)"
-                    isReadOnly
-                    allowsNonContiguousRanges
-                    defaultValue={{
-                        start: minDate,
-                        end: maxDate,
-                    }}
-                    isDateUnavailable={(date) => isWeekend(date, locale)}
-                />
+                <I18nProvider locale="es-BO">
+                    <RangeCalendar
+                        aria-label="Date (Read Only)"
+                        isReadOnly
+                        allowsNonContiguousRanges
+                        defaultValue={{
+                            start: minDate,
+                            end: maxDate,
+                        }}
+                        isDateUnavailable={(date) => isWeekend(date, "es-BO")}
+                    />
+                </I18nProvider>
             </section>
         </section>
     );

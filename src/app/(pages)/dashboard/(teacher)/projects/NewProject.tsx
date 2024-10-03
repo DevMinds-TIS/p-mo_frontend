@@ -1,10 +1,8 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, ModalProps, Input } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
-import { useDateFormatter } from "@react-aria/i18n";
 import { isWeekend } from "@internationalized/date";
-import { useLocale } from "@react-aria/i18n";
 import { I18nProvider } from "@react-aria/i18n";
 import React from "react";
 import FileUpload from "@/app/_lib/components/FileUpload";
@@ -12,13 +10,6 @@ import FileUpload from "@/app/_lib/components/FileUpload";
 export default function NewProject() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const [value, setValue] = React.useState({
-        start: parseDate("2024-04-01"),
-        end: parseDate("2024-04-08"),
-    });
-
-    let formatter = useDateFormatter({ dateStyle: "long" });
-    let { locale } = useLocale();
     const minDate = parseDate("2024-08-12");
     const maxDate = parseDate("2024-12-27");
 
