@@ -45,13 +45,28 @@ export const updatePartialProyect = (id, data) => registersApi.patch(`api/proyec
 
 
 export const getAllRegisterEquipo = () => registersApi.get('api/equipo');
-export const createRegisterEquipo = (formData) => {
-    return registersApi.post('api/equipo', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
+// export const createRegisterEquipo = (formData) => {
+//     return registersApi.post('api/equipo', formData, {
+//         headers: {
+//             'Content-Type': 'multipart/form-data'
+//         }
+//     });
+// };
+
+// export const createRegisterEquipo = (data) => {
+//     return registersApi.post('api/equipo', data, {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     });
+// };
+
+
+export const createRegisterEquipo = (data) => {
+    return registersApi.post('api/equipo', data); // No es necesario establecer Content-Type
 };
+
+
 // export const createRegisterEquipo = (formData) => {
 //     return registersApi.post('api/equipo', formData, {
 //         headers: {

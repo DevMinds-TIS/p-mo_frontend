@@ -76,6 +76,7 @@ function PruevaPage() {
     formData.append('fechafininscripcion', form.fechaFinInscripciones.value);
 
     try {
+
       const response = await createRegisterProyect(formData);
       if (response.data) {
         console.log("Proyecto creado:", response.data);

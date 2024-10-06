@@ -15,6 +15,33 @@ export default function PruevaPage() {
   const [proyecto, setProyecto] = useState(null); // Estado para los datos del proyecto
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
+  const [proyid, setproyid] = useState('');
+
+  //datos
+  const [nombre, setNombre] = useState(" ");
+  const [codigo, setCodigo] = useState(" ");
+
+  const [archivoInvitacion, setArchivoInvitacion] = useState(null);
+  const [archivoPliego, setArchivoPliego] = useState(null);
+  const [archivoLista, setArchivoLista] = useState(null);
+
+  // Manejar el cambio de archivo para invitación
+  const handleFileChangeInvitacion = (event) => {
+    const file = event.target.files[0];
+    setArchivoInvitacion(file);
+  };
+
+  // Manejar el cambio de archivo para pliego
+  const handleFileChangePliego = (event) => {
+    const file = event.target.files[0];
+    setArchivoPliego(file);
+  };
+
+  // Manejar el cambio de archivo para lista
+  const handleFileChangeLista = (event) => {
+    const file = event.target.files[0];
+    setArchivoLista(file);
+  };
 
   const handleCerrarModal = () => {
     setMostrarModal(false);
@@ -32,7 +59,10 @@ export default function PruevaPage() {
 
   // Obtén el ID del proyecto desde la URL y luego carga los datos del proyecto
   useEffect(() => {
-    const id = searchParams.get('id'); // Obtén el parámetro 'id' desde la query string
+    const id = searchParams.get('id');
+    setproyid(id);
+    console.log("asdas", id);
+
     if (id) {
       const fetchProyecto = async () => {
         try {
@@ -52,22 +82,55 @@ export default function PruevaPage() {
     router.push(`/componentes/home`);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const form = event.target;
+  const handleAceptarDatos = async (nuevoCodigo, nuevoNombre, nuevoInvitacionProyecto, nuevoPliego, nuevoLista, nuevofechainiProyecto, nuevofechafinProyecto, nuevofechaIniInscripcion, nuevofechaFinInscripcion) => {
 
-    const formData = new FormData();
-    formData.append('nombreproyecto', form.nombre.value);
-    formData.append('codigo', form.codigo.value);
-    formData.append('invitacionproyecto', form.archivo1.files[0]);
-    formData.append('pliegoproyecto', form.archivo2.files[0]);
+    const idp = searchParams.get('id');
 
-    console.log("Form Data to Submit:", formData);  // Depuración de los datos del formulario
+    const datosActualizados = {};
+
+    if (nuevoCodigo) {
+      datosActualizados.codigo = nuevoCodigo;
+    }
+    if (nuevoNombre) {
+      datosActualizados.nombreproyecto = nuevoNombre;
+    }
+
+
+    if (nuevofechainiProyecto) {
+      datosActualizados.fechainicioproyecto = nuevofechainiProyecto;
+    }
+    if (nuevofechafinProyecto) {
+      datosActualizados.fechafinproyecto = nuevofechafinProyecto;
+    }
+    if (nuevofechaIniInscripcion) {
+      datosActualizados.fechainicioinscripcion = nuevofechaIniInscripcion;
+    }
+
+
+
+    if (nuevofechainiProyecto) {
+      datosActualizados.fechainicioproyecto = nuevofechainiProyecto;
+    }
+    if (nuevofechafinProyecto) {
+      datosActualizados.fechafinproyecto = nuevofechafinProyecto;
+    }
+
+    if (nuevofechaIniInscripcion) {
+      datosActualizados.fechainicioinscripcion = nuevofechaIniInscripcion;
+    }
+    if (nuevofechaFinInscripcion) {
+      datosActualizados.fechafininscripcion = nuevofechaFinInscripcion;
+    }
+    console.log("saasa", datosActualizados);
 
     try {
-      const response = await updatePartialProyect(proyecto.idproyecto, formData); // Actualiza el proyecto con los datos del formulario
+      const response = await updatePartialProyect(idp, datosActualizados); // Actualiza el proyecto con los datos del formulario
       console.log("Proyecto actualizado:", response.data);  // Depuración de la respuesta de actualización
 
+      setMensajeModal("Se han guardado los cambios correctamente");
+      setMostrarModal(false);
+
+      //form.reset();
       setMensajeModal("Se han guardado los cambios correctamente");
       setMostrarModal(true);
     } catch (error) {
@@ -85,7 +148,10 @@ export default function PruevaPage() {
       <a href='/componentes/editarperfil'><HeaderName name={userName} /></a>
       <main className="crearproyectos-container">
         <h2>Editar Proyecto</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          handleAceptarDatos(e.target.codigo.value, e.target.nombre.value, e.target.archivo1.files[0], e.target.archivo2.files[0], e.target.archivo3.files[0], e.target.fechaIniProyecto.value, e.target.fechaFinProyecto.value, e.target.fechaIniInscripciones.value, e.target.fechaFinInscripciones.value);
+        }}>
           <div className="form-group">
             <label htmlFor="codigo">Código</label>
             <input
@@ -114,11 +180,20 @@ export default function PruevaPage() {
               type="file"
               id="archivo1"
               name="archivo1"
+              placeholder="Ingrese la invitacion"
+              required
             />
             {proyecto.invitacionproyecto && (
-              <a href={`/${proyecto.invitacionproyecto}`} target="_blank" rel="noopener noreferrer">Ver invitación actual</a>
+              <a
+                href={`${proyecto.invitacionproyecto.startsWith('/storage/') ? '' : '/storage/invitaciones/'}${proyecto.invitacionproyecto}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver invitación actual
+              </a>
             )}
           </div>
+
           <div className="form-group">
             <label htmlFor="archivo2">Pliego de Especificaciones</label>
             <input
@@ -127,7 +202,29 @@ export default function PruevaPage() {
               name="archivo2"
             />
             {proyecto.pliegoproyecto && (
-              <a href={`/${proyecto.pliegoproyecto}`} target="_blank" rel="noopener noreferrer">Ver pliego actual</a>
+
+              <a
+                href={`${proyecto.pliegoproyecto.startsWith('/storage/') ? '' : '/storage/pliegos/'}${proyecto.pliegoproyecto}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver pliego de especificaciones actual
+              </a>
+            )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="archivo3">Lista de inscritos</label>
+            <input type="file" id="archivo3" name="archivo3" />
+            {proyecto.listaInscrito ? (
+              <a
+                href={`${proyecto.listaInscrito.startsWith('/storage/') ? '' : '/storage/lista/'}${proyecto.listaInscrito}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver lista de alumnos actual
+              </a>
+            ) : (
+              <p>No hay lista de alumnos disponible.</p> // Mensaje alternativo
             )}
           </div>
           <div className="fechas-group">
@@ -138,6 +235,7 @@ export default function PruevaPage() {
                   type="date"
                   id="fechaIniProyecto"
                   name="fechaIniProyecto"
+                  placeholder="Fecha Inicio Proyecto"
                   defaultValue={proyecto.fechainicioproyecto ? proyecto.fechainicioproyecto.split('T')[0] : ''} // Rellenar con datos del proyecto
                 />
                 <input

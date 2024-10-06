@@ -16,7 +16,7 @@ export default function Menu() {
   const handleClick = (index, num) => {
     setSelected(index);
     console.log(`Botón ${index} presionado`);
-    
+
     if (num === 6) { // Revisar si el botón es el 5
       if (isMounted) {
         router.push('/'); // Redirige a la ruta deseada
@@ -32,6 +32,12 @@ export default function Menu() {
     if (num === 1) {
       if (isMounted) {
         router.push('/componentes/calendarizacion'); // Redirige a la ruta deseada
+      }
+    }
+
+    if (num === 3) {
+      if (isMounted) {
+        router.push('/componentes/Info'); // Redirige a la ruta deseada
       }
     }
 
@@ -56,7 +62,7 @@ export default function Menu() {
           onClick={() => handleClick(index, num)}
         >
           <Image
-            src={`/iconos/icon${num}.svg`} 
+            src={`/iconos/icon${num}.svg`}
             alt={`Icono ${num}`}
             width={40}
             height={48}

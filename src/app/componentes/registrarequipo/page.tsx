@@ -49,12 +49,18 @@ export default function PruevaPage() {
       try {
         if (proyectoId) {
           const response = await getProyectID(proyectoId);
+          console.log("datos de proyecto", response.data);
           setProyecto(response.data.proyecto);
-
-          // Calcula si la fecha de inscripción ha pasado
-          const fechaFinInscripcion = new Date(response.data.proyecto.fechafininscripcion);
+          const fechaFinInscripcion = new Date(response.data.proyecto.fechafininscripcion + "T23:59:59");
           const fechaActual = new Date();
-          setRegistroDisponible(fechaActual <= fechaFinInscripcion);
+
+          console.log("fechaactual", fechaActual);
+          console.log("fechafininscripcion", fechaFinInscripcion);
+          if (fechaActual <= fechaFinInscripcion) {
+            setRegistroDisponible(true);
+          } else {
+            setRegistroDisponible(false);
+          }
         }
       } catch (error) {
         console.error('Error al obtener los datos del proyecto:', error);
@@ -117,51 +123,170 @@ export default function PruevaPage() {
   };
 
 
+
+
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
-    console.log('Formulario enviado'); // Verificar si la función se ejecuta
+    event.preventDefault();
+    console.log('Formulario enviado');
 
     const form = event.target;
     const formData = new FormData();
-    formData.append('Nombredelequipo', form.nombreEquipo.value);
-    formData.append('idproyecto', proyectoId);
-    formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
-    formData.append('idproyecto', proyectoId);
 
+    // Agregar datos del formulario a FormData
+    formData.append('Nombredelequipo', form.nombreEquipo.value);
+    formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
+    formData.append('idproyecto', parseInt(proyectoId)); // Asegúrate de que esto sea un número
+    formData.append('correoequipo', 'equipo@innovacion.com');
+
+    // Verificar si se seleccionó una imagen
     if (form.imagen.files.length > 0) {
       console.log('Imagen seleccionada:', form.imagen.files[0]);
-      formData.append('fotodelogoEquipo', form.imagen.files[0]); // Añadir archivo al FormData
+      formData.append('fotodelogoEquipo', form.imagen.files[0]); // Agregar archivo
     } else {
       console.log('No se seleccionó ninguna imagen');
-      formData.append('fotodelogoEquipo', null);
+      formData.append('fotodelogoEquipo', null); // Puedes dejarlo vacío si no hay imagen
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/equipo', {
-        method: 'POST',
-        body: formData,
+      // Obtener IDs de actores del backend
+      const response = await fetch('http://localhost:8000/api/summary');
+      const actoresData = await response.json();
+
+      // Crear un mapeo de correos a IDs
+      const actoresMap = {};
+      actoresData.forEach(actor => {
+        actoresMap[actor.correoactor] = actor.id;
       });
 
-      const data = await response.json();
-      console.log('Respuesta del servidor:', data);
+      // Mapear los miembros con los datos de `actoresMap`
+      const miembrosData = miembros.map((miembro) => {
+        const id = actoresMap[miembro.email];
+        if (id) {
+          return { id, rol: miembro.rol }; // Incluir `id` y `rol` en el formato correcto
+        } else {
+          console.warn(`Email no encontrado: ${miembro.email}`);
+          return null;
+        }
+      }).filter(Boolean); // Filtrar valores nulos
 
-      if (response.ok) {
+      // Agregar `actores` al FormData como una cadena JSON
+      formData.append('actores', JSON.stringify(miembrosData));
+
+      // Mostrar en consola los datos que se enviarán
+      console.log('Datos enviados al backend como FormData:');
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(key, value.name); // Mostrar solo el nombre del archivo
+        } else {
+          console.log(key, value);
+        }
+      }
+
+      // Llamar a la función `createRegisterEquipo` con el FormData
+      const postResponse = await createRegisterEquipo(formData);
+
+      // Manejar la respuesta del servidor
+      const postData = postResponse.data;
+      console.log('Respuesta del servidor:', postData);
+
+      if (postResponse.status === 200) {
         console.log("Equipo creado correctamente");
-        // Refrescar la lista de equipos
         const updatedEquipos = await getAllRegisterEquipo();
         setEquipos(updatedEquipos.data.equipos);
+        setMensajeModal("Se ha registrado el equipo correctamente");
+        setMostrarModal(true);
       } else {
-        console.error('Error en la respuesta del servidor:', data);
+        console.error('Error en la respuesta del servidor:', postData);
+        setMensajeModal(postData.message || 'Error al registrar el equipo');
+        setMostrarModal(true);
       }
+
+      // Resetear el formulario y cerrar el modal
       form.reset();
       setShowCrearEquipo(false);
-      //mensaje
-      setMensajeModal("Se ha registrado el equipo correctamente");
-      setMostrarModal(true);
     } catch (error) {
       console.error('Error al registrar el equipo:', error);
+      setMensajeModal('Error al registrar el equipo. Inténtalo de nuevo.');
+      setMostrarModal(true);
     }
   };
+
+
+
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   console.log('Formulario enviado');
+
+  //   const form = event.target;
+
+  //   // Crear el objeto JSON en lugar de FormData
+  //   const jsonData = {
+  //     Nombredelequipo: form.nombreEquipo.value,
+  //     nombre_equipo_largo: form.descripcionEquipo.value,
+  //     idproyecto: parseInt(proyectoId), // Asegurarse de enviar idproyecto como número
+  //     correoequipo: 'equipo@innovacion.com',
+  //     fotodelogoEquipo: null, // O el nombre de la imagen si es necesario
+  //   };
+
+  //   try {
+  //     // Obtener IDs de actores del backend
+  //     const response = await fetch('http://localhost:8000/api/summary');
+  //     const actoresData = await response.json();
+
+  //     // Crear un mapeo de correos a IDs
+  //     const actoresMap = {};
+  //     actoresData.forEach(actor => {
+  //       actoresMap[actor.correoactor] = actor.id;
+  //     });
+
+  //     // Mapear los miembros con los datos de `actoresMap`
+  //     const miembrosData = miembros.map((miembro) => {
+  //       const id = actoresMap[miembro.email];
+  //       if (id) {
+  //         return { id, rol: miembro.rol }; // Incluir `id` y `rol` en el formato correcto
+  //       } else {
+  //         console.warn(`Email no encontrado: ${miembro.email}`);
+  //         return null;
+  //       }
+  //     }).filter(Boolean); // Filtrar valores nulos
+
+  //     // Agregar `miembrosData` al JSON
+  //     jsonData.actores = miembrosData;
+
+  //     // Mostrar el JSON final en consola antes de enviarlo
+  //     console.log('Datos que se enviarán al backend como JSON:', JSON.stringify(jsonData, null, 2));
+
+  //     // Enviar el JSON como objeto directamente
+  //     const postResponse = await createRegisterEquipo(jsonData);
+
+  //     // Manejar la respuesta del servidor
+  //     const postData = postResponse.data;
+  //     console.log('Respuesta del servidor:', postData);
+
+  //     if (postResponse.status === 200) {
+  //       console.log("Equipo creado correctamente");
+  //       const updatedEquipos = await getAllRegisterEquipo();
+  //       setEquipos(updatedEquipos.data.equipos);
+  //       setMensajeModal("Se ha registrado el equipo correctamente");
+  //       setMostrarModal(true);
+  //     } else {
+  //       console.error('Error en la respuesta del servidor:', postData);
+  //       setMensajeModal(postData.message || 'Error al registrar el equipo');
+  //       setMostrarModal(true);
+  //     }
+
+  //     // Resetear el formulario y cerrar el modal
+  //     form.reset();
+  //     setShowCrearEquipo(false);
+  //   } catch (error) {
+  //     console.error('Error al registrar el equipo:', error);
+  //     setMensajeModal('Error al registrar el equipo. Inténtalo de nuevo.');
+  //     setMostrarModal(true);
+  //   }
+  // };
+
+
 
 
   const [imagenUrl, setImagenUrl] = useState('');

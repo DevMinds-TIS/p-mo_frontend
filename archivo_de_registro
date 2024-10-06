@@ -132,3 +132,92 @@
 2024-09-28 02:22:04.119 GMT [39432] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
 2024-09-28 02:22:04.569 GMT [40048] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
 2024-09-28 02:22:04.569 GMT [40048] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-30 01:35:06.416 GMT [41608] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-09-30 01:35:06.421 GMT [41608] LOG:  escuchando en la direcci�n IPv6 �::1�, port 5432
+2024-09-30 01:35:06.421 GMT [41608] LOG:  escuchando en la direcci�n IPv4 �127.0.0.1�, port 5432
+2024-09-30 01:35:06.617 GMT [33740] LOG:  el sistema de bases de datos fue interrumpido; �ltima vez en funcionamiento en 2024-09-28 04:20:17 GMT
+2024-09-30 01:35:10.657 GMT [33740] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se est� efectuando la recuperaci�n autom�tica
+2024-09-30 01:35:10.670 GMT [33740] LOG:  redo comienza en 0/1BF6408
+2024-09-30 01:35:10.670 GMT [33740] LOG:  largo de registro no v�lido en 0/1BF6440: se esperaba 24, se obtuvo 0
+2024-09-30 01:35:10.670 GMT [33740] LOG:  redo listo en 0/1BF6408
+2024-09-30 01:35:10.731 GMT [41608] LOG:  el sistema de bases de datos est� listo para aceptar conexiones
+2024-09-30 02:19:47.642 GMT [32400] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-30 02:19:47.642 GMT [32400] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-09-30 02:19:49.832 GMT [39808] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «undefined»
+2024-09-30 02:19:49.832 GMT [39808] SENTENCIA:  select * from "proyecto" where "proyecto"."idproyecto" = $1 limit 1
+2024-10-01 01:32:49.619 GMT [1692] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-10-01 01:32:49.623 GMT [1692] LOG:  escuchando en la direcci�n IPv6 �::1�, port 5432
+2024-10-01 01:32:49.623 GMT [1692] LOG:  escuchando en la direcci�n IPv4 �127.0.0.1�, port 5432
+2024-10-01 01:32:49.683 GMT [42392] LOG:  el sistema de bases de datos fue interrumpido; �ltima vez en funcionamiento en 2024-09-30 02:40:11 GMT
+2024-10-01 01:32:51.145 GMT [42392] LOG:  el sistema de bases de datos no fue apagado apropiadamente; se est� efectuando la recuperaci�n autom�tica
+2024-10-01 01:32:51.150 GMT [42392] LOG:  redo comienza en 0/1BF90E8
+2024-10-01 01:32:51.150 GMT [42392] LOG:  largo de registro no v�lido en 0/1BF91D0: se esperaba 24, se obtuvo 0
+2024-10-01 01:32:51.150 GMT [42392] LOG:  redo listo en 0/1BF9198
+2024-10-01 01:32:51.213 GMT [1692] LOG:  el sistema de bases de datos est� listo para aceptar conexiones
+2024-10-01 01:33:51.778 GMT [28072] FATAL:  la autentificaci�n password fall� para el usuario �postgres�
+2024-10-01 01:33:51.778 GMT [28072] DETALLE:  La contrase�a no coincide para el usuario �postgres�.
+	La conexi�n coincidi� con la l�nea 86 de pg_hba.conf: �host    all             all             ::1/128                 password�
+2024-10-01 01:33:51.802 GMT [12900] FATAL:  la autentificaci�n password fall� para el usuario �postgres�
+2024-10-01 01:33:51.802 GMT [12900] DETALLE:  La contrase�a no coincide para el usuario �postgres�.
+	La conexi�n coincidi� con la l�nea 86 de pg_hba.conf: �host    all             all             ::1/128                 password�
+2024-10-01 01:33:51.938 GMT [37140] FATAL:  la autentificaci�n password fall� para el usuario �postgres�
+2024-10-01 01:33:51.938 GMT [37140] DETALLE:  La contrase�a no coincide para el usuario �postgres�.
+	La conexi�n coincidi� con la l�nea 86 de pg_hba.conf: �host    all             all             ::1/128                 password�
+2024-10-01 07:34:17.654 GMT [37204] ERROR:  no existe la columna «idestudiante» en la relación «equipo_empresa» en carácter 107
+2024-10-01 07:34:17.654 GMT [37204] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "idestudiante", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning "idequipo"
+2024-10-01 07:35:52.009 GMT [12148] ERROR:  no existe la columna «idestudiante» en la relación «equipo_empresa» en carácter 107
+2024-10-01 07:35:52.009 GMT [12148] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "idestudiante", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning "idequipo"
+2024-10-01 07:36:10.241 GMT [10564] ERROR:  no existe la columna «idestudiante» en la relación «equipo_empresa» en carácter 107
+2024-10-01 07:36:10.241 GMT [10564] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "idestudiante", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning "idequipo"
+2024-10-01 07:36:19.255 GMT [40160] ERROR:  no existe la columna «idestudiante» en la relación «equipo_empresa» en carácter 107
+2024-10-01 07:36:19.255 GMT [40160] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "idestudiante", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning "idequipo"
+2024-10-01 07:40:03.189 GMT [39384] ERROR:  la sintaxis de entrada no es válida para tipo integer: «7@gmail.com»
+2024-10-01 07:40:03.189 GMT [39384] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning "idequipo"
+2024-10-01 07:41:58.919 GMT [43372] ERROR:  no existe la columna «idestudiante» en la relación «equipo_empresa» en carácter 107
+2024-10-01 07:41:58.919 GMT [43372] SENTENCIA:  insert into "equipo_empresa" ("Nombredelequipo", "idproyecto", "nombre_equipo_largo", "fotodelogoEquipo", "idestudiante", "miembro_1", "miembro_2", "miembro_3", "miembro_4", "miembro_5", "miembro_6", "updated_at", "created_at") values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning "idequipo"
+2024-10-01 08:14:15.930 GMT [20760] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:14:15.930 GMT [20760] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:20:33.410 GMT [23828] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:20:33.410 GMT [23828] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:24:03.591 GMT [31720] ERROR:  no existe la relación «equipo_actor» en carácter 13
+2024-10-01 08:24:03.591 GMT [31720] SENTENCIA:  insert into "equipo_actor" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:24:53.927 GMT [26224] ERROR:  no existe la relación «equipo_actor» en carácter 13
+2024-10-01 08:24:53.927 GMT [26224] SENTENCIA:  insert into "equipo_actor" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:25:45.681 GMT [24908] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:25:45.681 GMT [24908] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:50:15.614 GMT [24640] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:50:15.614 GMT [24640] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:50:53.117 GMT [29036] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:50:53.117 GMT [29036] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:51:38.109 GMT [24228] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:51:38.109 GMT [24228] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:54:03.837 GMT [5388] ERROR:  no existe la columna «actor_id» en la relación «equipo_miembro» en carácter 31
+2024-10-01 08:54:03.837 GMT [5388] SENTENCIA:  insert into "equipo_miembro" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 08:55:19.344 GMT [19404] ERROR:  el operador no existe: bigint = character varying en carácter 331
+2024-10-01 08:55:19.344 GMT [19404] HINT:  Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.
+2024-10-01 08:55:19.344 GMT [19404] SENTENCIA:  select "actor".*, "equipo_miembro"."equipo_id" as "pivot_equipo_id", "equipo_miembro"."correoactor" as "pivot_correoactor", "equipo_miembro"."rol" as "pivot_rol", "equipo_miembro"."created_at" as "pivot_created_at", "equipo_miembro"."updated_at" as "pivot_updated_at" from "actor" inner join "equipo_miembro" on "actor"."idactor" = "equipo_miembro"."correoactor" where "equipo_miembro"."equipo_id" in (71)
+2024-10-01 08:58:11.380 GMT [18056] ERROR:  el operador no existe: bigint = character varying en carácter 331
+2024-10-01 08:58:11.380 GMT [18056] HINT:  Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.
+2024-10-01 08:58:11.380 GMT [18056] SENTENCIA:  select "actor".*, "equipo_miembro"."equipo_id" as "pivot_equipo_id", "equipo_miembro"."correoactor" as "pivot_correoactor", "equipo_miembro"."rol" as "pivot_rol", "equipo_miembro"."created_at" as "pivot_created_at", "equipo_miembro"."updated_at" as "pivot_updated_at" from "actor" inner join "equipo_miembro" on "actor"."idactor" = "equipo_miembro"."correoactor" where "equipo_miembro"."equipo_id" in (72)
+2024-10-01 09:01:12.760 GMT [21524] ERROR:  el operador no existe: bigint = character varying en carácter 331
+2024-10-01 09:01:12.760 GMT [21524] HINT:  Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.
+2024-10-01 09:01:12.760 GMT [21524] SENTENCIA:  select "actor".*, "equipo_miembro"."equipo_id" as "pivot_equipo_id", "equipo_miembro"."correoactor" as "pivot_correoactor", "equipo_miembro"."rol" as "pivot_rol", "equipo_miembro"."created_at" as "pivot_created_at", "equipo_miembro"."updated_at" as "pivot_updated_at" from "actor" inner join "equipo_miembro" on "actor"."idactor" = "equipo_miembro"."correoactor" where "equipo_miembro"."equipo_id" in (73)
+2024-10-01 09:02:23.751 GMT [40584] ERROR:  el operador no existe: bigint = character varying en carácter 331
+2024-10-01 09:02:23.751 GMT [40584] HINT:  Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.
+2024-10-01 09:02:23.751 GMT [40584] SENTENCIA:  select "actor".*, "equipo_miembro"."equipo_id" as "pivot_equipo_id", "equipo_miembro"."correoactor" as "pivot_correoactor", "equipo_miembro"."rol" as "pivot_rol", "equipo_miembro"."created_at" as "pivot_created_at", "equipo_miembro"."updated_at" as "pivot_updated_at" from "actor" inner join "equipo_miembro" on "actor"."idactor" = "equipo_miembro"."correoactor" where "equipo_miembro"."equipo_id" in (74)
+2024-10-01 09:03:11.229 GMT [21348] ERROR:  el operador no existe: bigint = character varying en carácter 331
+2024-10-01 09:03:11.229 GMT [21348] HINT:  Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.
+2024-10-01 09:03:11.229 GMT [21348] SENTENCIA:  select "actor".*, "equipo_miembro"."equipo_id" as "pivot_equipo_id", "equipo_miembro"."correoactor" as "pivot_correoactor", "equipo_miembro"."rol" as "pivot_rol", "equipo_miembro"."created_at" as "pivot_created_at", "equipo_miembro"."updated_at" as "pivot_updated_at" from "actor" inner join "equipo_miembro" on "actor"."idactor" = "equipo_miembro"."correoactor" where "equipo_miembro"."equipo_id" in (75)
+2024-10-01 09:19:11.082 GMT [26780] ERROR:  no existe la relación «equipo_actor» en carácter 13
+2024-10-01 09:19:11.082 GMT [26780] SENTENCIA:  insert into "equipo_actor" ("actor_id", "created_at", "equipo_id", "rol", "updated_at") values ($1, $2, $3, $4, $5)
+2024-10-01 09:24:46.003 GMT [41264] ERROR:  la sintaxis de entrada no es válida para tipo bigint: «summary»
+2024-10-01 09:24:46.003 GMT [41264] SENTENCIA:  select * from "actor" where "actor"."idactor" = $1 limit 1
+2024-10-01 11:02:19.517 GMT [30544] ERROR:  no existe la relación «actores» en carácter 35
+2024-10-01 11:02:19.517 GMT [30544] SENTENCIA:  select count(*) as aggregate from "actores" where "id" = $1
+2024-10-01 11:02:33.651 GMT [39620] ERROR:  no existe la relación «estudiantes» en carácter 35
+2024-10-01 11:02:33.651 GMT [39620] SENTENCIA:  select count(*) as aggregate from "estudiantes" where "id" = $1
+2024-10-01 11:02:58.824 GMT [13120] ERROR:  no existe la relación «estudiantes» en carácter 35
+2024-10-01 11:02:58.824 GMT [13120] SENTENCIA:  select count(*) as aggregate from "estudiantes" where "id" = $1
+2024-10-01 11:05:04.549 GMT [6992] FATAL:  terminando la conexión debido al término inesperado de postmaster
+2024-10-01 11:05:04.550 GMT [38124] FATAL:  terminando la conexión debido al término inesperado de postmaster
+2024-10-01 11:05:04.552 GMT [21128] FATAL:  terminando la conexión debido al término inesperado de postmaster
