@@ -221,3 +221,19 @@
 2024-10-01 11:05:04.549 GMT [6992] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
 2024-10-01 11:05:04.550 GMT [38124] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
 2024-10-01 11:05:04.552 GMT [21128] FATAL:  terminando la conexiÃ³n debido al tÃ©rmino inesperado de postmaster
+2024-10-06 22:17:31.003 GMT [24276] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-10-06 22:17:31.007 GMT [24276] LOG:  no se pudo enlazar a la dirección IPv6 «::1»: Permission denied
+2024-10-06 22:17:31.007 GMT [24276] HINT:  ¿Hay otro postmaster corriendo en el puerto 5432? Si no, aguarde unos segundos y reintente.
+2024-10-06 22:17:31.007 GMT [24276] LOG:  no se pudo enlazar a la dirección IPv4 «127.0.0.1»: Permission denied
+2024-10-06 22:17:31.007 GMT [24276] HINT:  ¿Hay otro postmaster corriendo en el puerto 5432? Si no, aguarde unos segundos y reintente.
+2024-10-06 22:17:31.007 GMT [24276] WARNING:  no se pudo crear el socket de escucha para «localhost»
+2024-10-06 22:17:31.007 GMT [24276] FATAL:  no se pudo crear ningún socket TCP/IP
+2024-10-06 22:17:31.008 GMT [24276] LOG:  el sistema de bases de datos está apagado
+2024-10-06 22:54:40.546 GMT [27228] LOG:  iniciando PostgreSQL 12.20, compiled by Visual C++ build 1940, 64-bit
+2024-10-06 22:54:40.549 GMT [27228] LOG:  no se pudo enlazar a la dirección IPv6 «::1»: Permission denied
+2024-10-06 22:54:40.549 GMT [27228] HINT:  ¿Hay otro postmaster corriendo en el puerto 5432? Si no, aguarde unos segundos y reintente.
+2024-10-06 22:54:40.549 GMT [27228] LOG:  no se pudo enlazar a la dirección IPv4 «127.0.0.1»: Permission denied
+2024-10-06 22:54:40.549 GMT [27228] HINT:  ¿Hay otro postmaster corriendo en el puerto 5432? Si no, aguarde unos segundos y reintente.
+2024-10-06 22:54:40.550 GMT [27228] WARNING:  no se pudo crear el socket de escucha para «localhost»
+2024-10-06 22:54:40.550 GMT [27228] FATAL:  no se pudo crear ningún socket TCP/IP
+2024-10-06 22:54:40.550 GMT [27228] LOG:  el sistema de bases de datos está apagado
