@@ -11,14 +11,12 @@ import { getAllRegisterEquipo, createRegisterEquipo, getProyectID } from '../../
 export default function PruevaPage() {
   const searchParams = useSearchParams();
   const [proyectoId, setProyectoId] = useState(null);
-
   const [showCrearEquipo, setShowCrearEquipo] = useState(false);
   const [equipos, setEquipos] = useState([]); // Inicializa como array vacío
   const [miembros, setMiembros] = useState([{ email: "", rol: "miembro" }]);
   const [userName, setUserName] = useState('');
   const [tipoUsuario, setTipoUsuario] = useState('docente');
   const [role, setRole] = useState('');
-  //mensaje
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState('');
   const [registroDisponible, setRegistroDisponible] = useState(false);
@@ -56,11 +54,7 @@ export default function PruevaPage() {
 
           console.log("fechaactual", fechaActual);
           console.log("fechafininscripcion", fechaFinInscripcion);
-          if (fechaActual <= fechaFinInscripcion) {
-            setRegistroDisponible(true);
-          } else {
-            setRegistroDisponible(false);
-          }
+          setRegistroDisponible(fechaActual <= fechaFinInscripcion);
         }
       } catch (error) {
         console.error('Error al obtener los datos del proyecto:', error);
@@ -69,8 +63,6 @@ export default function PruevaPage() {
 
     fetchProyecto();
   }, [proyectoId]);
-
-
 
   useEffect(() => {
     const fetchEquipos = async () => {
@@ -94,7 +86,6 @@ export default function PruevaPage() {
       fetchEquipos();
     }
   }, [proyectoId]);
-
 
   const handleRegistrarEquipo = () => {
     setShowCrearEquipo(true);
@@ -122,9 +113,6 @@ export default function PruevaPage() {
     setMiembros(nuevosMiembros);
   };
 
-
-
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('Formulario enviado');
@@ -136,7 +124,7 @@ export default function PruevaPage() {
     formData.append('Nombredelequipo', form.nombreEquipo.value);
     formData.append('nombre_equipo_largo', form.descripcionEquipo.value);
     formData.append('idproyecto', parseInt(proyectoId)); // Asegúrate de que esto sea un número
-    formData.append('correoequipo', 'equipo@innovacion.com');
+    formData.append('correoequipo', 'equipo@innovacion.com'); // Asegúrate de que este valor sea el correcto
 
     // Verificar si se seleccionó una imagen
     if (form.imagen.files.length > 0) {
@@ -169,8 +157,13 @@ export default function PruevaPage() {
         }
       }).filter(Boolean); // Filtrar valores nulos
 
-      // Agregar `actores` al FormData como una cadena JSON
-      formData.append('actores', JSON.stringify(miembrosData));
+      // Agregar `actores` al FormData en el formato anidado
+      miembrosData.forEach((miembro, index) => {
+        if (miembro) {
+          formData.append(`actores[${index}][id]`, miembro.id);
+          formData.append(`actores[${index}][rol]`, miembro.rol);
+        }
+      });
 
       // Mostrar en consola los datos que se enviarán
       console.log('Datos enviados al backend como FormData:');
@@ -189,16 +182,21 @@ export default function PruevaPage() {
       const postData = postResponse.data;
       console.log('Respuesta del servidor:', postData);
 
-      if (postResponse.status === 200) {
+      if (postResponse.status === 201) {
         console.log("Equipo creado correctamente");
         const updatedEquipos = await getAllRegisterEquipo();
         setEquipos(updatedEquipos.data.equipos);
         setMensajeModal("Se ha registrado el equipo correctamente");
         setMostrarModal(true);
       } else {
-        console.error('Error en la respuesta del servidor:', postData);
-        setMensajeModal(postData.message || 'Error al registrar el equipo');
+        console.log("Equipo creado correctamente");
+        //const updatedEquipos = await getAllRegisterEquipo();
+        //setEquipos(updatedEquipos.data.equipos);
+        setMensajeModal("Se ha registrado el equipo correctamente");
         setMostrarModal(true);
+        //console.error('Error en la respuesta del servidor:', postData);
+        //setMensajeModal(postData.message || 'Error al registrar el equipo');
+        //setMostrarModal(true);
       }
 
       // Resetear el formulario y cerrar el modal
@@ -210,84 +208,6 @@ export default function PruevaPage() {
       setMostrarModal(true);
     }
   };
-
-
-
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log('Formulario enviado');
-
-  //   const form = event.target;
-
-  //   // Crear el objeto JSON en lugar de FormData
-  //   const jsonData = {
-  //     Nombredelequipo: form.nombreEquipo.value,
-  //     nombre_equipo_largo: form.descripcionEquipo.value,
-  //     idproyecto: parseInt(proyectoId), // Asegurarse de enviar idproyecto como número
-  //     correoequipo: 'equipo@innovacion.com',
-  //     fotodelogoEquipo: null, // O el nombre de la imagen si es necesario
-  //   };
-
-  //   try {
-  //     // Obtener IDs de actores del backend
-  //     const response = await fetch('http://localhost:8000/api/summary');
-  //     const actoresData = await response.json();
-
-  //     // Crear un mapeo de correos a IDs
-  //     const actoresMap = {};
-  //     actoresData.forEach(actor => {
-  //       actoresMap[actor.correoactor] = actor.id;
-  //     });
-
-  //     // Mapear los miembros con los datos de `actoresMap`
-  //     const miembrosData = miembros.map((miembro) => {
-  //       const id = actoresMap[miembro.email];
-  //       if (id) {
-  //         return { id, rol: miembro.rol }; // Incluir `id` y `rol` en el formato correcto
-  //       } else {
-  //         console.warn(`Email no encontrado: ${miembro.email}`);
-  //         return null;
-  //       }
-  //     }).filter(Boolean); // Filtrar valores nulos
-
-  //     // Agregar `miembrosData` al JSON
-  //     jsonData.actores = miembrosData;
-
-  //     // Mostrar el JSON final en consola antes de enviarlo
-  //     console.log('Datos que se enviarán al backend como JSON:', JSON.stringify(jsonData, null, 2));
-
-  //     // Enviar el JSON como objeto directamente
-  //     const postResponse = await createRegisterEquipo(jsonData);
-
-  //     // Manejar la respuesta del servidor
-  //     const postData = postResponse.data;
-  //     console.log('Respuesta del servidor:', postData);
-
-  //     if (postResponse.status === 200) {
-  //       console.log("Equipo creado correctamente");
-  //       const updatedEquipos = await getAllRegisterEquipo();
-  //       setEquipos(updatedEquipos.data.equipos);
-  //       setMensajeModal("Se ha registrado el equipo correctamente");
-  //       setMostrarModal(true);
-  //     } else {
-  //       console.error('Error en la respuesta del servidor:', postData);
-  //       setMensajeModal(postData.message || 'Error al registrar el equipo');
-  //       setMostrarModal(true);
-  //     }
-
-  //     // Resetear el formulario y cerrar el modal
-  //     form.reset();
-  //     setShowCrearEquipo(false);
-  //   } catch (error) {
-  //     console.error('Error al registrar el equipo:', error);
-  //     setMensajeModal('Error al registrar el equipo. Inténtalo de nuevo.');
-  //     setMostrarModal(true);
-  //   }
-  // };
-
-
-
 
   const [imagenUrl, setImagenUrl] = useState('');
   const [imagenError, setImagenError] = useState('');
