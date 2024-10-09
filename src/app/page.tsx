@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+"use client";
+import Landing from "./(pages)/landing/page";
+
+
+export default function Page(){
+
+    return(
+        <Landing />
+    );
+=======
 
 "use client"; // Asegúrate de colocar esta línea al inicio del archivo
 
@@ -281,4 +292,5 @@ export default function Home() {
       <ModalMensaje mensaje={mensajeModal} mostrar={mostrarModal} onClose={handleCerrarModal} />
     </main>
   );
+>>>>>>> develop
 }

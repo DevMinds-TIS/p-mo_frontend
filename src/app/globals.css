@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+=======
 
 * {
   color: white;
@@ -203,3 +208,4 @@ a {
 #cerrar-registro:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+>>>>>>> develop

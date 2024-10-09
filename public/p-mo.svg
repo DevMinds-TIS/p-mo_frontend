@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1000"
+   height="1000"
+   viewBox="0 0 264.58333 264.58333"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="P-MO LOGO.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#000020"
+     inkscape:document-units="px"
+     showgrid="true"
+     inkscape:zoom="0.5"
+     inkscape:cx="238"
+     inkscape:cy="429"
+     inkscape:window-width="1920"
+     inkscape:window-height="974"
+     inkscape:window-x="-10"
+     inkscape:window-y="1069"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"><inkscape:grid
+       type="axonomgrid"
+       id="grid2"
+       units="mm"
+       originx="0"
+       originy="0"
+       spacingx="0"
+       spacingy="0.99999999"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#000000"
+       opacity="0.14902"
+       empspacing="5"
+       dotted="false"
+       gridanglex="30"
+       gridanglez="30"
+       visible="true" /></sodipodi:namedview><defs
+     id="defs1"><inkscape:path-effect
+       effect="perspective-envelope"
+       up_left_point="-56.092965,-31.566026"
+       up_right_point="-14.780489,-33.540582"
+       down_left_point="-56.012729,-5.0902696"
+       down_right_point="-18.057865,-5.21035"
+       id="path-effect1"
+       is_visible="true"
+       lpeversion="1"
+       deform_type="perspective"
+       horizontal_mirror="false"
+       vertical_mirror="false"
+       overflow_perspective="false" /></defs><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"><g
+       id="g2-6"
+       transform="matrix(2.2621985,0,0,2.2621985,54.370884,17.172142)"
+       inkscape:label="P-MO"
+       style="fill:#c87137"><path
+         class="st0"
+         d="m 36.3,68.8 v -26 c 0,-1.2 0.6,-2.4 1.7,-3.1 L 62.5,24.3 c 2.4,-1.5 5.5,0.2 5.5,3.1 v 22.4 c 0,1.9 -1,3.6 -2.6,4.6 L 39,70.4 c -1.2,0.7 -2.7,-0.2 -2.7,-1.6 z"
+         id="path1-6"
+         style="fill:#ea6611;fill-opacity:1" /><path
+         class="st0"
+         d="M 32.7,104.8 V 78.1 C 32.7,76.9 32.1,75.7 31,75 L 4.9,58.6 C 3.2,57.5 1,58.8 1,60.7 v 25.4 c 0,1.2 0.6,2.4 1.7,3.1 L 30,106.3 c 1.2,0.8 2.7,-0.1 2.7,-1.5 z"
+         id="path2-5"
+         style="fill:#ea6611;fill-opacity:1" /><path
+         class="st1"
+         d="m 36.3,3.2 v 30.2 c 0,1.4 1.6,2.3 2.8,1.5 L 59.5,21.6 c 1.7,-1.1 1.8,-3.5 0.1,-4.7 L 39.2,1.7 C 38,0.8 36.3,1.7 36.3,3.2 Z"
+         id="path3-6"
+         style="fill:#c87137" /><path
+         class="st0"
+         d="m 32.589428,68.370463 v -26 c 0,-1.2 -0.6,-2.4 -1.7,-3.1 l -24.4999996,-15.4 c -2.4,-1.5 -5.49999996,0.2 -5.49999996,3.1 v 22.4 c 0,1.9 0.99999996,3.6 2.59999996,4.6 l 26.3999996,16 c 1.2,0.7 2.7,-0.2 2.7,-1.6 z"
+         id="path1-6-7"
+         style="fill:#fe7f2d;fill-opacity:1" /><path
+         class="st1"
+         d="M 32.777362,-2.6521661 V 32.62282 c 0,1.635264 -1.851973,2.686506 -3.240955,1.752069 L 5.9237423,18.839878 C 3.9560203,17.555028 3.840272,14.751718 5.807994,13.350063 L 29.42066,-4.4042349 c 1.38898,-1.0512413 3.356702,0 3.356702,1.7520688 z"
+         id="path3-6-5"
+         style="fill:#ff9b5a;fill-opacity:1;stroke-width:1.16276" /><path
+         class="st1"
+         d="M 36.332132,-2.2801055 V 32.99488 c 0,1.635264 1.858311,2.686506 3.252045,1.752069 L 63.277643,19.211938 c 1.974456,-1.28485 2.090601,-4.08816 0.116145,-5.489815 L 39.700321,-4.0321743 c -1.393733,-1.0512413 -3.368189,0 -3.368189,1.7520688 z"
+         id="path3-6-5-8"
+         style="fill:#ff9b5a;fill-opacity:1;stroke-width:1.16474" /></g></g><style
+     type="text/css"
+     id="style1">
+	.st0{fill:#EA6611;}
+	.st1{fill:#FF9B5A;}
+	.st2{fill:#FE7F2D;}
+</style><style
+     type="text/css"
+     id="style1-4">
+	.st0{fill:#EA6611;}
+	.st1{fill:#FF9B5A;}
+	.st2{fill:#FE7F2D;}
+</style></svg>
