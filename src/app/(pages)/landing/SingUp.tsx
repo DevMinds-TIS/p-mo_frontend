@@ -8,9 +8,9 @@ export default function SingUp() {
   return (
     <section className="w-full">
       <Button onPress={onOpen} className="w-full h-14 bg-[#fe7f2d] text-white">
-          Crea una nueva cuenta
+          Registrarme
         </Button>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center" size="xl" backdrop="blur">
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">
           <ModalContent>
             {(onClose) => (
               <>
