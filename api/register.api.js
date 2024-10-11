@@ -29,7 +29,15 @@ export const login = (data) => registersApi.post('api/login', data);
 
 export const getAllRegisterProyect = () => registersApi.get('api/proyectos');
 
-
+export const obtenerEquiposPorUsuario = async (userId) => {
+    try {
+        const response = await registersApi.get(`/equipos/usuario/${userId}`);
+        return response.data; // Devuelve los datos recibidos
+    } catch (error) {
+        console.error("Error al obtener los equipos por usuario:", error);
+        throw error; // Lanza el error para que pueda ser manejado donde se llame a la función
+    }
+};
 export const createRegisterProyect = (formData) => {
     return registersApi.post('api/proyecto', formData, {
         headers: {
@@ -65,6 +73,7 @@ export const getAllRegisterEquipo = () => registersApi.get('api/equipo');
 export const createRegisterEquipo = (data) => {
     return registersApi.post('api/equipo', data); // No es necesario establecer Content-Type
 };
+
 
 
 // export const createRegisterEquipo = (formData) => {
