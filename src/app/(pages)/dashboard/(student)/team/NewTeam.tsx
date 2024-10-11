@@ -2,7 +2,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import { AddSquareIcon } from "hugeicons-react";
 import React from "react";
 import FileUpload from "@/app/_lib/components/FileUpload";
-import { teachers } from "@/app/_lib/landing/teachers";
+// import { teachers } from "@/app/_lib/landing/teachers";
 
 export default function NewTeam() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -68,13 +68,13 @@ export default function NewTeam() {
                                         errorMessage="Este nombre ya esta registrado"
                                         maxLength={10}
                                     />
-                                    <Select
+                                    {/* <Select
                                         items={teachers}
                                         label="Docente"
                                         placeholder="Seleccione a su tutor/docente"
                                     >
                                         {(teacher) => <SelectItem key={teacher.key}>{teacher.label}</SelectItem>}
-                                    </Select>
+                                    </Select> */}
                                 </div>
                                 <div>
                                     <p>Logo de la empresa</p>
