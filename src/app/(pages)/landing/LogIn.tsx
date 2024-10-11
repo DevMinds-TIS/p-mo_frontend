@@ -6,6 +6,7 @@ import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
 import React from "react";
 import userForms from "@/app/_lib/landing/userForm";
 import SingUp from "./SingUp";
+import router from "next/router";
 
 export default function LogIn(){
 
@@ -27,6 +28,41 @@ export default function LogIn(){
         toggleVisibility,
     } = userForms();
 
+    const handleLogin = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+    
+        const loginData = {
+            emailuser: email,
+            passworduser: passwd,
+        };
+    
+        try {
+            const response = await fetch('http://localhost:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al iniciar sesión');
+            }
+    
+            const result = await response.json();
+            console.log('Inicio de sesión exitoso:', result);
+    
+            // Almacena el token en el localStorage o en un state management
+            localStorage.setItem('token', result.token);
+    
+            // Redirige al dashboard u otra página
+            router.push('/dashboard/profile');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
+
     return(
         <section className="flex md:flex-row flex-col justify-center gap-10 h-screen">
             <div className="flex md:flex-col justify-center gap-4">
@@ -44,7 +80,7 @@ export default function LogIn(){
             </div>
             <div className="flex flex-col md:justify-center items-center self-center gap-4 md:w-[30%] w-[90%]">
                 <h1 className="text-5xl">Inicia Sesión</h1>
-                <form action="" className="w-full space-y-4">
+                <form onSubmit={handleLogin} className="w-full space-y-4">
                     <Input
                         value={email}
                         isClearable 

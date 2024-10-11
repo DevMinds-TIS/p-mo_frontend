@@ -2,11 +2,10 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { useRouter } from 'next/navigation';
 import userStudent from "@/app/_lib/landing/userForm";
-import { teachers } from "@/app/_lib/landing/teachers";
 import React, { useEffect, useState } from 'react';
 
 type Teacher = {
-    key: string;
+    key: number;
     label: string;
 };
 
@@ -40,7 +39,7 @@ export default function StudentSignIn() {
     } = userStudent();
 
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-    const [selectedTeacher, setSelectedTeacher] = useState<string | null>(null);
+    const [selectedTeacher, setSelectedTeacher] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +55,7 @@ export default function StudentSignIn() {
             lastnameuser: lastname,
             emailuser: email,
             passworduser: passwd,
-            idrol: 2,
+            idrol: 3,
             siscode: siscode,
             use_iduser: selectedTeacher,
         };
@@ -96,7 +95,7 @@ export default function StudentSignIn() {
                 const formattedTeachers = data.user // Cambiado de data a data.user
                     .filter((user: any) => user.idrol === 2)
                     .map((teacher: any) => ({
-                        key: `g${teacher.iduser}`,
+                        key: `${teacher.iduser}`,
                         label: `${teacher.nameuser} ${teacher.lastnameuser}`
                     }));
                 setTeachers(formattedTeachers);
@@ -193,7 +192,8 @@ export default function StudentSignIn() {
                 items={teachers}
                 label="Docente"
                 placeholder="Seleccione a su tutor/docente"
-                onChange={(event) => setSelectedTeacher(event.target.value)}
+                // onChange={(event) => setSelectedTeacher(event.target.value)}
+                onChange={(event) => setSelectedTeacher(parseInt(event.target.value, 10))}
             >
                 {teachers.map((teacher: Teacher) => (
                     <SelectItem key={teacher.key} value={teacher.key}>{teacher.label}</SelectItem>
