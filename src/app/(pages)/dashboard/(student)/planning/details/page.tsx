@@ -1,4 +1,7 @@
 "use client";
+//import Detalle from "@/app/(pages)/dashboard/(student)/planning/details/detalle/page";
+import Evaluacion from "@/app/(pages)/dashboard/(student)/planning/details/evaluaciones/page";
+//import PlanillaEva from "@/app/(pages)/dashboard/(student)/planning/details/PlanillaEvaluacion/page";
 
 export default function DetailsPage(){
     return(
@@ -6,8 +9,10 @@ export default function DetailsPage(){
             <section className="flex w-full h-10 justify-between items-center">
                 <h1 className="text-3xl">Objetivo</h1>
             </section>
-            <section className="flex flex-col w-fit space-y-4">
-                Hola mundo
+            <section className="flex flex-col">
+                {/*<Detalle></Detalle> */}
+                <Evaluacion></Evaluacion>
+                {/*<PlanillaEva></PlanillaEva>*/}
             </section>
         </section>
     );
