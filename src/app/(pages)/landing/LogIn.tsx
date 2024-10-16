@@ -48,13 +48,10 @@ export default function LogIn(){
             if (!response.ok) {
                 throw new Error('Error al iniciar sesión');
             }
-    
             const result = await response.json();
             console.log('Inicio de sesión exitoso:', result);
-    
-            // Almacena el token en el localStorage o en un state management
+            // Almacena el token en el localStorage
             localStorage.setItem('token', result.token);
-    
             // Redirige al dashboard u otra página
             router.push('/dashboard/profile');
         } catch (error) {

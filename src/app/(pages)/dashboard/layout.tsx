@@ -4,9 +4,10 @@ import Image from "next/image";
 import { Avatar, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Link from 'next/link';
 import { Calendar03Icon, FolderLibraryIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 import { usePathname } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 const navItems = [
   { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
@@ -15,24 +16,88 @@ const navItems = [
   { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
   { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
   { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
-  // { href: "", icon: Avatar, label: "Perfil", isAvatar: true }
 ];
 
 const renderIcon = (IconComponent: any) => {
-  // if (isAvatar) {
-  //   return <Avatar isBordered name="JC" className="bg-inherit" />;
-  // }
-
   return <IconComponent size={30} />;
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleNavbar = () => {
     setIsExpanded(!isExpanded);
   };
 
   const pathName = usePathname();
+
+  type User = {
+    nameuser: string;
+    lastnameuser: string;
+    emailuser: string;
+    profileuser?: string; // opcional
+  };
+
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/api/user', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al obtener los datos del usuario');
+      }
+
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error('Error al obtener los datos del usuario:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
+      const response = await fetch('http://localhost:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al cerrar sesión');
+      }
+
+      localStorage.removeItem('token');
+      router.push('/landing');
+
+      console.log('Cierre de sesión exitoso');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <main className="h-screen overflow-hidden">
@@ -61,7 +126,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Popover placement="right-end" className="gap-x-4">
                 <PopoverTrigger>
                   <NavbarItem className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2`}>
-                    <Avatar name="JC" size="md" />
+                    <Avatar
+                      name={!user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined}
+                      src={user?.profileuser || undefined}
+                      size="md"
+                    />
                     <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>Perfil</p>
                   </NavbarItem>
                 </PopoverTrigger>
@@ -70,18 +139,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
                       <Tooltip content="Editar perfil" placement="right">
                         <User
-                          name="Julio Cesar Severiche Orellana"
-                          description="202001839@est.umss.edu"
+                          name={`${user?.nameuser} ${user?.lastnameuser}`}
+                          description={user?.emailuser}
                           avatarProps={{
-                            name: "JC"
+                            name: !user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined,
+                            src: user?.profileuser || undefined,
                           }}
                         />
+
                       </Tooltip>
                     </Link>
-                    <Button className="bg-[#FF0000] min-w-1 text-white">
+                    <Button
+                      className="bg-[#FF0000] min-w-1 text-white"
+                      onClick={handleLogout}
+                    >
                       <Logout03Icon />
                       <p>Cerrar sesión</p>
                     </Button>
+
                   </div>
                 </PopoverContent>
               </Popover>
