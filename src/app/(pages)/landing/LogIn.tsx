@@ -6,10 +6,10 @@ import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
 import React from "react";
 import userForms from "@/app/_lib/landing/userForm";
 import SingUp from "./SingUp";
-import router from "next/router";
+import { useRouter } from 'next/navigation';
 
 export default function LogIn(){
-
+    const router = useRouter();
     const {
         email,
         setEmail,
@@ -62,7 +62,6 @@ export default function LogIn(){
         }
     };
     
-
     return(
         <section className="flex md:flex-row flex-col justify-center gap-10 h-screen">
             <div className="flex md:flex-col justify-center gap-4">

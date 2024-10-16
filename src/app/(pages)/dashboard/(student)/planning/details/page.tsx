@@ -10,7 +10,7 @@ export default function DetailsPage(){
                 <h1 className="text-3xl">Objetivo</h1>
             </section>
             <section className="flex flex-col">
-                {/*<Detalle></Detalle> */}
+                {/* <Detalle></Detalle> */}
                 <Evaluacion></Evaluacion>
                 {/*<PlanillaEva></PlanillaEva>*/}
             </section>
