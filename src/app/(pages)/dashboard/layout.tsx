@@ -61,6 +61,18 @@ const renderIcon = (IconComponent: any) => {
   return <IconComponent size={30} />;
 };
 
+const translations: { [key: string]: string } = {
+  announcement: "Anuncios",
+  test: "Evaluaciones",
+  planning: "Planificación",
+  details: "Detalles",
+  team: "Equipo",
+  projects: "Proyectos",
+  spaces: "Espacios",
+  notification: "Notificaciones",
+  profile: "Perfil",
+};
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -70,8 +82,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const pathName = usePathname();
-
-  // const pathArray = pathName ? pathName.split('/').filter(x => x) : [];
 
   const pathArray = pathName ? pathName.split('/').filter(x => x) : [];
   const dashboardIndex = pathArray.indexOf('dashboard');
@@ -153,7 +163,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {filteredPathArray.map((path, index) => (
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
-                        {path.charAt(0).toUpperCase() + path.slice(1)}
+                        {translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
                       </Link>
                     </BreadcrumbItem>
                   ))}

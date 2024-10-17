@@ -90,7 +90,7 @@ export default function ProjectSpace() {
                 <div className='flex'>
                     <Link
                         href={"/dashboard/projects/spaces"}
-                        className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher ? "lg" : "none"} bg-[#ff9b5a] p-2`}
+                        className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
                     >
                         <FolderLinksIcon size={30} />
                         CPTIS-0893-2024
