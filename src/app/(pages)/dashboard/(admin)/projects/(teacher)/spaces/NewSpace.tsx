@@ -6,7 +6,6 @@ import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
-// import FileUpload from "@/app/_lib/components/FileUpload";
 
 export default function NewSpace() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -25,10 +24,6 @@ export default function NewSpace() {
                         <div>
                             <ModalHeader className="flex flex-col gap-1">Crear espacio</ModalHeader>
                             <ModalBody>
-                                <Input
-                                    label="Código del proyecto"
-                                    placeholder="Escribe el código para enlazar al proyecto general"
-                                />
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges

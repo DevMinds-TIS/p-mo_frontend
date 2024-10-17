@@ -1,7 +1,7 @@
 "use client";
 
-import { Button, Popover, PopoverContent, PopoverTrigger, Tooltip } from "@nextui-org/react";
-import React, { useState, ChangeEvent } from "react";
+import { Button, Tooltip } from "@nextui-org/react";
+import React, { useState } from "react";
 
 export const FileUpload = () => {
     const [file, setFile] = useState<string>();

@@ -6,7 +6,6 @@ import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
-// import FileUpload from "@/app/_lib/components/FileUpload";
 
 export default function NewProject() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -26,40 +25,42 @@ export default function NewProject() {
                     {(onClose) => (
                         <div>
                             <ModalHeader className="flex flex-col gap-1">Crear proyecto</ModalHeader>
-                            <ModalBody>
-                                <Input
-                                    label="Nombre del proyecto"
-                                    placeholder="Escribe el nombre del proyecto"
-                                />
-                                <Input
-                                    label="Código del proyecto"
-                                    placeholder="Escribe el código del proyecto"
-                                />
-                                <I18nProvider locale="es-BO">
-                                    <DateRangePicker
-                                        allowsNonContiguousRanges
-                                        isDateUnavailable={(date) => isWeekend(date, "es-BO")}
-                                        label="Duración del proyecto"
-                                        minValue={minDate}
-                                        maxValue={maxDate}
-                                        visibleMonths={3}
-                                        pageBehavior="single"
+                            <form action="">
+                                <ModalBody>
+                                    <Input
+                                        label="Nombre del proyecto"
+                                        placeholder="Escribe el nombre del proyecto"
                                     />
-                                </I18nProvider>
-                                <div>
-                                    <p>Invitación del proyecto</p>
-                                    <FileUpload />
-                                </div>
-                                <div>
-                                    <p>Pliego de especificaciones del proyecto</p>
-                                    <FileUpload />
-                                </div>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button onPress={onClose} className="w-full">
-                                    Guardar
-                                </Button>
-                            </ModalFooter>
+                                    <Input
+                                        label="Código del proyecto"
+                                        placeholder="Escribe el código del proyecto"
+                                    />
+                                    <I18nProvider locale="es-BO">
+                                        <DateRangePicker
+                                            allowsNonContiguousRanges
+                                            isDateUnavailable={(date) => isWeekend(date, "es-BO")}
+                                            label="Duración del proyecto"
+                                            minValue={minDate}
+                                            maxValue={maxDate}
+                                            visibleMonths={3}
+                                            pageBehavior="single"
+                                        />
+                                    </I18nProvider>
+                                    <div className="space-y-2">
+                                        <p>Invitación del proyecto</p>
+                                        <FileUpload />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p>Pliego de especificaciones del proyecto</p>
+                                        <FileUpload />
+                                    </div>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button onPress={onClose} className="w-full">
+                                        Guardar
+                                    </Button>
+                                </ModalFooter>
+                            </form>
                         </div>
                     )}
                 </ModalContent>
