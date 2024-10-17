@@ -1,56 +1,89 @@
 "use client";
 
+import { Button, Popover, PopoverContent, PopoverTrigger, Tooltip } from "@nextui-org/react";
 import React, { useState, ChangeEvent } from "react";
-import Image from "next/image";
-import { Button, Input, Tooltip } from "@nextui-org/react";
 
-interface InputFileProps { }
-
-export default function FileUpload(props: InputFileProps) {
-    const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedFile(reader.result as string);
-            }
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleRemoveClick = () => {
-        setSelectedFile(null);
-    };
+export const FileUpload = () => {
+    const [file, setFile] = useState<string>();
+    const [fileEnter, setFileEnter] = useState(false);
 
     return (
-        <div className="flex flex-col w-full items-center gap-4">
-            <label htmlFor="file-upload" className="w-full">
-                <Input
-                    id="file-upload"
-                    onChange={handleFileChange}
-                    type="file"
-                    className="hidden"
-                />
-                <Button as="span" className="w-full">
-                    Seleccionar archivo
-                </Button>
-            </label>
-            {selectedFile && (
-                <div className="">
+        <div className="w-full">
+            {!file ? (
+                <div
+                    onDragOver={(e) => {
+                        e.preventDefault();
+                        setFileEnter(true);
+                    }}
+                    onDragLeave={(e) => {
+                        setFileEnter(false);
+                    }}
+                    onDragEnd={(e) => {
+                        e.preventDefault();
+                        setFileEnter(false);
+                    }}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        setFileEnter(false);
+                        if (e.dataTransfer.items) {
+                            Array.from(e.dataTransfer.items).forEach((item, i) => {
+                                if (item.kind === "file") {
+                                    const file = item.getAsFile();
+                                    if (file) {
+                                        let blobUrl = URL.createObjectURL(file);
+                                        setFile(blobUrl);
+                                    }
+                                    console.log(`items file[${i}].name = ${file?.name}`);
+                                }
+                            });
+                        } else {
+                            Array.from(e.dataTransfer.files).forEach((file, i) => {
+                                console.log(`… file[${i}].name = ${file.name}`);
+                            });
+                        }
+                    }}
+                    className={`${fileEnter ? "border-4" : "border-2"
+                        } flex flex-col w-full h-96 border-dashed rounded-lg`}
+                >
+                    <label
+                        htmlFor="file"
+                        className="h-full flex flex-col justify-center text-center hover:cursor-pointer"
+                    >
+                        Haz click para subir o arrastra y suelta
+                    </label>
+                    <input
+                        id="file"
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => {
+                            console.log(e.target.files);
+                            let files = e.target.files;
+                            if (files && files[0]) {
+                                let blobUrl = URL.createObjectURL(files[0]);
+                                setFile(blobUrl);
+                            }
+                        }}
+                    />
+                </div>
+            ) : (
+                <div className="flex flex-col gap-4">
                     <Tooltip content="Eliminar archivo" placement="right">
-                        <Image
-                            src={selectedFile}
-                            alt="Previsualización"
-                            width={500}
-                            height={500}
-                            className="rounded-xl hover:cursor-pointer"
-                            onClick={handleRemoveClick}
+                        <object
+                            className="rounded-md w-full h-96 hover:cursor-pointer"
+                            data={file}
+                            type="image/png"
+                            onClick={() => setFile("")}
                         />
                     </Tooltip>
+                    <Button 
+                        onClick={() => setFile("")}
+                        color="danger"
+                        className="w-full"
+                    >
+                        Descartar
+                    </Button>
                 </div>
             )}
         </div>
     );
-}
+};

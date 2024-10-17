@@ -3,7 +3,7 @@ import {Input} from "@nextui-org/react";
 import { SearchIcon } from "@nextui-org/shared-icons";
 import NewProject from "./NewProject";
 
-export default function ProjectsPage(){
+export default function ProjectSpace(){
 
     return(
         <section className="flex flex-col gap-y-8">
