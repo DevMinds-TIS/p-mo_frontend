@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { Avatar, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
+import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Link from 'next/link';
 import { Calendar03Icon, FolderLibraryIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
 import { useEffect, useState } from 'react';
@@ -42,6 +42,7 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
     2: [
       { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
+      { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     3: [
@@ -69,6 +70,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const pathName = usePathname();
+
+  // const pathArray = pathName ? pathName.split('/').filter(x => x) : [];
+
+  const pathArray = pathName ? pathName.split('/').filter(x => x) : [];
+  const dashboardIndex = pathArray.indexOf('dashboard');
+  const filteredPathArray = dashboardIndex !== -1 ? pathArray.slice(dashboardIndex + 1) : [];
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -141,6 +148,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <p className="font-bold text-inherit flex">P-MO</p>
             </NavbarBrand>
             <div className="flex ml-auto">
+              {filteredPathArray.length > 0 && (
+                <Breadcrumbs>
+                  {filteredPathArray.map((path, index) => (
+                    <BreadcrumbItem key={index}>
+                      <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
+                        {path.charAt(0).toUpperCase() + path.slice(1)}
+                      </Link>
+                    </BreadcrumbItem>
+                  ))}
+                </Breadcrumbs>
+              )}
+            </div>
+            <div className="flex ml-auto">
               <ThemeSwitcher />
             </div>
           </Navbar>
@@ -148,7 +168,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Navbar className={`flex flex-col ${isExpanded ? 'w-60 rounded-r-xl' : 'w-20'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
               <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
                 {filteredNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
-                  <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName === item.href ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
+                  <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
                     <Link href={item.href} className="flex items-center w-full gap-x-4" color="foreground">
                       {renderIcon(item.icon)}
                       <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>
@@ -157,7 +177,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 ))}
                 <Popover placement="right-end" className="gap-x-4">
                   <PopoverTrigger>
-                    <NavbarItem className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2`}>
+                    <NavbarItem className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
                       <Avatar
                         name={!user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined}
                         src={user?.profileuser || undefined}
