@@ -87,21 +87,18 @@ export default function ProjectSpace() {
                 {isAdmin && <NewProject />}
             </section>
             <section className="flex flex-wrap p-4 gap-4">
-                <div>
-                    <Link href={"/dashboard/projects/spaces"}>
-                        <Button
-                            startContent={<FolderLinksIcon size={30} />}
-                            className={isAdmin ? "rounded-l-lg" : ""}
-                            size="lg"
-                            radius={isTeacher ? "lg" : "none"}
-                        >
-                            CPTIS-0893-2024
-                        </Button>
+                <div className='flex'>
+                    <Link
+                        href={"/dashboard/projects/spaces"}
+                        className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher ? "lg" : "none"} bg-[#ff9b5a] p-2`}
+                    >
+                        <FolderLinksIcon size={30} />
+                        CPTIS-0893-2024
                     </Link>
                     {isAdmin && (
                         <Popover placement="right" backdrop="blur">
                             <PopoverTrigger>
-                                <Button className="min-w-0 p-2 items-center rounded-r-lg" size="lg" radius="none">
+                                <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
                                     <MoreVerticalIcon size={30} />
                                 </Button>
                             </PopoverTrigger>
