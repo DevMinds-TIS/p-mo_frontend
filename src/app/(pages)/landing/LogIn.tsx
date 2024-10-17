@@ -68,6 +68,7 @@ export default function LogIn(){
                     width={50}
                     height={65}
                     className="md:h-[60%] md:w-auto"
+                    priority
                 />
                 <div className="flex flex-col md:text-center">
                     <h1 className="text-3xl md:text-5xl">P-MO</h1>
