@@ -18,7 +18,7 @@ export default function NewSprint() {
                 <ModalContent>
                     {(onClose) => (
                         <div>
-                            <ModalHeader className="flex flex-col gap-1">Crear equipo</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">Crear Sprint</ModalHeader>
                             <ModalBody>
                                 <Input
                                     value={sprint}
@@ -27,6 +27,14 @@ export default function NewSprint() {
                                     placeholder="Escribe el numero de sprint"
                                     errorMessage="Este nombre ya esta registrado"
                                     maxLength={15}
+                                />
+                                <Input
+                                    value={""}
+                                    // onValueChange={}
+                                    label="Objetivo del sprint"
+                                    placeholder="Escribe el objetivo de este sprint"
+                                    errorMessage="Este nombre ya esta registrado"
+                                    maxLength={180}
                                 />
                                 <RangeCalendar
                                     allowsNonContiguousRanges

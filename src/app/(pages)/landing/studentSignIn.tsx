@@ -4,11 +4,6 @@ import { useRouter } from 'next/navigation';
 import userStudent from "@/app/_lib/landing/userForm";
 import React, { useEffect, useState } from 'react';
 
-type Teacher = {
-    key: number;
-    label: string;
-};
-
 export default function StudentSignIn() {
     const router = useRouter();
     const {
@@ -38,15 +33,49 @@ export default function StudentSignIn() {
         toggleVisibility,
     } = userStudent();
 
+    type Teacher = {
+        key: string;
+        label: string;
+    };
+
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-    const [selectedTeacher, setSelectedTeacher] = useState<number | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+
+    const [docenteId, setDocenteId] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/role-user');
+                const data = await response.json();
+                const teacherIds = data.data.filter((user: { 'ID Rol': number }) => user['ID Rol'] === 2).map((user: { 'ID Usuario': number }) => user['ID Usuario']);
+
+                const teachersResponse = await fetch('http://localhost:8000/api/users');
+                const teachersData = await teachersResponse.json();
+
+                if (Array.isArray(teachersData.data)) {
+                    const teachersList: Teacher[] = teachersData.data
+                        .filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario']))
+                        .map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
+                            key: teacher['ID Usuario'].toString(),
+                            label: `${teacher['Nombre']} ${teacher['Apellido']}`,
+                        }));
+                    setTeachers(teachersList);
+                } else {
+                    console.error('Error: Expected an array but got:', teachersData.data);
+                }
+
+            } catch (error) {
+                console.error('Error al obtener los docentes:', error);
+            }
+        };
+
+        fetchTeachers();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!isSingupValid || !selectedTeacher) {
+        if (!isSingupValid && !docenteId) {
             return;
         }
 
@@ -57,11 +86,11 @@ export default function StudentSignIn() {
             passworduser: passwd,
             idrol: 3,
             siscode: siscode,
-            use_iduser: selectedTeacher,
+            use_iduser: docenteId,
         };
 
         try {
-            const response = await fetch('http://localhost:8000/api/users', {
+            const response = await fetch('http://localhost:8000/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,46 +104,12 @@ export default function StudentSignIn() {
 
             const result = await response.json();
             console.log('Usuario creado:', result);
-            // Redirigir a /dashboard después de un registro exitoso
             router.push('/dashboard/profile');
 
         } catch (error) {
             console.error('Error:', error);
-            // Manejar el error, como mostrar un mensaje de error al usuario
         }
     };
-
-    useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/users?role=teacher');
-                if (!response.ok) {
-                    throw new Error('Error al obtener los datos');
-                }
-                const data = await response.json();
-                const formattedTeachers = data.user // Cambiado de data a data.user
-                    .filter((user: any) => user.idrol === 2)
-                    .map((teacher: any) => ({
-                        key: `${teacher.iduser}`,
-                        label: `${teacher.nameuser} ${teacher.lastnameuser}`
-                    }));
-                setTeachers(formattedTeachers);
-            } catch (err) {
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError("Unexpected error occurred");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTeachers();
-    }, []);
-
-    if (loading) return <p>Cargando...</p>;
-    if (error) return <p>Error: {error}</p>;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -189,17 +184,17 @@ export default function StudentSignIn() {
                 maxLength={20}
             />
             <Select
-                items={teachers}
                 label="Docente"
                 placeholder="Seleccione a su tutor/docente"
-                // onChange={(event) => setSelectedTeacher(event.target.value)}
-                onChange={(event) => setSelectedTeacher(parseInt(event.target.value, 10))}
-            >
+                onSelectionChange={(key) => setDocenteId(Number(key))}>
                 {teachers.map((teacher: Teacher) => (
-                    <SelectItem key={teacher.key} value={teacher.key}>{teacher.label}</SelectItem>
+                    <SelectItem key={teacher.key} value={teacher.key}>
+                        {teacher.label}
+                    </SelectItem>
                 ))}
             </Select>
-            <Button type="submit" isDisabled={!isSingupValid} className="w-full h-14 bg-[#FF9B5A] text-white">
+
+            <Button type="submit" isDisabled={!isSingupValid && !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
                 Unirse
             </Button>
         </form>

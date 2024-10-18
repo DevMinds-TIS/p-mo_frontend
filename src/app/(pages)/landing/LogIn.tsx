@@ -6,10 +6,10 @@ import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
 import React from "react";
 import userForms from "@/app/_lib/landing/userForm";
 import SingUp from "./SingUp";
-import router from "next/router";
+import { useRouter } from 'next/navigation';
 
 export default function LogIn(){
-
+    const router = useRouter();
     const {
         email,
         setEmail,
@@ -48,13 +48,10 @@ export default function LogIn(){
             if (!response.ok) {
                 throw new Error('Error al iniciar sesión');
             }
-    
             const result = await response.json();
             console.log('Inicio de sesión exitoso:', result);
-    
-            // Almacena el token en el localStorage o en un state management
+            // Almacena el token en el localStorage
             localStorage.setItem('token', result.token);
-    
             // Redirige al dashboard u otra página
             router.push('/dashboard/profile');
         } catch (error) {
@@ -62,7 +59,6 @@ export default function LogIn(){
         }
     };
     
-
     return(
         <section className="flex md:flex-row flex-col justify-center gap-10 h-screen">
             <div className="flex md:flex-col justify-center gap-4">
@@ -72,6 +68,7 @@ export default function LogIn(){
                     width={50}
                     height={65}
                     className="md:h-[60%] md:w-auto"
+                    priority
                 />
                 <div className="flex flex-col md:text-center">
                     <h1 className="text-3xl md:text-5xl">P-MO</h1>
