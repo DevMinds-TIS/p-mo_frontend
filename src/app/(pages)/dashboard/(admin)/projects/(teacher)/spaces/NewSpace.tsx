@@ -4,7 +4,7 @@ import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
-import React from "react";
+import React, { useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 
 export default function NewSpace() {
@@ -12,6 +12,12 @@ export default function NewSpace() {
 
     const minDate = parseDate("2024-08-12");
     const maxDate = parseDate("2024-12-27");
+    
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleFileChange = (newFile: File | null) => {
+        setFile(newFile);
+      };
 
     return (
         <section>
@@ -52,7 +58,7 @@ export default function NewSpace() {
                                 />
                                 <div>
                                     <p>Lista de alumnos</p>
-                                    <FileUpload/>
+                                    <FileUpload onChange={handleFileChange}/>
                                 </div>
                             </ModalBody>
                             <ModalFooter>

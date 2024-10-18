@@ -1,8 +1,10 @@
 "use client";
 
+import { FileUpload } from "@/app/_lib/components/FileUpload";
 import { Avatar, Input, Skeleton } from "@nextui-org/react";
 import { PencilEdit01Icon } from "hugeicons-react";
 import { useState, useEffect } from "react";
+import UpdateProfile from "./update/Profile";
 
 type Role = {
     idroleuser: number;
@@ -87,11 +89,16 @@ export default function Profile() {
                 <h1 className="text-3xl">Datos personales</h1>
             </section>
             <section className="flex w-full">
-                <Avatar
-                    name={`${user.nameuser?.[0] || ""}${user.lastnameuser?.[0] || ""}`}
-                    src={user.profileuser || undefined}
-                    className="w-52 h-52 text-7xl"
-                />
+                <div className="relative group">
+                    <Avatar
+                        name={`${user.nameuser?.[0] || ""}${user.lastnameuser?.[0] || ""}`}
+                        src={user.profileuser || undefined}
+                        className="w-52 h-52 text-7xl"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100">
+                        <UpdateProfile />
+                    </div>
+                </div>
                 <section className="p-2 flex flex-col gap-4 grow justify-center">
                     <div className="flex gap-4">
                         <Input
