@@ -6,7 +6,6 @@ import { isWeekend, parseDate } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import Link from "next/link";
 
-
 export default function PlanningPage() {
     const minDate = parseDate("2024-09-02");
     const maxDate = parseDate("2024-09-13");

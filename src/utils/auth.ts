@@ -1,4 +1,3 @@
-// src/utils/auth.ts
 export const getUserFromToken = (token: string) => {
     if (!token) return null;
 

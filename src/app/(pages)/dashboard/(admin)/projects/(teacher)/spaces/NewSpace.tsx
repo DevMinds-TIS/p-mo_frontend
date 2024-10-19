@@ -4,14 +4,20 @@ import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
-import React from "react";
-import FileUpload from "@/app/_lib/components/FileUpload";
+import React, { useState } from "react";
+import { FileUpload } from "@/app/_lib/components/FileUpload";
 
-export default function NewProject() {
+export default function NewSpace() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const minDate = parseDate("2024-08-12");
     const maxDate = parseDate("2024-12-27");
+    
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleFileChange = (newFile: File | null) => {
+        setFile(newFile);
+      };
 
     return (
         <section>
@@ -24,10 +30,6 @@ export default function NewProject() {
                         <div>
                             <ModalHeader className="flex flex-col gap-1">Crear espacio</ModalHeader>
                             <ModalBody>
-                                <Input
-                                    label="Código del proyecto"
-                                    placeholder="Escribe el código para enlazar al proyecto general"
-                                />
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -56,7 +58,7 @@ export default function NewProject() {
                                 />
                                 <div>
                                     <p>Lista de alumnos</p>
-                                    <FileUpload/>
+                                    <FileUpload onChange={handleFileChange}/>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
