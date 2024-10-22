@@ -164,6 +164,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
                         {translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
+                        {/* {(path.charAt(0).toUpperCase() + path.slice(1))} */}
                       </Link>
                     </BreadcrumbItem>
                   ))}

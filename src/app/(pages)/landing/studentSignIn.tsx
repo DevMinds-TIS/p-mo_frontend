@@ -72,13 +72,52 @@ export default function StudentSignIn() {
         fetchTeachers();
     }, []);
 
+    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault();
+
+    //     if (!isSingupValid && !docenteId) {
+    //         return;
+    //     }
+
+    //     const userData = {
+    //         nameuser: name,
+    //         lastnameuser: lastname,
+    //         emailuser: email,
+    //         passworduser: passwd,
+    //         idrol: 3,
+    //         siscode: siscode,
+    //         use_iduser: docenteId,
+    //     };
+
+    //     try {
+    //         const response = await fetch('http://localhost:8000/api/register', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(userData),
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error('Error al crear el usuario');
+    //         }
+
+    //         const result = await response.json();
+    //         console.log('Usuario creado:', result);
+    //         router.push('/dashboard/profile');
+
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     }
+    // };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+    
         if (!isSingupValid && !docenteId) {
             return;
         }
-
+    
         const userData = {
             nameuser: name,
             lastnameuser: lastname,
@@ -88,7 +127,7 @@ export default function StudentSignIn() {
             siscode: siscode,
             use_iduser: docenteId,
         };
-
+    
         try {
             const response = await fetch('http://localhost:8000/api/register', {
                 method: 'POST',
@@ -97,19 +136,24 @@ export default function StudentSignIn() {
                 },
                 body: JSON.stringify(userData),
             });
-
+    
             if (!response.ok) {
                 throw new Error('Error al crear el usuario');
             }
-
+    
             const result = await response.json();
             console.log('Usuario creado:', result);
+            
+            // Almacenar el token en el localStorage
+            localStorage.setItem('token', result.token);
+    
+            // Redirigir al dashboard u otra página
             router.push('/dashboard/profile');
-
         } catch (error) {
             console.error('Error:', error);
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
