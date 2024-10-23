@@ -121,6 +121,7 @@ export default function PruevaPage() {
                 <h3>{titulo}</h3>
               </div>
               <div className="flex gap-[5px] px-[6px] w-full">
+                {/*cambiar el tamaño de length para la nota */}
                 {Array.from({ length: 10 }, (_, idx) => {
                   const nota = idx + 1;
                   return (
