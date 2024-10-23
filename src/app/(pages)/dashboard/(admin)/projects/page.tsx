@@ -208,6 +208,7 @@ import { SearchIcon } from "@nextui-org/shared-icons";
 import NewProject from "./NewProject";
 import { FolderLinksIcon, MoreVerticalIcon } from "hugeicons-react";
 import Link from 'next/link';
+import Criterios from './(teacher)/criterios/NewCriterio';
 
 type Role = {
   idroleuser: number;
@@ -317,6 +318,7 @@ export default function ProjectSpace() {
         />
         {isAdmin && <NewProject />}
       </section>
+      <Criterios></Criterios>
       <section className="flex flex-wrap p-4 gap-4">
         {projects.map(project => (
           <div className='flex' key={project.idproject}>
