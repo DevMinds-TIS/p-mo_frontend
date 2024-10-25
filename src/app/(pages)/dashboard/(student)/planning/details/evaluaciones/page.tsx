@@ -125,7 +125,7 @@ export default function PruevaPage() {
                     onClick={() => eliminarFicha('Autoevaluacion', index)} 
                     className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
                   >x</button>
-                  <Link href={'/dashboard/planning/details/PlanillaEvaluacion'}>
+                  <Link href={`/dashboard/planning/details/PlanillaEvaluacion?tipoEvaluacion=autoevaluacion`}>
                     <button 
                       //onClick={() => handleClickPlanillaEvaluacion('autoevaluacion')} 
                       className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
@@ -166,7 +166,7 @@ export default function PruevaPage() {
                     onClick={() => eliminarFicha('Pares', index)} 
                     className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
                   >x</button>
-                  <Link href={'/dashboard/planning/details/PlanillaEvaluacion'}>
+                  <Link href={`/dashboard/planning/details/PlanillaEvaluacion?tipoEvaluacion=evaluacionPares`}>
                     <button 
                       //onClick={() => handleClickPlanillaEvaluacion('evaluacionPares')}* 
                       className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
@@ -207,7 +207,7 @@ export default function PruevaPage() {
                     onClick={() => eliminarFicha('Cruzada', index)} 
                     className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
                   >x</button>
-                  <Link href={'/dashboard/planning/details/PlanillaEvaluacion'}>
+                  <Link href={`/dashboard/planning/details/PlanillaEvaluacion?tipoEvaluacion=evaluacionCruzada`}>
                     <button 
                       //onClick={() => handleClickPlanillaEvaluacion('evaluacionCruzada')} 
                       className="flex w-[30px] h-[30px] items-center justify-center bg-[#FE7F2D]	rounded-md m-0"
