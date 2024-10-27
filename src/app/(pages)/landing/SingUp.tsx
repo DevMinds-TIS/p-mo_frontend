@@ -1,6 +1,7 @@
 import {Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure, Tabs, Tab} from "@nextui-org/react";
 import StudentSignIn from "./studentSignIn";
 import TeacherSignIn from "./teacherSignIn";
+import AdminSignIn from "./adminSignIn";
 
 export default function SingUp() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -14,7 +15,8 @@ export default function SingUp() {
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1 text-5xl">Únete</ModalHeader>
+                {/* <ModalHeader className="flex flex-col gap-1 text-5xl">Únete</ModalHeader> */}
+                <ModalHeader><AdminSignIn/></ModalHeader>
                 <ModalBody>
                   <Tabs aria-label="Options" size="lg" fullWidth>
                     <Tab key="student" title="Estudiante">

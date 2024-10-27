@@ -18,10 +18,16 @@ export default function StudentSignIn() {
         setIsEmailTouched,
         name,
         setName,
+        isNameTouched,
+        setIsNameTouched,
         lastname,
         setLastname,
+        isLastNameTouched,
+        setIsLastNameTouched,
         siscode,
         setSisCode,
+        isSiscodeTouched,
+        setIsSiscodeTouched,
         isInvalidEmail,
         isInvalidPasswd,
         isInvalidName,
@@ -124,9 +130,12 @@ export default function StudentSignIn() {
                     isClearable
                     label="Nombre"
                     placeholder="Ingrese su nombre"
-                    isInvalid={isInvalidName}
+                    isInvalid={isNameTouched && isInvalidName}
                     errorMessage="El campo nombre debe contener al menos 3 caracteres"
-                    onValueChange={setName}
+                    onValueChange={(name) => {
+                        setName(name);
+                        setIsNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -135,9 +144,12 @@ export default function StudentSignIn() {
                     isClearable
                     label="Apellido"
                     placeholder="Ingrese su apellido"
-                    isInvalid={isInvalidLastname}
+                    isInvalid={isLastNameTouched && isInvalidLastname}
                     errorMessage="El campo apellido debe contener al menos 5 caracteres"
-                    onValueChange={setLastname}
+                    onValueChange={(lastname) => {
+                        setLastname(lastname);
+                        setIsLastNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -183,9 +195,12 @@ export default function StudentSignIn() {
                 isClearable
                 label="Codigo SIS"
                 placeholder="Ingrese su codigo SIS"
-                isInvalid={isInvalidSiscode}
+                isInvalid={isSiscodeTouched && isInvalidSiscode}
                 errorMessage="El campo codigo SIS debe contener al menos 9 caracteres"
-                onValueChange={setSisCode}
+                onValueChange={(siscode) => {
+                    setSisCode(siscode);
+                    setIsSiscodeTouched(true);
+                }}
                 maxLength={20}
             />
             <Select
