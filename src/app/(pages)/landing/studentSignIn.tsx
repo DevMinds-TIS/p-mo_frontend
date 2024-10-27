@@ -34,13 +34,14 @@ export default function StudentSignIn() {
     } = userStudent();
 
     type Teacher = {
-        key: string;
+        key: number;
         label: string;
     };
 
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-
     const [docenteId, setDocenteId] = useState<number | null>(null);
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -53,12 +54,10 @@ export default function StudentSignIn() {
                 const teachersData = await teachersResponse.json();
 
                 if (Array.isArray(teachersData.data)) {
-                    const teachersList: Teacher[] = teachersData.data
-                        .filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario']))
-                        .map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
-                            key: teacher['ID Usuario'].toString(),
-                            label: `${teacher['Nombre']} ${teacher['Apellido']}`,
-                        }));
+                    const teachersList: Teacher[] = teachersData.data.filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario'])).map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
+                        key: teacher['ID Usuario'],
+                        label: `${teacher['Nombre']} ${teacher['Apellido']}`,
+                    }));
                     setTeachers(teachersList);
                 } else {
                     console.error('Error: Expected an array but got:', teachersData.data);
@@ -72,52 +71,12 @@ export default function StudentSignIn() {
         fetchTeachers();
     }, []);
 
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    //     e.preventDefault();
-
-    //     if (!isSingupValid && !docenteId) {
-    //         return;
-    //     }
-
-    //     const userData = {
-    //         nameuser: name,
-    //         lastnameuser: lastname,
-    //         emailuser: email,
-    //         passworduser: passwd,
-    //         idrol: 3,
-    //         siscode: siscode,
-    //         use_iduser: docenteId,
-    //     };
-
-    //     try {
-    //         const response = await fetch('http://localhost:8000/api/register', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(userData),
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error('Error al crear el usuario');
-    //         }
-
-    //         const result = await response.json();
-    //         console.log('Usuario creado:', result);
-    //         router.push('/dashboard/profile');
-
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
-        if (!isSingupValid && !docenteId) {
+        if (!isSingupValid || docenteId === null) {
+            console.error('El formulario no es válido o el docente no ha sido seleccionado.');
             return;
         }
-    
         const userData = {
             nameuser: name,
             lastnameuser: lastname,
@@ -127,33 +86,35 @@ export default function StudentSignIn() {
             siscode: siscode,
             use_iduser: docenteId,
         };
-    
         try {
-            const response = await fetch('http://localhost:8000/api/register', {
+            const registerResponse = await fetch('http://localhost:8000/api/register-student', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(userData),
             });
-    
-            if (!response.ok) {
+            if (!registerResponse.ok) {
                 throw new Error('Error al crear el usuario');
             }
-    
-            const result = await response.json();
-            console.log('Usuario creado:', result);
-            
-            // Almacenar el token en el localStorage
+            const loginResponse = await fetch('http://localhost:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailuser: email, passworduser: passwd }),
+            });
+            if (!loginResponse.ok) {
+                throw new Error('Error al iniciar sesión');
+            }
+            const result = await loginResponse.json();
+            // console.log('Usuario creado e inició sesión:', result);
             localStorage.setItem('token', result.token);
-    
-            // Redirigir al dashboard u otra página
             router.push('/dashboard/profile');
         } catch (error) {
             console.error('Error:', error);
         }
     };
-    
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -230,15 +191,25 @@ export default function StudentSignIn() {
             <Select
                 label="Docente"
                 placeholder="Seleccione a su tutor/docente"
-                onSelectionChange={(key) => setDocenteId(Number(key))}>
+                selectedKeys={selectedKeys}
+                onSelectionChange={(keys) => {
+                    setSelectedKeys(keys as Set<string>);
+                    const key = Array.from(keys)[0];
+                    const selectedTeacher = teachers.find(teacher => teacher.key.toString() === key);
+                    if (selectedTeacher) {
+                        setDocenteId(selectedTeacher.key);
+                    } else {
+                        console.error('Error: El valor seleccionado no corresponde a ningún docente válido.');
+                    }
+                }}
+            >
                 {teachers.map((teacher: Teacher) => (
-                    <SelectItem key={teacher.key} value={teacher.key}>
+                    <SelectItem key={teacher.key.toString()} value={teacher.key.toString()}>
                         {teacher.label}
                     </SelectItem>
                 ))}
             </Select>
-
-            <Button type="submit" isDisabled={!isSingupValid && !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
+            <Button type="submit" isDisabled={!isSingupValid || !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
                 Unirse
             </Button>
         </form>

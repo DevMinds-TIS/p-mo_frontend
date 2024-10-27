@@ -50,7 +50,7 @@ export default function TeacherSignIn() {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/api/register', {
+            const response = await fetch('http://localhost:8000/api/register-teacher', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
