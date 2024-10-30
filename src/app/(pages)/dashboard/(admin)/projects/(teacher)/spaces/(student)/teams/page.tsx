@@ -1,16 +1,19 @@
+"use client";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import Link from "next/link";
+import NewTeam from "./NewTeam";
 
 export default function TeamsPage() {
     return (
         <section>
-            <div>
+            <div className="flex justify-between">
                 <h1 className="text-4xl p-4">
                     Equipos
                 </h1>
+                <NewTeam/>
             </div>
             <div className="flex flex-wrap gap-4 p-4">
-                <Link href={"teams/team"}>
+                <Link href={"team"}>
                     <Card shadow="sm" isPressable>
                         <CardBody className="overflow-visible p-0">
                             <Image

@@ -144,7 +144,8 @@ export default function ProjectPage() {
                 {projects.map(project => (
                     <div className='flex' key={project.ID}>
                         <Link
-                            href={`/dashboard/projects/${project.Código}`}
+                            // href={`/dashboard/projects/${project.Código}`}
+                            href={`/dashboard/projects/spaces`}
                             className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
                         >
                             <FolderLinksIcon size={30} />
