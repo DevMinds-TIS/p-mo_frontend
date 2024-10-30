@@ -120,10 +120,11 @@ export default function ProjectPage() {
 
     const isAdmin = user.roles.some(role => role.idrol === 1);
     const isTeacher = user.roles.some(role => role.idrol === 2);
+    const isStudent = user.roles.some(role => role.idrol === 3);
 
     const handleNewProject = (newProject: Project) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
-    };   
+    };
 
     return (
         <section className="flex flex-col gap-y-8">
@@ -136,15 +137,14 @@ export default function ProjectPage() {
                     className="w-auto"
                     startContent={<SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />}
                 />
-                {/* {isAdmin && <NewProject />} */}
                 {isAdmin && <NewProject onNewProject={handleNewProject} />}
             </section>
             <section className="flex flex-wrap p-4 gap-4">
                 {projects.map(project => (
                     <div className='flex' key={project.ID}>
                         <Link
-                            href={`/dashboard/projects/spaces/${project.ID}`}
-                            className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
+                            href={`/dashboard/projects/${project.Código}`}
+                            className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
                         >
                             <FolderLinksIcon size={30} />
                             {project['Código']}
@@ -167,7 +167,6 @@ export default function ProjectPage() {
                     </div>
                 ))}
             </section>
-
         </section>
     );
 }

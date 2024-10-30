@@ -96,11 +96,11 @@ export default function UpdateProfile() {
     }
 
     const formData = new FormData();
-    formData.append("profile_image", file);
+    formData.append("profileuser", file);
 
     try {
       const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
         },
