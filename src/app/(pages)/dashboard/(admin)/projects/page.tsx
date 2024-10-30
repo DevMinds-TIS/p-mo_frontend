@@ -5,6 +5,7 @@ import { SearchIcon } from "@nextui-org/shared-icons";
 import NewProject from "./NewProject";
 import { FolderLinksIcon, MoreVerticalIcon } from "hugeicons-react";
 import Link from 'next/link';
+import Criterios from './(teacher)/criterios/NewCriterio';
 
 type Role = {
     idroleuser: number;
