@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Link from 'next/link';
-import { Calendar03Icon, FolderLibraryIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon } from "hugeicons-react";
+import { Calendar03Icon, FolderLibraryIcon, LockKeyIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon, UserSwitchIcon } from "hugeicons-react";
 import { useEffect, useState } from 'react';
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 import { usePathname } from "next/navigation";
@@ -33,23 +33,26 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
   const navItems: { [key: number]: { href: string, icon: any, label: string }[] } = {
     1: [
       { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
-      { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
-      { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
-      { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
+      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
+      // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
+      // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
+      { href: "/dashboard/roles", icon: UserSwitchIcon , label: "Roles" },
+      { href: "/dashboard/permissions", icon: LockKeyIcon , label: "Permisos" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     2: [
       { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-      { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
+      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     3: [
       { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
-      { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
-      { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
-      { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
+      { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
+      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
+      // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
+      // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
   };
@@ -71,6 +74,9 @@ const translations: { [key: string]: string } = {
   spaces: "Espacios",
   notification: "Notificaciones",
   profile: "Perfil",
+  roles: "Roles",
+  permissions: "Permisos",
+  teams: "Equipos"
 };
 
 
@@ -164,6 +170,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
                         {translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
+                        {/* {(path.charAt(0).toUpperCase() + path.slice(1))} */}
                       </Link>
                     </BreadcrumbItem>
                   ))}
@@ -174,7 +181,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <ThemeSwitcher />
             </div>
           </Navbar>
-          <section className="flex h-full">
+          <section className="flex h-full overflow-hidden">
             <Navbar className={`flex flex-col ${isExpanded ? 'w-60 rounded-r-xl' : 'w-20'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
               <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
                 {filteredNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (

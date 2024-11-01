@@ -47,7 +47,7 @@ export default function SpacePage() {
                 <NewSpace />
             </section>
             <section className="flex flex-wrap gap-4 p-4">
-                <Link href={"teams"}>
+                <Link href={"spaces/teams"}>
                     <Card className="w-fit">
                         <CardHeader className="justify-between">
                             <div className="flex gap-5">

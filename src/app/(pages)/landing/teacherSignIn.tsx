@@ -18,10 +18,16 @@ export default function TeacherSignIn() {
         setIsEmailTouched,
         name,
         setName,
+        isNameTouched,
+        setIsNameTouched,
         lastname,
         setLastname,
+        isLastNameTouched,
+        setIsLastNameTouched,
         code,
         setCode,
+        isCodeTouched,
+        setIsCodeTouched,
         isInvalidEmail,
         isInvalidPasswd,
         isInvalidName,
@@ -46,11 +52,12 @@ export default function TeacherSignIn() {
             emailuser: email,
             passworduser: passwd,
             idrol: 2,
-            teachertoken: code,
+            teacherpermission: code,
         };
+        console.log(userData);
 
         try {
-            const response = await fetch('http://localhost:8000/api/register', {
+            const response = await fetch('http://localhost:8000/api/register-teacher', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,13 +70,11 @@ export default function TeacherSignIn() {
             }
 
             const result = await response.json();
-            console.log('Usuario creado:', result);
-            // Redirigir a /dashboard después de un registro exitoso
+            localStorage.setItem('token', result.token);
             router.push('/dashboard/profile');
 
         } catch (error) {
             console.error('Error:', error);
-            // Manejar el error, como mostrar un mensaje de error al usuario
         }
     };
 
@@ -81,9 +86,12 @@ export default function TeacherSignIn() {
                     isClearable
                     label="Nombre"
                     placeholder="Ingrese su nombre"
-                    isInvalid={isInvalidName}
+                    isInvalid={isNameTouched && isInvalidName}
                     errorMessage="El campo nombre debe contener al menos 3 caracteres"
-                    onValueChange={setName}
+                    onValueChange={(name) => {
+                        setName(name);
+                        setIsNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -92,9 +100,12 @@ export default function TeacherSignIn() {
                     isClearable
                     label="Apellido"
                     placeholder="Ingrese su apellido"
-                    isInvalid={isInvalidLastname}
+                    isInvalid={isLastNameTouched && isInvalidLastname}
                     errorMessage="El campo apellido debe contener al menos 5 caracteres"
-                    onValueChange={setLastname}
+                    onValueChange={(lastname) => {
+                        setLastname(lastname);
+                        setIsLastNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -138,9 +149,16 @@ export default function TeacherSignIn() {
             <div className="flex space-x-4">
                 <Input
                     value={code}
+                    isClearable
                     label="Código secreto"
                     placeholder="Solicita el código y escríbele aquí"
-                    onValueChange={setCode}
+                    isInvalid={isCodeTouched && isInvalidCode}
+                    errorMessage="El código debe contener al menos 8 caracteres"
+                    onValueChange={(code) => {
+                        setCode(code);
+                        setIsCodeTouched(true);
+                    }}
+                    maxLength={12}
                 >
                 </Input>
                 <Button className="text-white bg-[#ff9b5a] h-auto" isDisabled={true}>

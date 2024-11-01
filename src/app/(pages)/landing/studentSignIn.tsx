@@ -18,10 +18,16 @@ export default function StudentSignIn() {
         setIsEmailTouched,
         name,
         setName,
+        isNameTouched,
+        setIsNameTouched,
         lastname,
         setLastname,
+        isLastNameTouched,
+        setIsLastNameTouched,
         siscode,
         setSisCode,
+        isSiscodeTouched,
+        setIsSiscodeTouched,
         isInvalidEmail,
         isInvalidPasswd,
         isInvalidName,
@@ -34,13 +40,14 @@ export default function StudentSignIn() {
     } = userStudent();
 
     type Teacher = {
-        key: string;
+        key: number;
         label: string;
     };
 
     const [teachers, setTeachers] = useState<Teacher[]>([]);
-
     const [docenteId, setDocenteId] = useState<number | null>(null);
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -53,12 +60,10 @@ export default function StudentSignIn() {
                 const teachersData = await teachersResponse.json();
 
                 if (Array.isArray(teachersData.data)) {
-                    const teachersList: Teacher[] = teachersData.data
-                        .filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario']))
-                        .map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
-                            key: teacher['ID Usuario'].toString(),
-                            label: `${teacher['Nombre']} ${teacher['Apellido']}`,
-                        }));
+                    const teachersList: Teacher[] = teachersData.data.filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario'])).map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
+                        key: teacher['ID Usuario'],
+                        label: `${teacher['Nombre']} ${teacher['Apellido']}`,
+                    }));
                     setTeachers(teachersList);
                 } else {
                     console.error('Error: Expected an array but got:', teachersData.data);
@@ -74,11 +79,10 @@ export default function StudentSignIn() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (!isSingupValid && !docenteId) {
+        if (!isSingupValid || docenteId === null) {
+            console.error('El formulario no es válido o el docente no ha sido seleccionado.');
             return;
         }
-
         const userData = {
             nameuser: name,
             lastnameuser: lastname,
@@ -88,24 +92,31 @@ export default function StudentSignIn() {
             siscode: siscode,
             use_iduser: docenteId,
         };
-
         try {
-            const response = await fetch('http://localhost:8000/api/register', {
+            const registerResponse = await fetch('http://localhost:8000/api/register-student', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(userData),
             });
-
-            if (!response.ok) {
+            if (!registerResponse.ok) {
                 throw new Error('Error al crear el usuario');
             }
-
-            const result = await response.json();
-            console.log('Usuario creado:', result);
+            const loginResponse = await fetch('http://localhost:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emailuser: email, passworduser: passwd }),
+            });
+            if (!loginResponse.ok) {
+                throw new Error('Error al iniciar sesión');
+            }
+            const result = await loginResponse.json();
+            // console.log('Usuario creado e inició sesión:', result);
+            localStorage.setItem('token', result.token);
             router.push('/dashboard/profile');
-
         } catch (error) {
             console.error('Error:', error);
         }
@@ -119,9 +130,12 @@ export default function StudentSignIn() {
                     isClearable
                     label="Nombre"
                     placeholder="Ingrese su nombre"
-                    isInvalid={isInvalidName}
+                    isInvalid={isNameTouched && isInvalidName}
                     errorMessage="El campo nombre debe contener al menos 3 caracteres"
-                    onValueChange={setName}
+                    onValueChange={(name) => {
+                        setName(name);
+                        setIsNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -130,9 +144,12 @@ export default function StudentSignIn() {
                     isClearable
                     label="Apellido"
                     placeholder="Ingrese su apellido"
-                    isInvalid={isInvalidLastname}
+                    isInvalid={isLastNameTouched && isInvalidLastname}
                     errorMessage="El campo apellido debe contener al menos 5 caracteres"
-                    onValueChange={setLastname}
+                    onValueChange={(lastname) => {
+                        setLastname(lastname);
+                        setIsLastNameTouched(true);
+                    }}
                     maxLength={60}
                     className="md:w-[48%]"
                 />
@@ -178,23 +195,36 @@ export default function StudentSignIn() {
                 isClearable
                 label="Codigo SIS"
                 placeholder="Ingrese su codigo SIS"
-                isInvalid={isInvalidSiscode}
+                isInvalid={isSiscodeTouched && isInvalidSiscode}
                 errorMessage="El campo codigo SIS debe contener al menos 9 caracteres"
-                onValueChange={setSisCode}
+                onValueChange={(siscode) => {
+                    setSisCode(siscode);
+                    setIsSiscodeTouched(true);
+                }}
                 maxLength={20}
             />
             <Select
                 label="Docente"
                 placeholder="Seleccione a su tutor/docente"
-                onSelectionChange={(key) => setDocenteId(Number(key))}>
+                selectedKeys={selectedKeys}
+                onSelectionChange={(keys) => {
+                    setSelectedKeys(keys as Set<string>);
+                    const key = Array.from(keys)[0];
+                    const selectedTeacher = teachers.find(teacher => teacher.key.toString() === key);
+                    if (selectedTeacher) {
+                        setDocenteId(selectedTeacher.key);
+                    } else {
+                        console.error('Error: El valor seleccionado no corresponde a ningún docente válido.');
+                    }
+                }}
+            >
                 {teachers.map((teacher: Teacher) => (
-                    <SelectItem key={teacher.key} value={teacher.key}>
+                    <SelectItem key={teacher.key.toString()} value={teacher.key.toString()}>
                         {teacher.label}
                     </SelectItem>
                 ))}
             </Select>
-
-            <Button type="submit" isDisabled={!isSingupValid && !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
+            <Button type="submit" isDisabled={!isSingupValid || !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
                 Unirse
             </Button>
         </form>

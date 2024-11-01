@@ -8,11 +8,14 @@ export default function userForms() {
   const [isEmailTouched, setIsEmailTouched] = React.useState(false);
 
   const [name, setName] = React.useState("");
+  const [isNameTouched, setIsNameTouched] = React.useState(false);
   const [lastname, setLastname] = React.useState("");
-  const [rol, setRol] = React.useState("");
+  const [isLastNameTouched, setIsLastNameTouched] = React.useState(false);
 
   const [code, setCode] = React.useState("");
+  const [isCodeTouched, setIsCodeTouched] = React.useState(false);
   const [siscode, setSisCode] = React.useState("");
+  const [isSiscodeTouched, setIsSiscodeTouched] = React.useState(false);
 
 
   const validateEmail = (email: string) => email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -100,12 +103,20 @@ export default function userForms() {
     setIsEmailTouched,
     name,
     setName,
+    isNameTouched,
+    setIsNameTouched,
     lastname,
     setLastname,
+    isLastNameTouched,
+    setIsLastNameTouched,
     code,
     setCode,
+    isCodeTouched,
+    setIsCodeTouched,
     siscode,
     setSisCode,
+    isSiscodeTouched,
+    setIsSiscodeTouched,
     isInvalidEmail,
     isInvalidPasswd,
     isInvalidName,
