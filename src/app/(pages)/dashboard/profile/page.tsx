@@ -1,10 +1,7 @@
 "use client";
-
-import { FileUpload } from "@/app/_lib/components/FileUpload";
-import { Avatar, Input, Skeleton, User } from "@nextui-org/react";
-import { PencilEdit01Icon } from "hugeicons-react";
+import { Avatar, Divider, Skeleton, User } from "@nextui-org/react";
 import { useState, useEffect } from "react";
-import UpdateProfile from "./update/Profile";
+import UpdateProfile from "./UpdateProfile";
 
 type Role = {
     idroleuser: number;
@@ -29,6 +26,7 @@ type User = {
 
 export default function Profile() {
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
@@ -51,8 +49,10 @@ export default function Profile() {
 
             const data = await response.json();
             setUser(data);
+            setIsLoading(false);
         } catch (error) {
             console.error("Error al obtener los datos del usuario:", error);
+            setIsLoading(false);
         }
     };
 
@@ -60,7 +60,7 @@ export default function Profile() {
         fetchUserData();
     }, []);
 
-    if (!user) {
+    if (isLoading || !user) {
         return (
             <section className="flex flex-col gap-y-8">
                 <div className="flex w-full h-10 justify-between items-center">
@@ -91,10 +91,13 @@ export default function Profile() {
                 <h1 className="text-3xl">Perfil</h1>
             </div>
             <div className="flex">
-                <div className="w-[30%] flex flex-col text-center">
-                    <h1 className="font-bold text-xl">
-                        Datos personales
-                    </h1>
+                <div className="w-[30%] flex flex-col gap-1">
+                    <div className="flex justify-between items-center">
+                        <h1 className="font-bold text-xl">
+                            Datos personales
+                        </h1>
+                        <UpdateProfile/>
+                    </div>
                     <div className="flex justify-center">
                         <Avatar
                             name={`${user.nameuser?.[0] || ""}${user.lastnameuser?.[0] || ""}`}
@@ -109,7 +112,8 @@ export default function Profile() {
                         {user.emailuser}
                     </p>
                     {isStudent && user.user && (
-                        <div>
+                        <div className="flex flex-col gap-2">
+                            <Divider />
                             <User
                                 name={`${user.user.nameuser} ${user.user.lastnameuser}`}
                                 description={user.user.emailuser}
@@ -117,8 +121,9 @@ export default function Profile() {
                                     name: !user.user.profileuser ? `${user.user.nameuser?.[0] || ''}${user.user.lastnameuser?.[0] || ''}` : undefined,
                                     src: user.user.profileuser || undefined,
                                 }}
-                                className="border w-fit p-2"
+                                className="justify-start"
                             />
+                            <Divider />
                         </div>
                     )}
                 </div>
