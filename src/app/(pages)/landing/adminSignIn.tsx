@@ -3,9 +3,28 @@ import userAdmin from "@/app/_lib/landing/userForm";
 import { useRouter } from 'next/navigation';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure, Input } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function AdminSignIn() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [clickCount, setClickCount] = useState(0);
+    const targetClicks = 3;
+
+    const handleButtonClick = () => {
+        setClickCount((prev) => {
+            const newCount = prev + 1;
+            if (newCount >= targetClicks) {
+                onOpen();
+            }
+            return newCount;
+        });
+    };
+
+    const handleModalClose = () => {
+        setClickCount(0);
+        onOpenChange();
+    };
+
     const router = useRouter();
     const {
         email,
@@ -66,7 +85,7 @@ export default function AdminSignIn() {
             }
 
             const result = await response.json();
-            console.log('Usuario creado:', result);
+            // console.log('Usuario creado:', result);
             // Redirigir a /dashboard después de un registro exitoso
             localStorage.setItem('token', result.token);
             router.push('/dashboard/profile');
@@ -79,10 +98,10 @@ export default function AdminSignIn() {
 
     return (
         <section className="w-full">
-            <Button onPress={onOpen} className="bg-transparent text-5xl h-full pt-2 px-0">
+            <Button onPress={handleButtonClick} className="bg-transparent text-5xl h-full pt-2 px-0 cursor-default">
                 Únete
             </Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">
+            <Modal isOpen={isOpen} onOpenChange={(isOpen) => {if (!isOpen) {handleModalClose();}onOpenChange();}} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">
                 <ModalContent>
                     {(onClose) => (
                         <div>
