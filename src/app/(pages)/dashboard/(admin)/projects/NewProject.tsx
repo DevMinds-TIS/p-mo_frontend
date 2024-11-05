@@ -4,12 +4,16 @@ import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 
 type Project = {
     ID: number;
     Código: string;
+};
+
+type User = {
+    iduser: number;
 };
 
 type NewProjectProps = {
@@ -22,11 +26,43 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
     const minDate = parseDate(`${currentYear}-01-01`);
     const maxDate = parseDate(`${currentYear}-12-31`);
 
+    const [user, setUser] = useState<User | null>(null);
+
     const [projectName, setProjectName] = useState("");
     const [projectCode, setProjectCode] = useState("");
     const [dateRange, setDateRange] = useState<{ start: string | null, end: string | null }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
+
+    const fetchUserData = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8000/api/user", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Error al obtener los datos del usuario");
+            }
+
+            const data = await response.json();
+            setUser(data);
+        } catch (error) {
+            console.error("Error al obtener los datos del usuario:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
 
     const handleInvitationFileChange = (newFile: File | null) => {
         setInvitationFile(newFile);
@@ -44,12 +80,22 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
             return;
         }
         const formData = new FormData();
+        formData.append("iduser", user?.iduser.toString() || "");
         formData.append("nameproject", projectName);
         formData.append("codeproject", projectCode);
         formData.append("startproject", dateRange.start ? dateRange.start.toString() : "");
         formData.append("endproject", dateRange.end ? dateRange.end.toString() : "");
-        if (invitationFile) formData.append("invitation", invitationFile);
-        if (specificationFile) formData.append("specification", specificationFile);
+        // Array de documentos 
+        const documents = [ 
+            { file: invitationFile, field: "invitation" }, 
+            { file: specificationFile, field: "specification" } 
+        ]; 
+        // Añadir documentos a FormData 
+        documents.forEach(document => { 
+            if (document.file) { 
+                formData.append(document.field, document.file); 
+            } 
+        });
         try {
             const response = await fetch("http://localhost:8000/api/projects", {
                 method: "POST",
@@ -69,7 +115,6 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
             console.error("Error al crear el proyecto:", error);
         }
     };
-
 
     return (
         <section>

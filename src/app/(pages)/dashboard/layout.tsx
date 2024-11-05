@@ -37,8 +37,8 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
       // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
       // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-      { href: "/dashboard/roles", icon: UserSwitchIcon , label: "Roles" },
-      { href: "/dashboard/permissions", icon: LockKeyIcon , label: "Permisos" },
+      { href: "/dashboard/roles", icon: UserSwitchIcon, label: "Roles" },
+      { href: "/dashboard/permissions", icon: LockKeyIcon, label: "Permisos" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     2: [
@@ -170,7 +170,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
                         {translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
-                        {/* {(path.charAt(0).toUpperCase() + path.slice(1))} */}
                       </Link>
                     </BreadcrumbItem>
                   ))}
@@ -194,7 +193,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 ))}
                 <Popover placement="right-end" className="gap-x-4">
                   <PopoverTrigger>
-                    <NavbarItem className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
+                    <NavbarItem
+                      className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
                       <Avatar
                         name={!user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined}
                         src={user?.profileuser || undefined}
@@ -205,7 +205,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </PopoverTrigger>
                   <PopoverContent>
                     <div className="flex flex-col px-1 py-2 gap-y-2">
-                      <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
+                      <Link href={"profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
                         <Tooltip content="Editar perfil" placement="right">
                           <User
                             name={`${user?.nameuser} ${user?.lastnameuser}`}

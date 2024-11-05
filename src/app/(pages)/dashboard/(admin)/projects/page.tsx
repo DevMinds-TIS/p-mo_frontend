@@ -66,7 +66,7 @@ const fetchProjects = async (): Promise<Project[]> => {
 };
 
 
-export default function ProjectPage() {
+export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
 
@@ -96,7 +96,7 @@ export default function ProjectPage() {
         fetchUserData();
     }, []);
 
-    if (!user) {
+    if (projects.length === 0 || !user) {
         return (
             <section className="flex flex-col gap-y-8">
                 <section className="flex w-full h-10 justify-between items-center">
@@ -144,8 +144,7 @@ export default function ProjectPage() {
                 {projects.map(project => (
                     <div className='flex' key={project.ID}>
                         <Link
-                            // href={`/dashboard/projects/${project.Código}`}
-                            href={`/dashboard/projects/spaces`}
+                            href={`/dashboard/projects/${project.Código}`}
                             className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
                         >
                             <FolderLinksIcon size={30} />

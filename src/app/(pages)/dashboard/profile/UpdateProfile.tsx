@@ -36,7 +36,7 @@ export default function UpdateProfile() {
     const [docentes, setDocentes] = useState<Docente[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
-    const [file, setFile] = useState<File | null>(null);
+    const [profileuser, setProfileuser] = useState<File | null>(null);
 
     const {
         passwd,
@@ -118,7 +118,7 @@ export default function UpdateProfile() {
                 }
                 setName(data.nameuser);
                 setLastname(data.lastnameuser);
-                setPasswd(data.passworduser);
+                // setPasswd(data.passworduser);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario:", error);
@@ -145,11 +145,11 @@ export default function UpdateProfile() {
     };
 
     const handleFileChange = async (newFile: File | null) => {
-        setFile(newFile);
+        setProfileuser(newFile);
         if (!newFile && user?.profileuser) {
             const response = await fetch(user.profileuser);
             const blob = await response.blob();
-            setFile(new File([blob], "Imagen_Perfil"));
+            setProfileuser(new File([blob], "Imagen_Perfil"));
         }
     };
 
@@ -195,37 +195,32 @@ export default function UpdateProfile() {
 
     // const handleSubmit = async (event: React.FormEvent) => {
     //     event.preventDefault();
-    
     //     const token = localStorage.getItem("token");
     //     if (!token) {
     //         console.error("No token found");
     //         return;
     //     }
-    
+
     //     const formData = new FormData();
     //     formData.append("nameuser", name);
     //     formData.append("lastnameuser", lastname);
     //     formData.append("passworduser", passwd);
     //     formData.append("use_iduser", Array.from(selectedKeys)[0]);
-    
-    //     if (file) {
-    //         formData.append("profileuser", file);
+    //     if (profileuser) {
+    //         formData.append("profileuser", profileuser);
     //     }
-    
+
     //     try {
-    //         const response = await fetch(`http://localhost:8000/api/users/${user?.iduser}`, {
+    //         const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
     //             method: "PUT",
     //             headers: {
-    //                 "Content-Type": "multipart/form-data",
-    //                 Authorization: `Bearer ${token}`,
+    //                 "Authorization": `Bearer ${token}`,
     //             },
     //             body: formData,
     //         });
-    
     //         if (!response.ok) {
     //             throw new Error("Error al actualizar el usuario");
     //         }
-    
     //         const data = await response.json();
     //         setUser(data);
     //         onOpenChange();
@@ -233,7 +228,7 @@ export default function UpdateProfile() {
     //     } catch (error) {
     //         console.error("Error al actualizar el usuario:", error);
     //     }
-    // };    
+    // };
 
     return (
         <section>
@@ -260,6 +255,7 @@ export default function UpdateProfile() {
                                             <FileUpload
                                                 onChange={handleFileChange}
                                                 existingFile={user?.profileuser ? { name: "Imagen_Perfil", url: user.profileuser } : null}
+                                                readOnly={false}
                                             />
 
                                         </div>
