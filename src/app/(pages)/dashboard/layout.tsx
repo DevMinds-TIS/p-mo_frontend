@@ -205,7 +205,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </PopoverTrigger>
                   <PopoverContent>
                     <div className="flex flex-col px-1 py-2 gap-y-2">
-                      <Link href={"profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
+                      <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
                         <Tooltip content="Editar perfil" placement="right">
                           <User
                             name={`${user?.nameuser} ${user?.lastnameuser}`}

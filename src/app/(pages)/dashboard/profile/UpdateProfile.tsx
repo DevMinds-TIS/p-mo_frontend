@@ -144,83 +144,46 @@ export default function UpdateProfile() {
         }
     };
 
-    const handleFileChange = async (newFile: File | null) => {
-        setProfileuser(newFile);
-        if (!newFile && user?.profileuser) {
-            const response = await fetch(user.profileuser);
-            const blob = await response.blob();
-            setProfileuser(new File([blob], "Imagen_Perfil"));
-        }
-    };
+    // const handleFileChange = async (newFile: File | null) => {
+    //     setProfileuser(newFile);
+    //     if (!newFile && user?.profileuser) {
+    //         const response = await fetch(user.profileuser);
+    //         const blob = await response.blob();
+    //         setProfileuser(new File([blob], "Imagen_Perfil"));
+    //     }
+    // };
 
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        const updatedUser = {
-            nameuser: name,
-            lastnameuser: lastname,
-            passworduser: passwd,
-            use_iduser: Array.from(selectedKeys)[0]
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(updatedUser),
-            });
-
-            if (!response.ok) {
-                throw new Error("Error al actualizar el usuario");
-            }
-
-            const data = await response.json();
-            setUser(data);
-            onOpenChange();
-            window.location.reload();
-        } catch (error) {
-            console.error("Error al actualizar el usuario:", error);
-        }
-    };
 
     // const handleSubmit = async (event: React.FormEvent) => {
     //     event.preventDefault();
+
     //     const token = localStorage.getItem("token");
     //     if (!token) {
     //         console.error("No token found");
     //         return;
     //     }
 
-    //     const formData = new FormData();
-    //     formData.append("nameuser", name);
-    //     formData.append("lastnameuser", lastname);
-    //     formData.append("passworduser", passwd);
-    //     formData.append("use_iduser", Array.from(selectedKeys)[0]);
-    //     if (profileuser) {
-    //         formData.append("profileuser", profileuser);
-    //     }
+    //     const updatedUser = {
+    //         nameuser: name,
+    //         lastnameuser: lastname,
+    //         passworduser: passwd,
+    //         use_iduser: Array.from(selectedKeys)[0]
+    //     };
 
     //     try {
     //         const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
     //             method: "PUT",
     //             headers: {
-    //                 "Authorization": `Bearer ${token}`,
+    //                 "Content-Type": "application/json",
+    //                 Authorization: `Bearer ${token}`,
     //             },
-    //             body: formData,
+    //             body: JSON.stringify(updatedUser),
     //         });
+
     //         if (!response.ok) {
     //             throw new Error("Error al actualizar el usuario");
     //         }
+
     //         const data = await response.json();
     //         setUser(data);
     //         onOpenChange();
@@ -229,6 +192,73 @@ export default function UpdateProfile() {
     //         console.error("Error al actualizar el usuario:", error);
     //     }
     // };
+
+    const handleFileChange = async (newFile: File | null) => {
+        setProfileuser(newFile);
+        if (!newFile && user?.profileuser) {
+            const response = await fetch(user.profileuser);
+            const blob = await response.blob();
+            setProfileuser(new File([blob], "Imagen_Perfil", { type: blob.type }));
+        }
+    };
+    
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("nameuser", name);
+        formData.append("lastnameuser", lastname);
+    
+        if (passwd) {
+            formData.append("passworduser", passwd);
+        }
+    
+        if (selectedKeys.size > 0) {
+            formData.append("use_iduser", Array.from(selectedKeys)[0]);
+        }
+    
+        if (profileuser) {
+            formData.append("profileuser", profileuser);
+        }
+    
+        // Print the formData keys and values
+        for (const [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+    
+        console.log("Sending fetch request to update user...");
+    
+        try {
+            const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: formData,
+            });
+    
+            console.log("Fetch response status:", response.status);
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error response from server:", errorData);
+                throw new Error(`Error al actualizar el usuario: ${errorData.message}`);
+            }
+    
+            const data = await response.json();
+            console.log("User updated successfully:", data);
+            setUser(data);
+            onOpenChange();
+            window.location.reload();
+        } catch (error) {
+            console.error("Error al actualizar el usuario:", error);
+        }
+    };     
 
     return (
         <section>
