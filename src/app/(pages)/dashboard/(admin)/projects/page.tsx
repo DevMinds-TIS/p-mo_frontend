@@ -18,13 +18,8 @@ type User = {
     roles: Role[];
 };
 
-// type Project = {
-//     ID: number;
-//     Código: string;
-// };
-
 type Project = {
-    ID: number;
+    ID_Proyecto: number;
     Código: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
@@ -53,28 +48,6 @@ const fetchUser = async (): Promise<User> => {
     return data;
 };
 
-// const fetchProjects = async (): Promise<Project[]> => {
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//         throw new Error('No token found');
-//     }
-//     const response = await fetch(`${backendUrl}/projects`, {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`,
-//         },
-//     });
-//     if (!response.ok) {
-//         throw new Error('Error al obtener los proyectos');
-//     }
-//     const data = await response.json();
-//     console.log("Fetched projects:", data);
-//     if (!Array.isArray(data.data)) {
-//         throw new Error('Los datos obtenidos no son un array');
-//     }
-//     return data.data;
-// };
-
 const fetchProjects = async (): Promise<Project[]> => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -100,37 +73,6 @@ const fetchProjects = async (): Promise<Project[]> => {
 export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
-    const [minDate, setMinDate] = useState<DateValue>(parseDate("2024-09-01"));
-    const [maxDate, setMaxDate] = useState<DateValue>(parseDate("2024-09-01"));
-
-    // const minDate = parseDate("2024-09-01");
-    // const maxDate = parseDate("2024-09-14");
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const projectData = await fetchProjects();
-    //             setProjects(projectData);
-    //         } catch (error) {
-    //             console.error('Error al obtener los datos:', error);
-    //             setProjects([]);
-    //         }
-    //     };
-    //     fetchData();
-    // }, []);
-
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const userData = await fetchUser();
-    //             setUser(userData);
-    //         } catch (error) {
-    //             console.error('Error al obtener los datos del usuario:', error);
-    //         }
-    //     };
-
-    //     fetchUserData();
-    // }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -146,8 +88,6 @@ export default function ProjectsPage() {
                     const latestEndDate = projectData.reduce((latest, current) => {
                         return new Date(current.Fecha_Fin) > new Date(latest.Fecha_Fin) ? current : latest;
                     }).Fecha_Fin;
-                    setMinDate(parseDate(earliestStartDate));
-                    setMaxDate(parseDate(latestEndDate));
                 }
             } catch (error) {
                 console.error(error);
@@ -214,7 +154,7 @@ export default function ProjectsPage() {
             </section>
             <section className="flex flex-wrap p-4 gap-8">
                 {projects.map(project => (
-                    <div className='flex flex-col w-fit gap-2' key={project.ID}>
+                    <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
                         <div className='flex'>
                             <Link
                                 href={`/dashboard/projects/${project.Código}`}

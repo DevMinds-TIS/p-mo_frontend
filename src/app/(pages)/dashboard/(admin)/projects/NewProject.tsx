@@ -7,13 +7,8 @@ import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 
-// type Project = {
-//     ID: number;
-//     Código: string;
-// };
-
 type Project = {
-    ID: number;
+    ID_Proyecto: number;
     Código: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
@@ -79,50 +74,6 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
     const handleSpecificationFileChange = (newFile: File | null) => {
         setSpecificationFile(newFile);
     };
-
-    // const handleSubmit = async (event: React.FormEvent) => {
-    //     event.preventDefault();
-    //     const token = localStorage.getItem("token");
-    //     if (!token) {
-    //         console.error("No token found");
-    //         return;
-    //     }
-    //     const formData = new FormData();
-    //     formData.append("iduser", user?.iduser.toString() || "");
-    //     formData.append("nameproject", projectName);
-    //     formData.append("codeproject", projectCode);
-    //     formData.append("startproject", dateRange.start ? dateRange.start.toString() : "");
-    //     formData.append("endproject", dateRange.end ? dateRange.end.toString() : "");
-    //     // Array de documentos 
-    //     const documents = [ 
-    //         { file: invitationFile, field: "invitation" }, 
-    //         { file: specificationFile, field: "specification" } 
-    //     ]; 
-    //     // Añadir documentos a FormData 
-    //     documents.forEach(document => { 
-    //         if (document.file) { 
-    //             formData.append(document.field, document.file); 
-    //         } 
-    //     });
-    //     try {
-    //         const response = await fetch(`${backendUrl}/projects`, {
-    //             method: "POST",
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //             body: formData,
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error("Error al crear el proyecto");
-    //         }
-    //         const result = await response.json();
-    //         console.log("Proyecto creado exitosamente:", result);
-    //         onNewProject(result.data);
-    //         onOpenChange();
-    //     } catch (error) {
-    //         console.error("Error al crear el proyecto:", error);
-    //     }
-    // };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
