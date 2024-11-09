@@ -25,6 +25,7 @@ type User = {
 };
 
 export default function Profile() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -36,7 +37,7 @@ export default function Profile() {
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/user", {
+            const response = await fetch(`${backendUrl}/user`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,

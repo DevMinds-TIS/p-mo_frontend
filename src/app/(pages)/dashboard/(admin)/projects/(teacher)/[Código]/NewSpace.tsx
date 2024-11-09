@@ -23,13 +23,15 @@ type NewSpaceProps = {
     endDate: Date;
 };
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 const fetchUser = async (): Promise<User> => {
     const token = localStorage.getItem('token');
     if (!token) {
         throw new Error('No token found');
     }
 
-    const response = await fetch('http://localhost:8000/api/user', {
+    const response = await fetch(`${backendUrl}/user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -112,7 +114,7 @@ export default function NewSpace({ params, startDate, endDate }: NewSpaceProps) 
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/spaces", {
+            const response = await fetch(`${backendUrl}/spaces`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,

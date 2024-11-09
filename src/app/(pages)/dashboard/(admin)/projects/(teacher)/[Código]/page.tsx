@@ -31,10 +31,17 @@ type User = {
     Apellido: string;
 };
 
+// Tu componente
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
+
+console.log(backendUrl);
+console.log(storageUrl);
+
 const fetchProjectByCode = async (code: string): Promise<Project | null> => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
-    const response = await fetch(`http://localhost:8000/api/projects`, {
+    const response = await fetch(`${backendUrl}/projects`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -51,7 +58,7 @@ const fetchProjectByCode = async (code: string): Promise<Project | null> => {
 const fetchDocumentsByProjectId = async (projectId: number): Promise<Document[]> => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
-    const response = await fetch(`http://localhost:8000/api/documents`, {
+    const response = await fetch(`${backendUrl}/documents`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -70,7 +77,7 @@ const fetchUser = async (): Promise<User> => {
         throw new Error('No token found');
     }
 
-    const response = await fetch('http://localhost:8000/api/user', {
+    const response = await fetch(`${backendUrl}/user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -160,7 +167,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                 return;
                             }
 
-                            const response = await fetch(`http://localhost:8000/api/documents/${document.ID_Documento}`, {
+                            const response = await fetch(`${backendUrl}/documents/${document.ID_Documento}`, {
                                 headers: {
                                     'Authorization': `Bearer ${token}`,
                                 },
@@ -178,7 +185,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                             <CardBody className="overflow-visible p-0 w-full h-full">
                                 <FileUpload
                                     onChange={(file) => console.log("File changed:", file)}
-                                    existingFile={{ name: document.Nombre, url: `http://localhost:8000/storage/${document.Dirección}` }}
+                                    existingFile={{ name: document.Nombre, url: `${storageUrl}/${document.Dirección}` }}
                                     readOnly={true}
                                 />
                             </CardBody>

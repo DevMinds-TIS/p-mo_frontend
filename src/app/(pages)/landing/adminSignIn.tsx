@@ -6,6 +6,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure, Inp
 import { useState } from "react";
 
 export default function AdminSignIn() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [clickCount, setClickCount] = useState(0);
     const targetClicks = 3;
@@ -72,7 +73,7 @@ export default function AdminSignIn() {
         console.log(userData);
 
         try {
-            const response = await fetch('http://localhost:8000/api/register-admin', {
+            const response = await fetch(`${backendUrl}/register-admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

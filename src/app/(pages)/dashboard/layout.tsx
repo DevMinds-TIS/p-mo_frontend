@@ -81,6 +81,7 @@ const translations: { [key: string]: string } = {
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleNavbar = () => {
@@ -103,7 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return;
       }
       try {
-        const response = await fetch('http://localhost:8000/api/user', {
+        const response = await fetch(`${backendUrl}/user`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -129,7 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return;
       }
 
-      const response = await fetch('http://localhost:8000/api/logout', {
+      const response = await fetch(`${backendUrl}/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

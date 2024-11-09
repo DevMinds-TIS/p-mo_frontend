@@ -31,6 +31,7 @@ type User = {
 };
 
 export default function UpdateProfile() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [user, setUser] = useState<User | null>(null);
     const [docentes, setDocentes] = useState<Docente[]>([]);
@@ -62,12 +63,12 @@ export default function UpdateProfile() {
     useEffect(() => {
         const fetchDocentes = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/role-user');
+                const response = await fetch(`${backendUrl}/role-user`);
                 const data = await response.json();
                 const teacherIds = data.data
                     .filter((user: { ID_Rol: number }) => user['ID_Rol'] === 2)
                     .map((user: { ID_Usuario: number }) => user['ID_Usuario']);
-                const teachersResponse = await fetch('http://localhost:8000/api/users');
+                const teachersResponse = await fetch(`${backendUrl}/users`);
                 const teachersData = await teachersResponse.json();
                 if (Array.isArray(teachersData.data)) {
                     const teachersList: Docente[] = teachersData.data
@@ -102,7 +103,7 @@ export default function UpdateProfile() {
                 return;
             }
             try {
-                const response = await fetch("http://localhost:8000/api/user", {
+                const response = await fetch(`${backendUrl}/user`, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -234,7 +235,7 @@ export default function UpdateProfile() {
         console.log("Sending fetch request to update user...");
     
         try {
-            const response = await fetch(`http://localhost:8000/api/users/${user.iduser}`, {
+            const response = await fetch(`${backendUrl}/users/${user.iduser}`, {
                 method: "PUT",
                 headers: {
                     "Authorization": `Bearer ${token}`,

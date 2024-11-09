@@ -7,9 +7,16 @@ import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 
+// type Project = {
+//     ID: number;
+//     Código: string;
+// };
+
 type Project = {
     ID: number;
     Código: string;
+    Fecha_Inicio: string;
+    Fecha_Fin: string;
 };
 
 type User = {
@@ -21,6 +28,7 @@ type NewProjectProps = {
 };
 
 export default function NewProject({ onNewProject }: NewProjectProps) {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const currentYear = new Date().getFullYear();
     const minDate = parseDate(`${currentYear}-01-01`);
@@ -42,7 +50,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/user", {
+            const response = await fetch(`${backendUrl}/user`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -72,6 +80,50 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         setSpecificationFile(newFile);
     };
 
+    // const handleSubmit = async (event: React.FormEvent) => {
+    //     event.preventDefault();
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //         console.error("No token found");
+    //         return;
+    //     }
+    //     const formData = new FormData();
+    //     formData.append("iduser", user?.iduser.toString() || "");
+    //     formData.append("nameproject", projectName);
+    //     formData.append("codeproject", projectCode);
+    //     formData.append("startproject", dateRange.start ? dateRange.start.toString() : "");
+    //     formData.append("endproject", dateRange.end ? dateRange.end.toString() : "");
+    //     // Array de documentos 
+    //     const documents = [ 
+    //         { file: invitationFile, field: "invitation" }, 
+    //         { file: specificationFile, field: "specification" } 
+    //     ]; 
+    //     // Añadir documentos a FormData 
+    //     documents.forEach(document => { 
+    //         if (document.file) { 
+    //             formData.append(document.field, document.file); 
+    //         } 
+    //     });
+    //     try {
+    //         const response = await fetch(`${backendUrl}/projects`, {
+    //             method: "POST",
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             body: formData,
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error("Error al crear el proyecto");
+    //         }
+    //         const result = await response.json();
+    //         console.log("Proyecto creado exitosamente:", result);
+    //         onNewProject(result.data);
+    //         onOpenChange();
+    //     } catch (error) {
+    //         console.error("Error al crear el proyecto:", error);
+    //     }
+    // };
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const token = localStorage.getItem("token");
@@ -83,21 +135,19 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         formData.append("iduser", user?.iduser.toString() || "");
         formData.append("nameproject", projectName);
         formData.append("codeproject", projectCode);
-        formData.append("startproject", dateRange.start ? dateRange.start.toString() : "");
-        formData.append("endproject", dateRange.end ? dateRange.end.toString() : "");
-        // Array de documentos 
+        formData.append("startproject", dateRange.start ? new Date(dateRange.start).toISOString().split('T')[0] : "");
+        formData.append("endproject", dateRange.end ? new Date(dateRange.end).toISOString().split('T')[0] : "");
         const documents = [ 
             { file: invitationFile, field: "invitation" }, 
             { file: specificationFile, field: "specification" } 
         ]; 
-        // Añadir documentos a FormData 
         documents.forEach(document => { 
             if (document.file) { 
                 formData.append(document.field, document.file); 
             } 
         });
         try {
-            const response = await fetch("http://localhost:8000/api/projects", {
+            const response = await fetch(`${backendUrl}/projects`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -114,7 +164,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         } catch (error) {
             console.error("Error al crear el proyecto:", error);
         }
-    };
+    };    
 
     return (
         <section>

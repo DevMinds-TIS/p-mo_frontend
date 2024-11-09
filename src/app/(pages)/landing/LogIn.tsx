@@ -9,6 +9,7 @@ import SingUp from "./SingUp";
 import { useRouter } from 'next/navigation';
 
 export default function LogIn(){
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const {
         email,
@@ -37,7 +38,7 @@ export default function LogIn(){
         };
     
         try {
-            const response = await fetch('http://localhost:8000/api/login', {
+            const response = await fetch(`${backendUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
