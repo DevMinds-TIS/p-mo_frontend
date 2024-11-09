@@ -5,6 +5,7 @@ import userStudent from "@/app/_lib/landing/userForm";
 import React, { useEffect, useState } from 'react';
 
 export default function StudentSignIn() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const {
         email,
@@ -52,11 +53,11 @@ export default function StudentSignIn() {
     useEffect(() => {
         const fetchTeachers = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/role-user');
+                const response = await fetch(`${backendUrl}/role-user`);
                 const data = await response.json();
                 const teacherIds = data.data.filter((user: { 'ID Rol': number }) => user['ID Rol'] === 2).map((user: { 'ID Usuario': number }) => user['ID Usuario']);
 
-                const teachersResponse = await fetch('http://localhost:8000/api/users');
+                const teachersResponse = await fetch(`${backendUrl}/users`);
                 const teachersData = await teachersResponse.json();
 
                 if (Array.isArray(teachersData.data)) {
@@ -93,7 +94,7 @@ export default function StudentSignIn() {
             use_iduser: docenteId,
         };
         try {
-            const registerResponse = await fetch('http://localhost:8000/api/register-student', {
+            const registerResponse = await fetch(`${backendUrl}/register-student`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function StudentSignIn() {
             if (!registerResponse.ok) {
                 throw new Error('Error al crear el usuario');
             }
-            const loginResponse = await fetch('http://localhost:8000/api/login', {
+            const loginResponse = await fetch(`${backendUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

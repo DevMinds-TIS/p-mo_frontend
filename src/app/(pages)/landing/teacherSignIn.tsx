@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 
 export default function TeacherSignIn() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const {
         email,
@@ -57,7 +58,7 @@ export default function TeacherSignIn() {
         console.log(userData);
 
         try {
-            const response = await fetch('http://localhost:8000/api/register-teacher', {
+            const response = await fetch(`${backendUrl}/register-teacher`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

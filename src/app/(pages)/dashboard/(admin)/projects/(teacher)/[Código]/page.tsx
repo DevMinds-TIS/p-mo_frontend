@@ -1,53 +1,239 @@
 'use client';
-import { Card, CardHeader, Avatar, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Card, CardHeader, Avatar, CardBody, CardFooter, Image, Skeleton } from "@nextui-org/react";
 import Link from "next/link";
-import NewSpace from "../spaces/NewSpace";
+import { useEffect, useState } from "react";
+import { FileUpload } from "@/app/_lib/components/FileUpload";
+import NewSpace from "./NewSpace";
 
-export default function SpacePage() {
+type Project = {
+    ID_Proyecto: number;
+    Código: string;
+    Fecha_Inicio: string;
+    Fecha_Fin: string;
+};
+
+type Space = {
+    ID_Espacio: number;
+    ID_Proyecto: number;
+    Usuario: User;
+    Nombre: string;
+}
+
+type Document = {
+    ID_Documento: number;
+    ID_Proyecto: number;
+    Dirección: string;
+    Nombre: string;
+};
+
+type Role = {
+    idroleuser: number;
+    idrol: number;
+};
+
+type User = {
+    ID_Usuario: number;
+    roles: Role[];
+    Nombre: string;
+    Apellido: string;
+    Correo: string;
+};
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
+
+const fetchProjectByCode = async (code: string): Promise<Project | null> => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found');
+    const response = await fetch(`${backendUrl}/projects`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) throw new Error('Error al obtener los proyectos');
+    const data = await response.json();
+    const projects: Project[] = data.data;
+
+    const project = projects.find((project) => project.Código === code);
+    return project || null;
+};
+
+const fetchDocumentsByProjectId = async (projectId: number): Promise<Document[]> => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found');
+    const response = await fetch(`${backendUrl}/documents`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) throw new Error('Error al obtener los documentos');
+    const data = await response.json();
+    const documents: Document[] = data.data;
+
+    return documents.filter((document) => document.ID_Proyecto === projectId);
+};
+
+const fetchSpacesByProjectId = async (projectId: number): Promise<Space[]> => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found');
+    const response = await fetch(`${backendUrl}/spaces`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) throw new Error('Error al obtener los espacios');
+    const data = await response.json();
+    const spaces: Space[] = data.data;
+
+    return spaces.filter((space) => space.ID_Proyecto === projectId);
+};
+
+const fetchUser = async (): Promise<User> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+
+    const response = await fetch(`${backendUrl}/user`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener los datos del usuario');
+    }
+
+    const data: User = await response.json();
+    return data;
+};
+
+
+export default function ProjectPage({ params }: { params: { Código: string } }) {
+    const [project, setProject] = useState<Project | null>(null);
+    const [documents, setDocuments] = useState<Document[]>([]);
+    const [user, setUser] = useState<User | null>(null);
+    const [spaces, setSpaces] = useState<Space[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const projectData = await fetchProjectByCode(params.Código);
+                if (projectData) {
+                    setProject(projectData);
+                    const documentData = await fetchDocumentsByProjectId(projectData.ID_Proyecto);
+                    setDocuments(documentData);
+                    const spaceData = await fetchSpacesByProjectId(projectData.ID_Proyecto);
+                    setSpaces(spaceData);
+                } else {
+                    console.error('No se encontró el proyecto con el código proporcionado');
+                }
+            } catch (error) {
+                console.error('Error al obtener los datos del proyecto o documentos:', error);
+            }
+        };
+        fetchData();
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Error al obtener los datos del usuario:', error);
+            }
+        };
+
+        fetchUserData();
+    }, [params.Código]);
+
+    if (documents.length === 0 || !user) {
+        return (
+            <section className="flex flex-col gap-y-8">
+                <section>
+                    <h1 className="text-3xl">
+                        Documentos
+                    </h1>
+                    <div className="p-4 flex flex-wrap gap-4 justify-center">
+                        {[...Array(2)].map((_, index) => (
+                            <Skeleton key={index} className="h-72 w-60 rounded-xl" />
+                        ))}
+                    </div>
+                </section>
+                <section className="flex w-full h-10 justify-between items-center">
+                    <h1 className="text-3xl">Espacios</h1>
+                    <Skeleton className="w-10 h-10 rounded-lg" />
+                </section>
+                <section className="flex flex-wrap gap-4 p-4">
+                    <Skeleton className="w-60 h-28 rounded-xl" />
+                    <Skeleton className="w-60 h-28 rounded-xl" />
+                    <Skeleton className="w-60 h-28 rounded-xl" />
+                    <Skeleton className="w-60 h-28 rounded-xl" />
+                </section>
+            </section>);
+    }
+
+    const isTeacher = user.roles.some(role => role.idrol === 2);
+
+    const handleNewSpace = (newSpace: Space) => {
+        setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
+    };
 
     return (
         <section className="flex flex-col gap-y-8">
             <section>
                 <h1 className="text-3xl">Documentos</h1>
                 <div className="p-4 flex flex-wrap gap-4 justify-center">
-                    <Card shadow="sm" isPressable>
-                        <CardBody className="overflow-visible p-0">
-                            <Image
-                                shadow="sm"
-                                radius="lg"
-                                width="100%"
-                                alt="Docuemnto"
-                                className="w-full object-cover h-80"
-                                src={"https://nextui.org/avatars/avatar-1.png"}
-                            />
-                        </CardBody>
-                        <CardFooter>
-                            Invitación
-                        </CardFooter>
-                    </Card>
-                    <Card shadow="sm" isPressable>
-                        <CardBody className="overflow-visible p-0">
-                            <Image
-                                shadow="sm"
-                                radius="lg"
-                                width="100%"
-                                alt="Docuemnto"
-                                className="w-full object-cover h-80"
-                                src={"https://nextui.org/avatars/avatar-1.png"}
-                            />
-                        </CardBody>
-                        <CardFooter>
-                            Pliego de especificaciones
-                        </CardFooter>
-                    </Card>
+                    {documents.map((document) => (
+                        <Card className="h-72 w-60" shadow="sm" isPressable key={document.ID_Documento} onClick={async () => {
+                            const token = localStorage.getItem('token');
+                            if (!token) {
+                                console.error('No token found');
+                                return;
+                            }
+
+                            const response = await fetch(`${backendUrl}/documents/${document.ID_Documento}`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                },
+                            });
+
+                            if (!response.ok) {
+                                console.error('Error al obtener el documento');
+                                return;
+                            }
+
+                            const blob = await response.blob();
+                            const url = URL.createObjectURL(blob);
+                            window.open(url, '_blank');
+                        }}>
+                            <CardBody className="overflow-visible p-0 w-full h-full">
+                                <FileUpload
+                                    onChange={(file) => console.log("File changed:", file)}
+                                    existingFile={{ name: document.Nombre, url: `${storageUrl}/${document.Dirección}` }}
+                                    readOnly={true}
+                                />
+                            </CardBody>
+                            <CardFooter>{document.Nombre}</CardFooter>
+                        </Card>
+                    ))}
                 </div>
             </section>
             <section className="flex w-full h-10 justify-between items-center">
                 <h1 className="text-3xl">Espacios</h1>
-                <NewSpace />
+                {/* {isTeacher && project && user &&
+                    <NewSpace params={{ Código: project.Código }}/>
+                } */}
+                {isTeacher && project && user &&
+                    <NewSpace
+                        params={{ Código: project.Código }}
+                        onNewSpace={handleNewSpace}
+                    />
+                }
             </section>
-            <section className="flex flex-wrap gap-4 p-4">
-                <Link href={"spaces/teams"}>
+            {/* <Link href={"spaces/teams"}>
                     <Card className="w-fit">
                         <CardHeader className="justify-between">
                             <div className="flex gap-5">
@@ -68,171 +254,42 @@ export default function SpacePage() {
                             </div>
                         </CardFooter>
                     </Card>
-                </Link>
-                <Card className="w-fit">
-                    <CardHeader className="justify-between">
-                        <div className="flex gap-5">
-                            <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
-                            <div className="flex flex-col gap-1 items-start justify-center">
-                                <h4 className="text-small font-semibold leading-none text-default-600">Zoey Lang</h4>
-                                <h5 className="text-small tracking-tight text-default-400">@zoeylang</h5>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardFooter className="gap-3">
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">CPTIS-0893-2024</p>
-                        </div>
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">57</p>
-                            <p className="text-default-400 text-small">Inscritos</p>
-                        </div>
-                    </CardFooter>
-                </Card>
-                <Card className="w-fit">
-                    <CardHeader className="justify-between">
-                        <div className="flex gap-5">
-                            <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
-                            <div className="flex flex-col gap-1 items-start justify-center">
-                                <h4 className="text-small font-semibold leading-none text-default-600">Zoey Lang</h4>
-                                <h5 className="text-small tracking-tight text-default-400">@zoeylang</h5>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardFooter className="gap-3">
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">CPTIS-0893-2024</p>
-                        </div>
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">57</p>
-                            <p className="text-default-400 text-small">Inscritos</p>
-                        </div>
-                    </CardFooter>
-                </Card>
-                <Card className="w-fit">
-                    <CardHeader className="justify-between">
-                        <div className="flex gap-5">
-                            <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
-                            <div className="flex flex-col gap-1 items-start justify-center">
-                                <h4 className="text-small font-semibold leading-none text-default-600">Zoey Lang</h4>
-                                <h5 className="text-small tracking-tight text-default-400">@zoeylang</h5>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardFooter className="gap-3">
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">CPTIS-0893-2024</p>
-                        </div>
-                        <div className="flex gap-1">
-                            <p className="font-semibold text-default-400 text-small">57</p>
-                            <p className="text-default-400 text-small">Inscritos</p>
-                        </div>
-                    </CardFooter>
-                </Card>
+                </Link> */}
+            <section className="flex flex-wrap gap-4 p-4">
+                {spaces.map((space, index) => {
+                    if (space.Usuario) {
+                        console.log("Nombre:", space.Usuario.Nombre);
+                        console.log("Apellido:", space.Usuario.Apellido);
+                    }
+
+                    return (
+                        <Card key={index} className="w-fit">
+                            <CardHeader className="justify-between">
+                                <div className="flex gap-5">
+                                    <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
+                                    <div className="flex flex-col gap-1 items-start justify-center">
+                                        {space.Usuario && (
+                                            <>
+                                                <h4 className="text-small font-semibold leading-none text-default-600">{space.Usuario.Nombre}</h4>
+                                                <h5 className="text-small tracking-tight text-default-400">@{space.Usuario.Apellido}</h5>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardFooter className="gap-3">
+                                <div className="flex gap-1">
+                                    <p className="font-semibold text-default-400 text-small">{space.Nombre}</p>
+                                </div>
+                                <div className="flex gap-1">
+                                    <p className="font-semibold text-default-400 text-small">57</p>
+                                    <p className="text-default-400 text-small">Inscritos</p>
+                                </div>
+                            </CardFooter>
+                        </Card>
+                    );
+                })}
             </section>
         </section>
     );
 }
-
-// 'use client';
-// import { useEffect, useState } from 'react';
-// import { useSearchParams } from 'next/navigation';
-// import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
-// import NewSpace from '../spaces/NewSpace';
-
-// type Document = {
-//     ID: number;
-//     ID_Proyecto: number;
-//     Dirección: string;
-// };
-
-// type Project = {
-//     ID: number;
-//     Código: string;
-// };
-
-// // Nueva función para obtener el ID del proyecto
-// const fetchProjectId = async (codigo: string): Promise<string> => {
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//         throw new Error('No token found');
-//     }
-//     const response = await fetch(`http://localhost:8000/api/projects`, {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`,
-//         },
-//     });
-//     if (!response.ok) {
-//         throw new Error('Error al obtener el ID del proyecto');
-//     }
-//     const data = await response.json();
-//     if (!data || !data.id) {
-//         throw new Error('No se encontró el ID del proyecto');
-//     }
-//     return data.id;
-// };
-
-// const fetchDocuments = async (projectId: number): Promise<Document[]> => {
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//         throw new Error('No token found');
-//     }
-//     const response = await fetch('http://localhost:8000/api/documents', {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${token}`,
-//         },
-//     });
-//     if (!response.ok) {
-//         throw new Error('Error al obtener los documentos');
-//     }
-//     const data = await response.json();
-//     if (!Array.isArray(data.data)) {
-//         throw new Error('Los datos obtenidos no son un array');
-//     }
-//     // Filtrar documentos por projectId
-//     return data.data.filter((document: Document) => document.ID_Proyecto === projectId);
-// };
-
-// export default function ProjectIDPage({ params }: { params: { Código: string, ID: number } }) {
-//     const [documents, setDocuments] = useState<Document[]>([]);
-//     const projectCode = params.Código;
-//     const projectId = params.ID;
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const documentData = await fetchDocuments(Number(projectId)); // Asegúrate de convertirlo a número
-//                 setDocuments(documentData);
-//             } catch (error) {
-//                 console.error('Error al obtener los documentos:', error);
-//             }
-//         };
-//         fetchData();
-//     }, [projectCode, projectId]);
-
-//     return (
-//         <section className="flex flex-col gap-y-8">
-//             <section>
-//                 <h1 className="text-3xl">Documentos</h1>
-//                 <div className="p-4 flex flex-wrap gap-4 justify-center">
-//                     {documents.map((document) => (
-//                         <Card key={document.ID} shadow="sm" isPressable>
-//                             <CardBody className="overflow-visible p-0">
-//                                 <Image shadow="sm" radius="lg" width="100%" alt="Documento" className="w-full object-cover h-80" src={document.Dirección} />
-//                                 {/* <a href={document.Dirección}>Hola</a> */}
-//                             </CardBody>
-//                             {/* <CardFooter>{document.idproject}</CardFooter> */}
-//                         </Card>
-//                     ))}
-//                 </div>
-//             </section>
-//             <section className="flex w-full h-10 justify-between items-center">
-//                 <h1 className="text-3xl">Espacios</h1>
-//                 <NewSpace />
-//             </section>
-//         </section>
-//     );
-// }
-

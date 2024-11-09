@@ -37,8 +37,8 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
       // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
       // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-      { href: "/dashboard/roles", icon: UserSwitchIcon , label: "Roles" },
-      { href: "/dashboard/permissions", icon: LockKeyIcon , label: "Permisos" },
+      { href: "/dashboard/roles", icon: UserSwitchIcon, label: "Roles" },
+      { href: "/dashboard/permissions", icon: LockKeyIcon, label: "Permisos" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     2: [
@@ -82,6 +82,7 @@ const translations: { [key: string]: string } = {
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleNavbar = () => {
@@ -104,7 +105,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return;
       }
       try {
-        const response = await fetch('http://localhost:8000/api/user', {
+        const response = await fetch(`${backendUrl}/user`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -130,7 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return;
       }
 
-      const response = await fetch('http://localhost:8000/api/logout', {
+      const response = await fetch(`${backendUrl}/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -171,7 +172,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
                         {translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
-                        {/* {(path.charAt(0).toUpperCase() + path.slice(1))} */}
                       </Link>
                     </BreadcrumbItem>
                   ))}
@@ -195,7 +195,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 ))}
                 <Popover placement="right-end" className="gap-x-4">
                   <PopoverTrigger>
-                    <NavbarItem className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
+                    <NavbarItem
+                      className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
                       <Avatar
                         name={!user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined}
                         src={user?.profileuser || undefined}

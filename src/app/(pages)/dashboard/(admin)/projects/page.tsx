@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { Button, Input, Popover, PopoverContent, PopoverTrigger, Skeleton } from "@nextui-org/react";
+import { Button, Input, Popover, PopoverContent, PopoverTrigger, RangeCalendar, Skeleton } from "@nextui-org/react";
 import { SearchIcon } from "@nextui-org/shared-icons";
 import NewProject from "./NewProject";
 import { FolderLinksIcon, MoreVerticalIcon } from "hugeicons-react";
 import Link from 'next/link';
 import Criterios from './(teacher)/criterios/NewCriterio';
+import { I18nProvider } from '@react-aria/i18n';
+import { DateValue, isWeekend, parseDate } from '@internationalized/date';
 
 type Role = {
     idroleuser: number;
@@ -17,10 +19,13 @@ type User = {
 };
 
 type Project = {
-    ID: number;
+    ID_Proyecto: number;
     Código: string;
+    Fecha_Inicio: string;
+    Fecha_Fin: string;
 };
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const fetchUser = async (): Promise<User> => {
     const token = localStorage.getItem('token');
@@ -28,7 +33,7 @@ const fetchUser = async (): Promise<User> => {
         throw new Error('No token found');
     }
 
-    const response = await fetch('http://localhost:8000/api/user', {
+    const response = await fetch(`${backendUrl}/user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -48,7 +53,7 @@ const fetchProjects = async (): Promise<Project[]> => {
     if (!token) {
         throw new Error('No token found');
     }
-    const response = await fetch('http://localhost:8000/api/projects', {
+    const response = await fetch(`${backendUrl}/projects`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -65,38 +70,33 @@ const fetchProjects = async (): Promise<Project[]> => {
     return data.data;
 };
 
-
-export default function ProjectPage() {
+export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const userData = await fetchUser();
+                setUser(userData);
                 const projectData = await fetchProjects();
                 setProjects(projectData);
+                if (projectData.length > 0) {
+                    const earliestStartDate = projectData.reduce((earliest, current) => {
+                        return new Date(current.Fecha_Inicio) < new Date(earliest.Fecha_Inicio) ? current : earliest;
+                    }).Fecha_Inicio;
+                    const latestEndDate = projectData.reduce((latest, current) => {
+                        return new Date(current.Fecha_Fin) > new Date(latest.Fecha_Fin) ? current : latest;
+                    }).Fecha_Fin;
+                }
             } catch (error) {
-                console.error('Error al obtener los datos:', error);
-                setProjects([]);
+                console.error(error);
             }
         };
         fetchData();
-    }, []);
+    }, []);    
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await fetchUser();
-                setUser(userData);
-            } catch (error) {
-                console.error('Error al obtener los datos del usuario:', error);
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-    if (!user) {
+    if (projects.length === 0 || !user) {
         return (
             <section className="flex flex-col gap-y-8">
                 <section className="flex w-full h-10 justify-between items-center">
@@ -104,11 +104,23 @@ export default function ProjectPage() {
                     <Skeleton className="w-1/4 h-10 rounded-lg" />
                     <Skeleton className="w-10 h-10 rounded-lg" />
                 </section>
-                <section className="flex flex-wrap p-4 gap-4">
-                    <Skeleton className="w-64 h-12 rounded-lg" />
-                    <Skeleton className="w-64 h-12 rounded-lg" />
-                    <Skeleton className="w-64 h-12 rounded-lg" />
-                    <Skeleton className="w-64 h-12 rounded-lg" />
+                <section className="flex flex-wrap p-4 gap-8">
+                    <div className='flex flex-col w-fit gap-2'>
+                        <Skeleton className="w-64 h-12 rounded-lg" />
+                        <Skeleton className="w-64 h-64 rounded-xl" />
+                    </div>
+                    <div className='flex flex-col w-fit gap-2'>
+                        <Skeleton className="w-64 h-12 rounded-lg" />
+                        <Skeleton className="w-64 h-64 rounded-xl" />
+                    </div>
+                    <div className='flex flex-col w-fit gap-2'>
+                        <Skeleton className="w-64 h-12 rounded-lg" />
+                        <Skeleton className="w-64 h-64 rounded-xl" />
+                    </div>
+                    <div className='flex flex-col w-fit gap-2'>
+                        <Skeleton className="w-64 h-12 rounded-lg" />
+                        <Skeleton className="w-64 h-64 rounded-xl" />
+                    </div>
                 </section>
             </section>
         );
@@ -140,32 +152,48 @@ export default function ProjectPage() {
                 />
                 {isAdmin && <NewProject onNewProject={handleNewProject} />}
             </section>
-            <section className="flex flex-wrap p-4 gap-4">
+            <section className="flex flex-wrap p-4 gap-8">
                 {projects.map(project => (
-                    <div className='flex' key={project.ID}>
-                        <Link
-                            // href={`/dashboard/projects/${project.Código}`}
-                            href={`/dashboard/projects/spaces`}
-                            className={`flex items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
-                        >
-                            <FolderLinksIcon size={30} />
-                            {project['Código']}
-                        </Link>
-                        {isAdmin && (
-                            <Popover placement="right" backdrop="blur">
-                                <PopoverTrigger>
-                                    <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
-                                        <MoreVerticalIcon size={30} />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <div className="px-1 py-2">
-                                        <div className="text-small font-bold">Popover Content</div>
-                                        <div className="text-tiny">This is the popover content</div>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-                        )}
+                    <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
+                        <div className='flex'>
+                            <Link
+                                href={`/dashboard/projects/${project.Código}`}
+                                className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
+                            >
+                                <FolderLinksIcon size={30} color='#FFF' />
+                                <span className='text-white'>
+                                    {project['Código']}
+                                </span>
+                            </Link>
+                            {isAdmin && (
+                                <Popover placement="right" backdrop="blur">
+                                    <PopoverTrigger>
+                                        <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
+                                            <MoreVerticalIcon size={30} color='#FFF' />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <div className="px-1 py-2">
+                                            <div className="text-small font-bold">Popover Content</div>
+                                            <div className="text-tiny">This is the popover content</div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        </div>
+                        <I18nProvider locale="es-BO">
+                            <RangeCalendar
+                                aria-label="Date (Read Only)"
+                                isReadOnly
+                                allowsNonContiguousRanges
+                                minValue={parseDate(project.Fecha_Inicio)}
+                                maxValue={parseDate(project.Fecha_Fin)}
+                                defaultValue={{
+                                    start: parseDate(project.Fecha_Inicio),
+                                    end: parseDate(project.Fecha_Fin),
+                                }}
+                            />
+                        </I18nProvider>
                     </div>
                 ))}
             </section>
