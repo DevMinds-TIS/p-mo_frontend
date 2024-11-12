@@ -144,7 +144,6 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                     <I18nProvider locale="es-BO">
                                         <DateRangePicker
                                             allowsNonContiguousRanges
-                                            isDateUnavailable={(date) => isWeekend(date, "es-BO")}
                                             label="Duración del proyecto"
                                             minValue={minDate}
                                             maxValue={maxDate}

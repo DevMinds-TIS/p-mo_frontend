@@ -96,7 +96,7 @@ export default function ProjectsPage() {
         fetchData();
     }, []);    
 
-    if (projects.length === 0 || !user) {
+    if (!user) {
         return (
             <section className="flex flex-col gap-y-8">
                 <section className="flex w-full h-10 justify-between items-center">
