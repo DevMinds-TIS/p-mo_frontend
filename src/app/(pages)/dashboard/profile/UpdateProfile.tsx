@@ -129,7 +129,7 @@ export default function UpdateProfile() {
             }
         };
         fetchUserData();
-    }, [backendUrl]);
+    }, [backendUrl, setName, setLastname]);
 
     if (isLoading || !user) {
         console.log("No se encontraron usuarios");
