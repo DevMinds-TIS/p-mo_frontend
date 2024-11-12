@@ -1,7 +1,7 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { useRouter } from 'next/navigation';
-import userStudent from "@/app/_lib/landing/userForm";
+import userStudent from "@/app/_lib/landing/useUserForm";
 import React, { useEffect, useState } from 'react';
 
 export default function StudentSignIn() {
@@ -56,10 +56,10 @@ export default function StudentSignIn() {
                 const response = await fetch(`${backendUrl}/role-user`);
                 const data = await response.json();
                 const teacherIds = data.data.filter((user: { 'ID Rol': number }) => user['ID Rol'] === 2).map((user: { 'ID Usuario': number }) => user['ID Usuario']);
-
+    
                 const teachersResponse = await fetch(`${backendUrl}/users`);
                 const teachersData = await teachersResponse.json();
-
+    
                 if (Array.isArray(teachersData.data)) {
                     const teachersList: Teacher[] = teachersData.data.filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario'])).map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
                         key: teacher['ID Usuario'],
@@ -69,14 +69,13 @@ export default function StudentSignIn() {
                 } else {
                     console.error('Error: Expected an array but got:', teachersData.data);
                 }
-
+    
             } catch (error) {
                 console.error('Error al obtener los docentes:', error);
             }
         };
-
         fetchTeachers();
-    }, []);
+    }, [backendUrl]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

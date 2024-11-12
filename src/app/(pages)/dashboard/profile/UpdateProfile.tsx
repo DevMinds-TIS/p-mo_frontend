@@ -2,7 +2,7 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, useDisclosure, Image, Input, Select, SelectItem, Avatar, SelectedItems, User, SharedSelection } from "@nextui-org/react";
 import { PencilEdit02Icon } from "hugeicons-react";
 import { useEffect, useState } from "react";
-import userStudent from "@/app/_lib/landing/userForm";
+import userStudent from "@/app/_lib/landing/useUserForm";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 
@@ -60,6 +60,7 @@ export default function UpdateProfile() {
         toggleVisibility,
     } = userStudent();
 
+    
     useEffect(() => {
         const fetchDocentes = async () => {
             try {
@@ -93,8 +94,9 @@ export default function UpdateProfile() {
             }
         };
         fetchDocentes();
-    }, []);
+    }, [backendUrl]);
 
+    
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("token");
@@ -126,9 +128,8 @@ export default function UpdateProfile() {
                 setIsLoading(false);
             }
         };
-
         fetchUserData();
-    }, []);
+    }, [backendUrl, setName, setLastname]);
 
     if (isLoading || !user) {
         console.log("No se encontraron usuarios");
