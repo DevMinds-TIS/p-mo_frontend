@@ -97,6 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const [user, setUser] = useState<User | null>(null);
 
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');
@@ -121,7 +122,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       }
     };
     fetchUserData();
-  }, []);
+  }, [backendUrl]);
 
   const handleLogout = async () => {
     try {

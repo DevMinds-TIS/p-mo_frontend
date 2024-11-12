@@ -4,7 +4,7 @@ import {Button, Divider, Input, Link} from "@nextui-org/react";
 import {EyeFilledIcon} from "@nextui-org/shared-icons";
 import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
 import React from "react";
-import userForms from "@/app/_lib/landing/userForm";
+import userForms from "@/app/_lib/landing/useUserForm";
 import SingUp from "./SingUp";
 import { useRouter } from 'next/navigation';
 

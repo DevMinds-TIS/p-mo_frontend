@@ -37,35 +37,35 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
 
-    const fetchUserData = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${backendUrl}/user`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Error al obtener los datos del usuario");
-            }
-
-            const data = await response.json();
-            setUser(data);
-        } catch (error) {
-            console.error("Error al obtener los datos del usuario:", error);
-        }
-    };
-
+    
     useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+    
+            try {
+                const response = await fetch(`${backendUrl}/user`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos del usuario");
+                }
+    
+                const data = await response.json();
+                setUser(data);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario:", error);
+            }
+        };
         fetchUserData();
-    }, []);
+    }, [backendUrl]);
 
     const handleInvitationFileChange = (newFile: File | null) => {
         setInvitationFile(newFile);
