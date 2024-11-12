@@ -60,76 +60,76 @@ export default function UpdateProfile() {
         toggleVisibility,
     } = userStudent();
 
-    const fetchDocentes = async () => {
-        try {
-            const response = await fetch(`${backendUrl}/role-user`);
-            const data = await response.json();
-            const teacherIds = data.data
-                .filter((user: { ID_Rol: number }) => user['ID_Rol'] === 2)
-                .map((user: { ID_Usuario: number }) => user['ID_Usuario']);
-            const teachersResponse = await fetch(`${backendUrl}/users`);
-            const teachersData = await teachersResponse.json();
-            if (Array.isArray(teachersData.data)) {
-                const teachersList: Docente[] = teachersData.data
-                    .filter((user: { ID_Usuario: number }) => teacherIds.includes(user['ID_Usuario']))
-                    .map((teacher: {
-                        ID_Usuario: number;
-                        Nombre: string;
-                        Apellido: string;
-                        Correo: string;
-                    }) => ({
-                        iduser: teacher['ID_Usuario'],
-                        nameuser: teacher['Nombre'],
-                        lastnameuser: teacher['Apellido'],
-                        emailuser: teacher['Correo'],
-                    }));
-                setDocentes(teachersList);
-            } else {
-                console.error('Error: Expected an array but got:', teachersData.data);
-            }
-        } catch (error) {
-            console.error('Error al obtener los docentes:', error);
-        }
-    };
-
+    
     useEffect(() => {
+        const fetchDocentes = async () => {
+            try {
+                const response = await fetch(`${backendUrl}/role-user`);
+                const data = await response.json();
+                const teacherIds = data.data
+                    .filter((user: { ID_Rol: number }) => user['ID_Rol'] === 2)
+                    .map((user: { ID_Usuario: number }) => user['ID_Usuario']);
+                const teachersResponse = await fetch(`${backendUrl}/users`);
+                const teachersData = await teachersResponse.json();
+                if (Array.isArray(teachersData.data)) {
+                    const teachersList: Docente[] = teachersData.data
+                        .filter((user: { ID_Usuario: number }) => teacherIds.includes(user['ID_Usuario']))
+                        .map((teacher: {
+                            ID_Usuario: number;
+                            Nombre: string;
+                            Apellido: string;
+                            Correo: string;
+                        }) => ({
+                            iduser: teacher['ID_Usuario'],
+                            nameuser: teacher['Nombre'],
+                            lastnameuser: teacher['Apellido'],
+                            emailuser: teacher['Correo'],
+                        }));
+                    setDocentes(teachersList);
+                } else {
+                    console.error('Error: Expected an array but got:', teachersData.data);
+                }
+            } catch (error) {
+                console.error('Error al obtener los docentes:', error);
+            }
+        };
         fetchDocentes();
-    }, [fetchDocentes]);
+    }, []);
 
-    const fetchUserData = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-        try {
-            const response = await fetch(`${backendUrl}/user`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Error al obtener los datos del usuario");
-            }
-            const data = await response.json();
-            setUser(data);
-            if (data?.user?.iduser) {
-                setSelectedKeys(new Set([data.user.iduser.toString()]));
-            }
-            setName(data.nameuser);
-            setLastname(data.lastnameuser);
-            // setPasswd(data.passworduser);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error al obtener los datos del usuario:", error);
-            setIsLoading(false);
-        }
-    };
-
+    
     useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+            try {
+                const response = await fetch(`${backendUrl}/user`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos del usuario");
+                }
+                const data = await response.json();
+                setUser(data);
+                if (data?.user?.iduser) {
+                    setSelectedKeys(new Set([data.user.iduser.toString()]));
+                }
+                setName(data.nameuser);
+                setLastname(data.lastnameuser);
+                // setPasswd(data.passworduser);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario:", error);
+                setIsLoading(false);
+            }
+        };
         fetchUserData();
-    }, [fetchUserData]);
+    }, []);
 
     if (isLoading || !user) {
         console.log("No se encontraron usuarios");

@@ -29,37 +29,37 @@ export default function Profile() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchUserData = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${backendUrl}/user`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Error al obtener los datos del usuario");
-            }
-
-            const data = await response.json();
-            setUser(data);
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error al obtener los datos del usuario:", error);
-            setIsLoading(false);
-        }
-    };
-
+    
     useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+    
+            try {
+                const response = await fetch(`${backendUrl}/user`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Error al obtener los datos del usuario");
+                }
+    
+                const data = await response.json();
+                setUser(data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error al obtener los datos del usuario:", error);
+                setIsLoading(false);
+            }
+        };
         fetchUserData();
-    }, [fetchUserData]);
+    }, []);
 
     if (isLoading || !user) {
         return (
