@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
-export default function userForms() {
+export default function useUserForms() {
   const [email, setEmail] = useState("");
   const [passwd, setPasswd] = useState("");
   const [passwordError, setPasswordError] = useState("");

@@ -1,7 +1,7 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { useRouter } from 'next/navigation';
-import userStudent from "@/app/_lib/landing/userForm";
+import userStudent from "@/app/_lib/landing/useUserForm";
 import React, { useEffect, useState } from 'react';
 
 export default function StudentSignIn() {

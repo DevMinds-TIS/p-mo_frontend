@@ -2,7 +2,7 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, useDisclosure, Image, Input, Select, SelectItem, Avatar, SelectedItems, User, SharedSelection } from "@nextui-org/react";
 import { PencilEdit02Icon } from "hugeicons-react";
 import { useEffect, useState } from "react";
-import userStudent from "@/app/_lib/landing/userForm";
+import userStudent from "@/app/_lib/landing/useUserForm";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 

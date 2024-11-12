@@ -1,5 +1,5 @@
 "use client";
-import userTeacher from "@/app/_lib/landing/userForm";
+import userTeacher from "@/app/_lib/landing/useUserForm";
 import { Button, Input } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
