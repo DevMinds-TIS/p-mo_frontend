@@ -65,7 +65,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
     useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [fetchUserData]);
 
     const handleInvitationFileChange = (newFile: File | null) => {
         setInvitationFile(newFile);

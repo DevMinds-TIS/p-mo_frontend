@@ -59,7 +59,7 @@ export default function Profile() {
 
     useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [fetchUserData]);
 
     if (isLoading || !user) {
         return (

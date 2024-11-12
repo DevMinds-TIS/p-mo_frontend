@@ -13,7 +13,7 @@ export default function PlanningPage() {
     return (
         <section className="flex flex-col gap-y-8">
             <section className="flex w-full h-10 justify-between items-center">
-                <h1 className="text-3xl">Sprint's</h1>
+                <h1 className="text-3xl">Sprints</h1>
                 <NewSprint />
             </section>
             <section className="flex flex-col w-fit space-y-4">

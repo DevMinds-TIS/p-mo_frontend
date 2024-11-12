@@ -50,33 +50,32 @@ export default function StudentSignIn() {
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 
 
-    useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                const response = await fetch(`${backendUrl}/role-user`);
-                const data = await response.json();
-                const teacherIds = data.data.filter((user: { 'ID Rol': number }) => user['ID Rol'] === 2).map((user: { 'ID Usuario': number }) => user['ID Usuario']);
+    const fetchTeachers = async () => {
+        try {
+            const response = await fetch(`${backendUrl}/role-user`);
+            const data = await response.json();
+            const teacherIds = data.data.filter((user: { 'ID Rol': number }) => user['ID Rol'] === 2).map((user: { 'ID Usuario': number }) => user['ID Usuario']);
 
-                const teachersResponse = await fetch(`${backendUrl}/users`);
-                const teachersData = await teachersResponse.json();
+            const teachersResponse = await fetch(`${backendUrl}/users`);
+            const teachersData = await teachersResponse.json();
 
-                if (Array.isArray(teachersData.data)) {
-                    const teachersList: Teacher[] = teachersData.data.filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario'])).map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
-                        key: teacher['ID Usuario'],
-                        label: `${teacher['Nombre']} ${teacher['Apellido']}`,
-                    }));
-                    setTeachers(teachersList);
-                } else {
-                    console.error('Error: Expected an array but got:', teachersData.data);
-                }
-
-            } catch (error) {
-                console.error('Error al obtener los docentes:', error);
+            if (Array.isArray(teachersData.data)) {
+                const teachersList: Teacher[] = teachersData.data.filter((user: { 'ID Usuario': number }) => teacherIds.includes(user['ID Usuario'])).map((teacher: { 'ID Usuario': number; Nombre: string; Apellido: string }) => ({
+                    key: teacher['ID Usuario'],
+                    label: `${teacher['Nombre']} ${teacher['Apellido']}`,
+                }));
+                setTeachers(teachersList);
+            } else {
+                console.error('Error: Expected an array but got:', teachersData.data);
             }
-        };
 
+        } catch (error) {
+            console.error('Error al obtener los docentes:', error);
+        }
+    };
+    useEffect(() => {
         fetchTeachers();
-    }, []);
+    }, [fetchTeachers]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
