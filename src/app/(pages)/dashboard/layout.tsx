@@ -121,7 +121,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       }
     };
     fetchUserData();
-  }, []);
+  }, [backendUrl]);
 
   const handleLogout = async () => {
     try {

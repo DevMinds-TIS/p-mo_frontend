@@ -75,7 +75,7 @@ export default function StudentSignIn() {
             }
         };
         fetchTeachers();
-    }, []);
+    }, [backendUrl]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

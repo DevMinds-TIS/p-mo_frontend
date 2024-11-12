@@ -65,7 +65,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
             }
         };
         fetchUserData();
-    }, []);
+    }, [backendUrl]);
 
     const handleInvitationFileChange = (newFile: File | null) => {
         setInvitationFile(newFile);

@@ -94,7 +94,7 @@ export default function UpdateProfile() {
             }
         };
         fetchDocentes();
-    }, []);
+    }, [backendUrl]);
 
     
     useEffect(() => {
@@ -129,7 +129,7 @@ export default function UpdateProfile() {
             }
         };
         fetchUserData();
-    }, []);
+    }, [backendUrl]);
 
     if (isLoading || !user) {
         console.log("No se encontraron usuarios");

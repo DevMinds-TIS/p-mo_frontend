@@ -59,7 +59,7 @@ export default function Profile() {
             }
         };
         fetchUserData();
-    }, []);
+    }, [backendUrl]);
 
     if (isLoading || !user) {
         return (
