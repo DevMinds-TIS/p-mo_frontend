@@ -111,7 +111,7 @@ const fetchUser = async (): Promise<User> => {
     return data;
 };
 
-export default function ProjectPageClient({ params }: { params: { Código: string } }) {
+export default function ProjectPage({ params }: { params: { Código: string } }) {
     const [project, setProject] = useState<Project | null>(null);
     const [documents, setDocuments] = useState<Document[]>([]);
     const [user, setUser] = useState<User | null>(null);
