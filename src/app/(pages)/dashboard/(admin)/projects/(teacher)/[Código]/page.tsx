@@ -1,6 +1,5 @@
 'use client';
 import { Card, CardHeader, Avatar, CardBody, CardFooter, Image, Skeleton } from "@nextui-org/react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import NewSpace from "./NewSpace";
@@ -111,7 +110,6 @@ const fetchUser = async (): Promise<User> => {
     const data: User = await response.json();
     return data;
 };
-
 
 export default function ProjectPage({ params }: { params: { Código: string } }) {
     const [project, setProject] = useState<Project | null>(null);
