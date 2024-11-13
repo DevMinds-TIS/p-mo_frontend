@@ -12,7 +12,7 @@ const nextConfig = {
     publicRuntimeConfig: {
       LARAVEL_PUBLIC_BACKEND_URL: process.env.LARAVEL_PUBLIC_BACKEND_URL,
     },
-    output: 'export',
+    // output: 'export',
   };
   
   export default nextConfig;
