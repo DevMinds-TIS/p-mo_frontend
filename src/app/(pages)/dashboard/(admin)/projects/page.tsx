@@ -73,14 +73,19 @@ const fetchProjects = async (): Promise<Project[]> => {
 export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
+    // const [isLoadingUser, setIsLoadingUser] = useState(true);
+    const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userData = await fetchUser();
                 setUser(userData);
+                // setIsLoadingUser(false);
                 const projectData = await fetchProjects();
                 setProjects(projectData);
+                setIsLoadingProjects(false);
                 if (projectData.length > 0) {
                     const earliestStartDate = projectData.reduce((earliest, current) => {
                         return new Date(current.Fecha_Inicio) < new Date(earliest.Fecha_Inicio) ? current : earliest;
@@ -91,10 +96,12 @@ export default function ProjectsPage() {
                 }
             } catch (error) {
                 console.error(error);
+                // setIsLoadingUser(false);
+                setIsLoadingProjects(false);
             }
         };
         fetchData();
-    }, []);    
+    }, []);
 
     if (!user) {
         return (
@@ -105,22 +112,12 @@ export default function ProjectsPage() {
                     <Skeleton className="w-10 h-10 rounded-lg" />
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
+                    {[...Array(4)].map((_, index) => (
+                        <div className='flex flex-col w-fit gap-2'>
+                            <Skeleton className="w-64 h-12 rounded-lg" />
+                            <Skeleton className="w-64 h-64 rounded-xl" />
+                        </div>
+                    ))}
                 </section>
             </section>
         );
@@ -153,50 +150,60 @@ export default function ProjectsPage() {
                 {isAdmin && <NewProject onNewProject={handleNewProject} />}
             </section>
             <section className="flex flex-wrap p-4 gap-8">
-                {projects.map(project => (
-                    <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
-                        <div className='flex'>
-                            <Link
-                                href={`/dashboard/projects/${project.Código}`}
-                                className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
-                            >
-                                <FolderLinksIcon size={30} color='#FFF' />
-                                <span className='text-white'>
-                                    {project['Código']}
-                                </span>
-                            </Link>
-                            {isAdmin && (
-                                <Popover placement="right" backdrop="blur">
-                                    <PopoverTrigger>
-                                        <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
-                                            <MoreVerticalIcon size={30} color='#FFF' />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent>
-                                        <div className="px-1 py-2">
-                                            <div className="text-small font-bold">Popover Content</div>
-                                            <div className="text-tiny">This is the popover content</div>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-                            )}
+                {isLoadingProjects ? (
+                    [...Array(4)].map((_, index) => (
+                        <div key={index} className='flex flex-col w-fit gap-2'>
+                            <Skeleton className="w-64 h-12 rounded-lg" />
+                            <Skeleton className="w-64 h-64 rounded-xl" />
                         </div>
-                        <I18nProvider locale="es-BO">
-                            <RangeCalendar
-                                aria-label="Date (Read Only)"
-                                isReadOnly
-                                allowsNonContiguousRanges
-                                minValue={parseDate(project.Fecha_Inicio)}
-                                maxValue={parseDate(project.Fecha_Fin)}
-                                defaultValue={{
-                                    start: parseDate(project.Fecha_Inicio),
-                                    end: parseDate(project.Fecha_Fin),
-                                }}
-                            />
-                        </I18nProvider>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    projects.map(project => (
+                        <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
+                            <div className='flex'>
+                                <Link
+                                    href={`/dashboard/projects/${project.Código}`}
+                                    className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
+                                >
+                                    <FolderLinksIcon size={30} color='#FFF' />
+                                    <span className='text-white'>
+                                        {project['Código']}
+                                    </span>
+                                </Link>
+                                {isAdmin && (
+                                    <Popover placement="right" backdrop="blur">
+                                        <PopoverTrigger>
+                                            <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
+                                                <MoreVerticalIcon size={30} color='#FFF' />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <div className="px-1 py-2">
+                                                <div className="text-small font-bold">Popover Content</div>
+                                                <div className="text-tiny">This is the popover content</div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            </div>
+                            <I18nProvider locale="es-BO">
+                                <RangeCalendar
+                                    aria-label="Date (Read Only)"
+                                    isReadOnly
+                                    allowsNonContiguousRanges
+                                    minValue={parseDate(project.Fecha_Inicio)}
+                                    maxValue={parseDate(project.Fecha_Fin)}
+                                    defaultValue={{
+                                        start: parseDate(project.Fecha_Inicio),
+                                        end: parseDate(project.Fecha_Fin),
+                                    }}
+                                />
+                            </I18nProvider>
+                        </div>
+                    ))
+                )}
             </section>
         </section>
     );
+    
 }
