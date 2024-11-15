@@ -3,6 +3,7 @@ import { Card, CardHeader, Avatar, CardBody, CardFooter, Image, Skeleton } from 
 import { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import NewSpace from "./NewSpace";
+import Link from "next/link";
 
 type Project = {
     ID_Proyecto: number;
@@ -14,8 +15,9 @@ type Project = {
 type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
-    Usuario: User;
+    ID_Usuario: number;
     Nombre: string;
+    Usuario: User;
 }
 
 type Document = {
@@ -31,11 +33,13 @@ type Role = {
 };
 
 type User = {
+    data: User;
     ID_Usuario: number;
     roles: Role[];
     Nombre: string;
     Apellido: string;
     Correo: string;
+    Imagen_Perfil: string;
 };
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -77,6 +81,7 @@ const fetchDocumentsByProjectId = async (projectId: number): Promise<Document[]>
 const fetchSpacesByProjectId = async (projectId: number): Promise<Space[]> => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
+
     const response = await fetch(`${backendUrl}/spaces`, {
         headers: {
             'Content-Type': 'application/json',
@@ -84,10 +89,27 @@ const fetchSpacesByProjectId = async (projectId: number): Promise<Space[]> => {
         },
     });
     if (!response.ok) throw new Error('Error al obtener los espacios');
-    const data = await response.json();
-    const spaces: Space[] = data.data;
 
-    return spaces.filter((space) => space.ID_Proyecto === projectId);
+    const data = await response.json();
+    const spaces: Space[] = data.data.filter((space: Space) => space.ID_Proyecto === projectId);
+
+    for (const space of spaces) {
+        if (space.ID_Usuario) {
+            const userResponse = await fetch(`${backendUrl}/users/${space.ID_Usuario}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (userResponse.ok) {
+                const userData: User = await userResponse.json();
+                console.log(userData);
+                space.Usuario = userData.data;
+            }
+        }
+    }
+    console.log(spaces);
+    return spaces;
 };
 
 const fetchUser = async (): Promise<User> => {
@@ -221,9 +243,6 @@ export default function ProjectPage({ params }: { params: { Código: string } })
             </section>
             <section className="flex w-full h-10 justify-between items-center">
                 <h1 className="text-3xl">Espacios</h1>
-                {/* {isTeacher && project && user &&
-                    <NewSpace params={{ Código: project.Código }}/>
-                } */}
                 {isTeacher && project && user &&
                     <NewSpace
                         params={{ Código: project.Código }}
@@ -231,46 +250,29 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     />
                 }
             </section>
-            {/* <Link href={"spaces/teams"}>
-                    <Card className="w-fit">
-                        <CardHeader className="justify-between">
-                            <div className="flex gap-5">
-                                <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
-                                <div className="flex flex-col gap-1 items-start justify-center">
-                                    <h4 className="text-small font-semibold leading-none text-default-600">Zoey Lang</h4>
-                                    <h5 className="text-small tracking-tight text-default-400">@zoeylang</h5>
-                                </div>
-                            </div>
-                        </CardHeader>
-                        <CardFooter className="gap-3">
-                            <div className="flex gap-1">
-                                <p className="font-semibold text-default-400 text-small">CPTIS-0893-2024</p>
-                            </div>
-                            <div className="flex gap-1">
-                                <p className="font-semibold text-default-400 text-small">57</p>
-                                <p className="text-default-400 text-small">Inscritos</p>
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </Link> */}
             <section className="flex flex-wrap gap-4 p-4">
-                {spaces.map((space, index) => {
-                    if (space.Usuario) {
-                        console.log("Nombre:", space.Usuario.Nombre);
-                        console.log("Apellido:", space.Usuario.Apellido);
-                    }
-
-                    return (
-                        <Card key={index} className="w-fit">
+                {spaces.map((space, index) => (
+                    <Link href={`${project?.Código}/${space.Nombre}`} key={index}>
+                        <Card className="w-fit">
                             <CardHeader className="justify-between">
                                 <div className="flex gap-5">
-                                    <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
+                                    <Avatar
+                                        name={`${space.Usuario.Nombre?.[0] || ""}${space.Usuario.Apellido?.[0] || ""}`}
+                                        src={space.Usuario.Imagen_Perfil || undefined}
+                                        isBordered 
+                                        radius="full" 
+                                        size="md"
+                                    />
                                     <div className="flex flex-col gap-1 items-start justify-center">
                                         {space.Usuario && (
-                                            <>
-                                                <h4 className="text-small font-semibold leading-none text-default-600">{space.Usuario.Nombre}</h4>
-                                                <h5 className="text-small tracking-tight text-default-400">@{space.Usuario.Apellido}</h5>
-                                            </>
+                                            <div>
+                                                <h4 className="text-small font-semibold leading-none text-default-600">
+                                                    {`${space.Usuario.Nombre} ${space.Usuario.Apellido}`}
+                                                </h4>
+                                                <h5 className="text-small tracking-tight text-default-400">
+                                                    {space.Usuario.Correo}
+                                                </h5>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -285,8 +287,8 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                 </div>
                             </CardFooter>
                         </Card>
-                    );
-                })}
+                    </Link>
+                ))}
             </section>
         </section>
     );

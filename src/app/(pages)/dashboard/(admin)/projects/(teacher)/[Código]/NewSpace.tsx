@@ -15,8 +15,9 @@ type Project = {
 type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
-    Usuario: User;
+    ID_Usuario: number;
     Nombre: string;
+    Usuario: User;
 }
 
 type Role = {
@@ -25,11 +26,13 @@ type Role = {
 };
 
 type User = {
+    data: User;
     ID_Usuario: number;
     roles: Role[];
     Nombre: string;
     Apellido: string;
     Correo: string;
+    Imagen_Perfil: string;
 };
 
 type NewSpaceProps = {
@@ -98,82 +101,29 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         setFile(newFile);
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const projectData = await fetchProjectByCode(params.Código);
-                if (projectData) {
-                    setProject(projectData);
-                } else {
-                    console.error('No se encontró el proyecto con el código proporcionado');
-                }
-            } catch (error) {
-                console.error('Error al obtener los datos del proyecto o documentos:', error);
-            }
-        };
-        fetchData();
-        const fetchUserData = async () => {
-            try {
-                const userData = await fetchUser();
-                setUser(userData);
-                setNamespace(`${userData.Nombre} ${userData.Apellido}`);
-            } catch (error) {
-                console.error('Error al obtener los datos del usuario:', error);
-            }
-        };
-
-        fetchUserData();
-    }, [params.Código]);
-    
-    // const handleSubmit = async (event: React.FormEvent) => {
-    //     event.preventDefault();
-
-    //     const token = localStorage.getItem("token");
-    //     if (!token) {
-    //         console.error("No token found");
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append("namespace", namespace);
-    //     formData.append("startspace", dateRange.start ? dateRange.start.toString() : "");
-    //     formData.append("endspace", dateRange.end ? dateRange.end.toString() : "");
-    //     formData.append("starregistrationspace", registrationRange.start ? registrationRange.start.toString() : "");
-    //     formData.append("endregistrationspace", registrationRange.end ? registrationRange.end.toString() : "");
-    //     formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");
-    //     if (project) { 
-    //         formData.append("idproject", project.ID_Proyecto.toString()); 
-    //     }
-
-    //     if (user) {
-    //         formData.append("iduser", user.ID_Usuario.toString());
-    //     }
-
-    //     if (file) {
-    //         formData.append("file", file);
-    //     }
-
-    //     try {
-    //         const response = await fetch(`${backendUrl}/spaces`, {
-    //             method: "POST",
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //             },
-    //             body: formData,
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error("Error al crear el espacio");
-    //         }
-
-    //         const result = await response.json();
-    //         console.log("Espacio creado exitosamente:", result);
-    //         onNewSpace(result.data);
-    //         onOpenChange();
-    //     } catch (error) {
-    //         console.error("Error al crear el espacio:", error);
-    //     }
-    // };
+    useEffect(() => { 
+        const fetchData = async () => { 
+            try { 
+                const projectData = await fetchProjectByCode(params.Código); 
+                if (projectData) { 
+                    setProject(projectData); 
+                } else { 
+                    console.error('No se encontró el proyecto con el código proporcionado'); 
+                } 
+            } catch (error) { 
+                console.error('Error al obtener los datos del proyecto o documentos:', error); 
+            } 
+        }; 
+        fetchData(); 
+        const fetchUserData = async () => { 
+            try { 
+                const userData = await fetchUser(); setUser(userData); 
+            } catch (error) { 
+                console.error('Error al obtener los datos del usuario:', error); 
+            } 
+        }; 
+        fetchUserData(); 
+    }, [params.Código]); 
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -214,18 +164,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     
             const result = await response.json();
             console.log("Espacio creado exitosamente:", result);
-            
-            // Asegúrate de que el nuevo espacio incluye la estructura de usuario
-            const newSpace = {
-                ...result.data,
-                Usuario: {
-                    ID_Usuario: user?.ID_Usuario,
-                    Nombre: user?.Nombre,
-                    Apellido: user?.Apellido,
-                    Correo: user?.Correo
-                }
-            };
-            onNewSpace(newSpace);
+            onNewSpace(result.data);
             onOpenChange();
         } catch (error) {
             console.error("Error al crear el espacio:", error);
