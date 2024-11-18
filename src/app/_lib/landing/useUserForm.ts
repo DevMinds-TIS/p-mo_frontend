@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
-export default function userForms() {
-  const [email, setEmail] = React.useState("");
-  const [passwd, setPasswd] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState("");
-  const [isPasswdTouched, setIsPasswdTouched] = React.useState(false);
-  const [isEmailTouched, setIsEmailTouched] = React.useState(false);
+export default function useUserForms() {
+  const [email, setEmail] = useState("");
+  const [passwd, setPasswd] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isPasswdTouched, setIsPasswdTouched] = useState(false);
+  const [isEmailTouched, setIsEmailTouched] = useState(false);
 
-  const [name, setName] = React.useState("");
-  const [isNameTouched, setIsNameTouched] = React.useState(false);
-  const [lastname, setLastname] = React.useState("");
-  const [isLastNameTouched, setIsLastNameTouched] = React.useState(false);
+  const [name, setName] = useState("");
+  const [isNameTouched, setIsNameTouched] = useState(false);
+  const [lastname, setLastname] = useState("");
+  const [isLastNameTouched, setIsLastNameTouched] = useState(false);
 
-  const [code, setCode] = React.useState("");
-  const [isCodeTouched, setIsCodeTouched] = React.useState(false);
-  const [siscode, setSisCode] = React.useState("");
-  const [isSiscodeTouched, setIsSiscodeTouched] = React.useState(false);
+  const [code, setCode] = useState("");
+  const [isCodeTouched, setIsCodeTouched] = useState(false);
+  const [siscode, setSisCode] = useState("");
+  const [isSiscodeTouched, setIsSiscodeTouched] = useState(false);
 
 
   const validateEmail = (email: string) => email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
@@ -56,31 +56,31 @@ export default function userForms() {
     return "";
   };
 
-  const isInvalidEmail = React.useMemo(() => {
+  const isInvalidEmail = useMemo(() => {
     if (email === "") return false;
     return validateEmail(email) ? false : true;
   }, [email]);
-  const isInvalidPasswd = React.useMemo(() => {
+  const isInvalidPasswd = useMemo(() => {
     const error = validatePasswd(passwd)
     setPasswordError(error)
     return error !== "";
   }, [passwd]);
 
-  const isInvalidName = React.useMemo(() => {
+  const isInvalidName = useMemo(() => {
     const error = validateName(name);
     return error !== "";
   }, [name]);
-  const isInvalidLastname = React.useMemo(() => {
+  const isInvalidLastname = useMemo(() => {
     const error = validateLastname(lastname);
     return error !== "";
   }, [lastname]);
 
-  const isInvalidCode = React.useMemo(() => {
+  const isInvalidCode = useMemo(() => {
     const error = validateCode(code);
     return error !== "";
   }, [code]);
 
-  const isInvalidSiscode = React.useMemo(() => {
+  const isInvalidSiscode = useMemo(() => {
     const error = validateSiscode(siscode);
     return error !== "";
   }, [siscode]);
@@ -88,7 +88,7 @@ export default function userForms() {
   const isLoginValid = !isInvalidEmail && !isInvalidPasswd;
   const isSingupValid = !isInvalidEmail && !isInvalidPasswd && !isInvalidName && !isInvalidLastname;
 
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return {

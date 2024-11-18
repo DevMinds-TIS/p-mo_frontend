@@ -80,8 +80,10 @@ export default function ProjectsPage() {
             try {
                 const userData = await fetchUser();
                 setUser(userData);
+                // setIsLoadingUser(false);
                 const projectData = await fetchProjects();
                 setProjects(projectData);
+                setIsLoadingProjects(false);
                 if (projectData.length > 0) {
                     const earliestStartDate = projectData.reduce((earliest, current) => {
                         return new Date(current.Fecha_Inicio) < new Date(earliest.Fecha_Inicio) ? current : earliest;
@@ -92,10 +94,12 @@ export default function ProjectsPage() {
                 }
             } catch (error) {
                 console.error(error);
+                // setIsLoadingUser(false);
+                setIsLoadingProjects(false);
             }
         };
         fetchData();
-    }, []);    
+    }, []);
 
     if (!user) {
         return (
@@ -106,22 +110,12 @@ export default function ProjectsPage() {
                     <Skeleton className="w-10 h-10 rounded-lg" />
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
-                    <div className='flex flex-col w-fit gap-2'>
-                        <Skeleton className="w-64 h-12 rounded-lg" />
-                        <Skeleton className="w-64 h-64 rounded-xl" />
-                    </div>
+                    {[...Array(4)].map((_, index) => (
+                        <div className='flex flex-col w-fit gap-2'>
+                            <Skeleton className="w-64 h-12 rounded-lg" />
+                            <Skeleton className="w-64 h-64 rounded-xl" />
+                        </div>
+                    ))}
                 </section>
             </section>
         );
@@ -230,4 +224,5 @@ export default function ProjectsPage() {
             </section>
         </section>
     );
+    
 }
