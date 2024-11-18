@@ -87,16 +87,18 @@ export default function ReportesPage() {
     };
 
     return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Reportes de Equipos</h1>
-
+        <div className="p-4 md:p-8">
+            <h1 className="text-xl md:text-2xl font-bold mb-4">Reportes de Equipos</h1>
+    
             {/* Selector de equipos y filtro de ordenación */}
-            <div className="mb-4 flex gap-4 items-center">
-                <div>
-                    <label htmlFor="team-select" className="mr-2 font-semibold">Selecciona un equipo:</label>
+            <div className="mb-4 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                <div className="w-full md:w-auto">
+                    <label htmlFor="team-select" className="mr-2 font-semibold block md:inline">
+                        Selecciona un equipo:
+                    </label>
                     <select
                         id="team-select"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded w-full md:w-auto"
                         value={selectedTeam}
                         onChange={(e) => setSelectedTeam(e.target.value)}
                     >
@@ -108,13 +110,14 @@ export default function ReportesPage() {
                         ))}
                     </select>
                 </div>
-
-                {/* Filtro de ordenación */}
-                <div>
-                    <label htmlFor="sort-select" className="mr-2 font-semibold">Ordenar por:</label>
+    
+                <div className="w-full md:w-auto">
+                    <label htmlFor="sort-select" className="mr-2 font-semibold block md:inline">
+                        Ordenar por:
+                    </label>
                     <select
                         id="sort-select"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded w-full md:w-auto"
                         value={sortOption}
                         onChange={(e) => setSortOption(e.target.value)}
                     >
@@ -125,19 +128,19 @@ export default function ReportesPage() {
                     </select>
                 </div>
             </div>
-
+    
             {/* Botón de exportación */}
             <button
                 onClick={handleExport}
-                className="mb-4 p-2 bg-[#FE7F2D] text-white rounded"
+                className="mb-4 p-2 bg-[#FE7F2D] text-white rounded w-full md:w-auto"
             >
                 Exportar a TXT
             </button>
-
+    
             {/* Tabla de equipos */}
             {!selectedTeam && (
                 <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
+                    <table className="w-full border-collapse border border-gray-300 text-sm md:text-base">
                         <thead>
                             <tr className="bg-[#191919] text-white">
                                 <th className="border border-gray-300 px-4 py-2">Nombre</th>
@@ -157,12 +160,14 @@ export default function ReportesPage() {
                     </table>
                 </div>
             )}
-
+    
             {/* Detalle del equipo seleccionado */}
             {selectedTeam && (
                 <div className="overflow-x-auto mt-6">
-                    <h2 className="text-xl font-semibold mb-4">Detalles del {selectedTeam}</h2>
-                    <table className="w-full border-collapse border border-gray-300">
+                    <h2 className="text-lg md:text-xl font-semibold mb-4">
+                        Detalles del {selectedTeam}
+                    </h2>
+                    <table className="w-full border-collapse border border-gray-300 text-sm md:text-base">
                         <thead>
                             <tr className="bg-[#191919] text-white">
                                 <th className="border border-gray-300 px-4 py-2">Miembro</th>
@@ -185,5 +190,5 @@ export default function ReportesPage() {
                 </div>
             )}
         </div>
-    );
+    );    
 }

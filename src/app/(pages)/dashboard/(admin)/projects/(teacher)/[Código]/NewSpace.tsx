@@ -188,7 +188,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         formData.append("endspace", dateRange.end ? dateRange.end.toString() : "");
         formData.append("starregistrationspace", registrationRange.start ? registrationRange.start.toString() : "");
         formData.append("endregistrationspace", registrationRange.end ? registrationRange.end.toString() : "");
-        formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");
+        formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");     
         if (project) { 
             formData.append("idproject", project.ID_Proyecto.toString()); 
         }
@@ -214,8 +214,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     
             const result = await response.json();
             console.log("Espacio creado exitosamente:", result);
-            
-            // Asegúrate de que el nuevo espacio incluye la estructura de usuario
+    
             const newSpace = {
                 ...result.data,
                 Usuario: {
@@ -230,7 +229,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         } catch (error) {
             console.error("Error al crear el espacio:", error);
         }
-    };    
+    };
 
     const handleLimitspaceChange = (value: string) => {
         const numValue = Number(value);

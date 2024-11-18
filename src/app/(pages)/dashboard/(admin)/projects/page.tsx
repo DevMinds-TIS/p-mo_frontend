@@ -73,6 +73,7 @@ const fetchProjects = async (): Promise<Project[]> => {
 export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
+    const [filterText, setFilterText] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,7 +97,7 @@ export default function ProjectsPage() {
         fetchData();
     }, []);    
 
-    if (projects.length === 0 || !user) {
+    if (!user) {
         return (
             <section className="flex flex-col gap-y-8">
                 <section className="flex w-full h-10 justify-between items-center">
@@ -139,48 +140,78 @@ export default function ProjectsPage() {
         setProjects((prevProjects) => [...prevProjects, newProject]);
     };
 
+    // Filtrar proyectos basados en el texto del filtro
+    const filteredProjects = projects.filter((project) =>
+        project.Código.toLowerCase().includes(filterText.toLowerCase())
+    );
+
     return (
-        <section className="flex flex-col gap-y-8">
-            <section className="flex w-full h-10 justify-between items-center">
-                <h1 className="text-3xl">Proyectos</h1>
-                <Input
-                    isClearable
-                    radius="lg"
-                    placeholder="Encuéntrame"
-                    className="w-auto"
-                    startContent={<SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />}
-                />
-                {isAdmin && <NewProject onNewProject={handleNewProject} />}
+        <section className="flex flex-col gap-y-8 p-4 md:p-8">
+            {/* Encabezado */}
+            <section className="flex flex-col md:flex-row w-full h-auto md:h-10 justify-between items-start md:items-center gap-4">
+                <h1 className="text-2xl md:text-3xl">Proyectos</h1>
+                <div className="flex w-full md:w-auto items-center gap-4">
+                    <Input
+                        isClearable
+                        radius="lg"
+                        placeholder="Encuéntrame"
+                        value={filterText} // Bind al estado
+                        onChange={(e) => setFilterText(e.target.value)} // Actualizar estado
+                        className="w-full md:w-auto"
+                        startContent={
+                            <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                        }
+                    />
+                    {isAdmin && <NewProject />}
+                </div>
             </section>
-            <section className="flex flex-wrap p-4 gap-8">
-                {projects.map(project => (
-                    <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
-                        <div className='flex'>
+    
+            {/* Lista de proyectos */}
+            <section className="flex flex-wrap justify-center md:justify-start p-4 gap-4 md:gap-8">
+                {filteredProjects.map((project) => (
+                    <div
+                        className="flex flex-col w-full sm:w-[48%] md:w-[30%] lg:w-[23%] gap-2"
+                        key={project.ID_Proyecto}
+                    >
+                        {/* Link y Popover */}
+                        <div className="flex">
                             <Link
                                 href={`/dashboard/projects/${project.Código}`}
-                                className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
+                                className={`flex w-full items-center gap-2 ${
+                                    isAdmin ? "rounded-l-lg" : ""
+                                } ${
+                                    isTeacher || isStudent ? "rounded-lg" : ""
+                                } bg-[#ff9b5a] p-2`}
                             >
-                                <FolderLinksIcon size={30} color='#FFF' />
-                                <span className='text-white'>
-                                    {project['Código']}
-                                </span>
+                                <FolderLinksIcon size={30} color="#FFF" />
+                                <span className="text-white">{project["Código"]}</span>
                             </Link>
                             {isAdmin && (
                                 <Popover placement="right" backdrop="blur">
                                     <PopoverTrigger>
-                                        <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
-                                            <MoreVerticalIcon size={30} color='#FFF' />
+                                        <Button
+                                            className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]"
+                                            size="lg"
+                                            radius="none"
+                                        >
+                                            <MoreVerticalIcon size={30} color="#FFF" />
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent>
                                         <div className="px-1 py-2">
-                                            <div className="text-small font-bold">Popover Content</div>
-                                            <div className="text-tiny">This is the popover content</div>
+                                            <div className="text-small font-bold">
+                                                Popover Content
+                                            </div>
+                                            <div className="text-tiny">
+                                                This is the popover content
+                                            </div>
                                         </div>
                                     </PopoverContent>
                                 </Popover>
                             )}
                         </div>
+
+                        {/* Calendario */}
                         <I18nProvider locale="es-BO">
                             <RangeCalendar
                                 aria-label="Date (Read Only)"
