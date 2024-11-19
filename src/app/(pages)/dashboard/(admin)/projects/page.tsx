@@ -113,7 +113,7 @@ export default function ProjectsPage() {
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
                     {[...Array(4)].map((_, index) => (
-                        <div className='flex flex-col w-fit gap-2'>
+                        <div key={index}  className='flex flex-col w-fit gap-2'>
                             <Skeleton className="w-64 h-12 rounded-lg" />
                             <Skeleton className="w-64 h-64 rounded-xl" />
                         </div>
