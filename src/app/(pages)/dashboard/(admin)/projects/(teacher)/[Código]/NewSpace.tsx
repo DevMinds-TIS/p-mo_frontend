@@ -71,13 +71,15 @@ const fetchUser = async (): Promise<User> => {
             'Authorization': `Bearer ${token}`,
         },
     });
+    console.log(response.json());
 
     if (!response.ok) {
         throw new Error('Error al obtener los datos del usuario');
     }
 
     const data: User = await response.json();
-    return data;
+    console.log(data.data);
+    return data.data;
 };
 
 export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
@@ -101,29 +103,31 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         setFile(newFile);
     };
 
-    useEffect(() => { 
-        const fetchData = async () => { 
-            try { 
-                const projectData = await fetchProjectByCode(params.Código); 
-                if (projectData) { 
-                    setProject(projectData); 
-                } else { 
-                    console.error('No se encontró el proyecto con el código proporcionado'); 
-                } 
-            } catch (error) { 
-                console.error('Error al obtener los datos del proyecto o documentos:', error); 
-            } 
-        }; 
-        fetchData(); 
-        const fetchUserData = async () => { 
-            try { 
-                const userData = await fetchUser(); setUser(userData); 
-            } catch (error) { 
-                console.error('Error al obtener los datos del usuario:', error); 
-            } 
-        }; 
-        fetchUserData(); 
-    }, [params.Código]); 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const projectData = await fetchProjectByCode(params.Código);
+                if (projectData) {
+                    setProject(projectData);
+                } else {
+                    console.error('No se encontró el proyecto con el código proporcionado');
+                }
+            } catch (error) {
+                console.error('Error al obtener los datos del proyecto o documentos:', error);
+            }
+        };
+        fetchData();
+        const fetchUserData = async () => {
+            try {
+                const userData = await fetchUser();
+                console.log(userData.data);
+                setUser(userData.data);
+            } catch (error) {
+                console.error('Error al obtener los datos del usuario:', error);
+            }
+        };
+        fetchUserData();
+    }, [params.Código]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -139,8 +143,8 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         formData.append("starregistrationspace", registrationRange.start ? registrationRange.start.toString() : "");
         formData.append("endregistrationspace", registrationRange.end ? registrationRange.end.toString() : "");
         formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");
-        if (project) { 
-            formData.append("idproject", project.ID_Proyecto.toString()); 
+        if (project) {
+            formData.append("idproject", project.ID_Proyecto.toString());
         }
         if (user) {
             formData.append("iduser", user.ID_Usuario.toString());
@@ -148,7 +152,9 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         if (file) {
             formData.append("file", file);
         }
-    
+
+        console.log(formData);
+
         try {
             const response = await fetch(`${backendUrl}/spaces`, {
                 method: "POST",
@@ -157,11 +163,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                 },
                 body: formData,
             });
-    
+
             if (!response.ok) {
                 throw new Error("Error al crear el espacio");
             }
-    
+
             const result = await response.json();
             console.log("Espacio creado exitosamente:", result);
             onNewSpace(result.data);
@@ -169,7 +175,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         } catch (error) {
             console.error("Error al crear el espacio:", error);
         }
-    };    
+    };
 
     const handleLimitspaceChange = (value: string) => {
         const numValue = Number(value);
@@ -198,11 +204,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                         <form onSubmit={handleSubmit}>
                             <ModalHeader className="flex flex-col gap-1">Crear espacio</ModalHeader>
                             <ModalBody>
-                                <Input 
-                                    label="Nombre del espacio" 
-                                    placeholder="Digite el nombre del espacio" 
-                                    value={namespace} 
-                                    onChange={(e) => setNamespace(e.target.value)} 
+                                <Input
+                                    label="Nombre del espacio"
+                                    placeholder="Digite el nombre del espacio"
+                                    value={namespace}
+                                    onChange={(e) => setNamespace(e.target.value)}
                                 />
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
@@ -230,10 +236,10 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
                                 </I18nProvider>
-                                <Input 
-                                    label="Límite de integrantes" 
-                                    placeholder="Digite el límite de integrantes para sus equipos" 
-                                    type="number" 
+                                <Input
+                                    label="Límite de integrantes"
+                                    placeholder="Digite el límite de integrantes para sus equipos"
+                                    type="number"
                                     value={limitspace !== null ? limitspace.toString() : ""}
                                     onChange={(e) => handleLimitspaceChange(e.target.value)}
                                     onKeyDown={handleKeyDown}

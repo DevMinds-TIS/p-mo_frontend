@@ -103,7 +103,6 @@ const fetchSpacesByProjectId = async (projectId: number): Promise<Space[]> => {
             });
             if (userResponse.ok) {
                 const userData: User = await userResponse.json();
-                console.log(userData);
                 space.Usuario = userData.data;
             }
         }
@@ -299,10 +298,10 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                     <div className="flex gap-1">
                                         <p className="font-semibold text-default-400 text-small">{space.Nombre}</p>
                                     </div>
-                                    <div className="flex gap-1">
+                                    {/* <div className="flex gap-1">
                                         <p className="font-semibold text-default-400 text-small">57</p>
                                         <p className="text-default-400 text-small">Inscritos</p>
-                                    </div>
+                                    </div> */}
                                 </CardFooter>
                             </Card>
                         </Link>
