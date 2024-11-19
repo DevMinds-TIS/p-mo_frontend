@@ -2,8 +2,29 @@
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import Link from "next/link";
 import NewTeam from "./NewTeam";
+import { useState } from "react";
+
+type Space = {
+    ID_Espacio: number;
+    ID_Proyecto: number;
+    ID_Usuario: number;
+    Nombre: string;
+}
+
+type Team = {
+    ID_Equipo: number;
+    ID_Usuario: number;
+    ID_Espacio: number;
+    Nombre: string;
+    Razón_Social: string;
+    Correo: string;
+    Logo: string;
+}
 
 export default function TeamsPage() {
+    const [space, setSpace] = useState<Space | null>(null);
+    const [team, setTeam] = useState<Team | null>(null);
+
     return (
         <section>
             <div className="flex justify-between">
@@ -13,7 +34,7 @@ export default function TeamsPage() {
                 <NewTeam/>
             </div>
             <div className="flex flex-wrap gap-4 p-4">
-                <Link href={"team"}>
+                <Link href={`${space?.Nombre}/${team?.Nombre}`}>
                     <Card shadow="sm" isPressable>
                         <CardBody className="overflow-visible p-0">
                             <Image
