@@ -191,7 +191,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                 </section>
                 <section className="flex flex-wrap gap-4 p-4">
                     {[...Array(4)].map((_, index) => (
-                        <Skeleton className="w-60 h-28 rounded-xl" />
+                        <Skeleton key={index} className="w-60 h-28 rounded-xl" />
                     ))}
                 </section>
             </section>
