@@ -1,5 +1,5 @@
 'use client';
-import { Card, CardHeader, Avatar, CardBody, CardFooter, Image, Skeleton } from "@nextui-org/react";
+import { Card, CardHeader, Avatar, CardBody, CardFooter, Skeleton } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import NewSpace from "./NewSpace";
@@ -28,14 +28,14 @@ type Document = {
 };
 
 type Role = {
-    idroleuser: number;
-    idrol: number;
+    ID_Rol: number;
+    Nombre_Rol: string;
 };
 
 type User = {
     data: User;
     ID_Usuario: number;
-    roles: Role[];
+    Roles: Role[];
     Nombre: string;
     Apellido: string;
     Correo: string;
@@ -128,7 +128,7 @@ const fetchUser = async (): Promise<User> => {
     }
 
     const data: User = await response.json();
-    return data;
+    return data.data;
 };
 
 export default function ProjectPage({ params }: { params: { Código: string } }) {
@@ -198,11 +198,35 @@ export default function ProjectPage({ params }: { params: { Código: string } })
         );
     }
 
-    const isTeacher = user.roles.some(role => role.idrol === 2);
+    const isTeacher = user?.Roles?.some(role => role.ID_Rol === 2) ?? false;
 
-    const handleNewSpace = (newSpace: Space) => {
-        setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
-    };
+    const handleNewSpace = async (newSpace: Space) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found');
+          return;
+        }
+      
+        try {
+          const userResponse = await fetch(`${backendUrl}/users/${newSpace.ID_Usuario}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+      
+          if (!userResponse.ok) {
+            throw new Error('Error al obtener los datos del usuario');
+          }
+      
+          const userData: { data: User } = await userResponse.json();
+          newSpace.Usuario = userData.data;
+      
+          setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
+        } catch (error) {
+          console.error('Error al obtener los datos del usuario:', error);
+        }
+      };      
 
     return (
         <section className="flex flex-col gap-y-8">
@@ -256,10 +280,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
             <section className="flex w-full h-10 justify-between items-center">
                 <h1 className="text-3xl">Espacios</h1>
                 {isTeacher && project && user && (
-                    <NewSpace
-                        params={{ Código: project.Código }}
-                        onNewSpace={handleNewSpace}
-                    />
+                    <NewSpace params={{ Código: project.Código }} onNewSpace={handleNewSpace} />
                 )}
             </section>
             <section className="flex flex-wrap gap-4 p-4">
@@ -282,14 +303,14 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                         />
                                         <div className="flex flex-col gap-1 items-start justify-center">
                                             {space.Usuario && (
-                                                <>
+                                                <div>
                                                     <h4 className="text-small font-semibold leading-none text-default-600">
                                                         {`${space.Usuario.Nombre} ${space.Usuario.Apellido}`}
                                                     </h4>
                                                     <h5 className="text-small tracking-tight text-default-400">
                                                         {space.Usuario.Correo}
                                                     </h5>
-                                                </>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -298,10 +319,6 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                     <div className="flex gap-1">
                                         <p className="font-semibold text-default-400 text-small">{space.Nombre}</p>
                                     </div>
-                                    {/* <div className="flex gap-1">
-                                        <p className="font-semibold text-default-400 text-small">57</p>
-                                        <p className="text-default-400 text-small">Inscritos</p>
-                                    </div> */}
                                 </CardFooter>
                             </Card>
                         </Link>
