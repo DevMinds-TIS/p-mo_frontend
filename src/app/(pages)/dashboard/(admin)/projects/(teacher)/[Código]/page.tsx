@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import NewSpace from "./NewSpace";
 import Link from "next/link";
+import Avisos from "./Avisos";
 
 type Project = {
     ID_Proyecto: number;
@@ -198,6 +199,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
         );
     }
 
+    const isAdmin = user.roles.some(role => role.idrol === 1);
     const isTeacher = user.roles.some(role => role.idrol === 2);
 
     const handleNewSpace = (newSpace: Space) => {
@@ -308,6 +310,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     ))
                 )}
             </section>
+            <Avisos isAdmin={isAdmin} />
         </section>
     );
 }
