@@ -21,14 +21,14 @@ type Space = {
 }
 
 type Role = {
-    idroleuser: number;
-    idrol: number;
+    ID_Rol: number;
+    Nombre_Rol: string;
 };
 
 type User = {
     data: User;
     ID_Usuario: number;
-    roles: Role[];
+    Roles: Role[];
     Nombre: string;
     Apellido: string;
     Correo: string;
@@ -64,23 +64,19 @@ const fetchUser = async (): Promise<User> => {
     if (!token) {
         throw new Error('No token found');
     }
-
     const response = await fetch(`${backendUrl}/user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
     });
-    console.log(response.json());
-
     if (!response.ok) {
         throw new Error('Error al obtener los datos del usuario');
     }
-
-    const data: User = await response.json();
-    console.log(data.data);
+    const data = await response.json();
     return data.data;
 };
+
 
 export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -117,11 +113,13 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
             }
         };
         fetchData();
+    
         const fetchUserData = async () => {
             try {
                 const userData = await fetchUser();
-                console.log(userData.data);
-                setUser(userData.data);
+                setUser(userData);
+                console.log(userData);
+                console.log(user);
             } catch (error) {
                 console.error('Error al obtener los datos del usuario:', error);
             }
@@ -152,24 +150,18 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         if (file) {
             formData.append("file", file);
         }
-
         console.log(formData);
-
         try {
             const response = await fetch(`${backendUrl}/spaces`, {
                 method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
                 body: formData,
             });
-
             if (!response.ok) {
                 throw new Error("Error al crear el espacio");
             }
-
             const result = await response.json();
-            console.log("Espacio creado exitosamente:", result);
+            console.log("Espacio creado exitosamente:", result.data);
             onNewSpace(result.data);
             onOpenChange();
         } catch (error) {

@@ -11,21 +11,22 @@ import { useRouter } from 'next/navigation';
 import ProtectedLayout from "./protected_layout";
 
 type Role = {
-  idroleuser: number;
-  idrol: number;
+  ID_Rol: number;
+  Nombre_Rol: string;
 };
 
 type Docente = {
-  nameuser: string;
-  lastnameuser: string;
+  Nombre: string;
+  Apellido: string;
 };
 
 type User = {
-  nameuser: string;
-  lastnameuser: string;
-  emailuser: string;
-  profileuser?: string;
-  roles: Role[];
+  data: User;
+  Nombre: string;
+  Apellido: string;
+  Correo: string;
+  Imagen_Perfil?: string;
+  Roles: Role[];
   user?: Docente;
 };
 
@@ -116,7 +117,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           throw new Error('Error al obtener los datos del usuario');
         }
         const data: User = await response.json();
-        setUser(data);
+        setUser(data.data);
       } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
       }
@@ -153,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   };
 
-  const userRoleId = user?.roles[0]?.idrol || 0;
+  const userRoleId = user?.Roles?.[0]?.ID_Rol ?? 0;
   const filteredNavItems = getNavItems(userRoleId);
 
   return (
@@ -199,8 +200,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <NavbarItem
                       className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
                       <Avatar
-                        name={!user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined}
-                        src={user?.profileuser || undefined}
+                        name={!user?.Imagen_Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
+                        src={user?.Imagen_Perfil || undefined}
                         size="md"
                       />
                       <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>Perfil</p>
@@ -211,11 +212,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
                         <Tooltip content="Editar perfil" placement="right">
                           <User
-                            name={`${user?.nameuser} ${user?.lastnameuser}`}
-                            description={user?.emailuser}
+                            name={`${user?.Nombre} ${user?.Apellido}`}
+                            description={user?.Correo}
                             avatarProps={{
-                              name: !user?.profileuser ? `${user?.nameuser?.[0] || ''}${user?.lastnameuser?.[0] || ''}` : undefined,
-                              src: user?.profileuser || undefined,
+                              name: !user?.Imagen_Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
+                              src: user?.Imagen_Perfil || undefined,
                             }}
                           />
                         </Tooltip>
