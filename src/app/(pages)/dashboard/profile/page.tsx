@@ -90,27 +90,27 @@ export default function Profile() {
     return (
         <section className="flex flex-col gap-y-8 p-4">
             <div className="flex w-full h-10 justify-between items-center">
-                <h1 className="text-3xl">Perfil</h1>
+                <h1 className="text-2xl sm:text-3xl">Perfil</h1>
             </div>
-            <div className="flex">
-                <div className="w-[30%] flex flex-col gap-1">
+            <div className="flex flex-col md:flex-row gap-4">
+                <div className="w-full md:w-[40%] lg:w-[30%] flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <h1 className="font-bold text-xl">
+                        <h1 className="font-bold text-lg md:text-xl">
                             Datos personales
                         </h1>
-                        <UpdateProfile/>
+                        <UpdateProfile />
                     </div>
                     <div className="flex justify-center">
                         <Avatar
                             name={`${user.Nombre?.[0] || ""}${user.Apellido?.[0] || ""}`}
                             src={user.Imagen_Perfil || undefined}
-                            className="w-52 h-52 text-7xl"
+                            className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 text-6xl md:text-7xl"
                         />
                     </div>
-                    <p className="text-xl font-bold">
+                    <p className="text-lg sm:text-xl font-bold">
                         {`${user.Nombre} ${user.Apellido}`}
                     </p>
-                    <p className="font-light">
+                    <p className="font-light text-sm sm:text-base">
                         {user.Correo}
                     </p>
                     {isStudent && user.Docente && (
@@ -129,7 +129,7 @@ export default function Profile() {
                         </div>
                     )}
                 </div>
-                <div className="w-[70%] bg-teal-600">
+                <div className="w-full md:w-[60%] lg:w-[70%] bg-teal-600 p-4">
                 </div>
             </div>
         </section>
