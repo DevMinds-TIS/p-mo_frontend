@@ -1,27 +1,28 @@
 "use client";
-import { Avatar, Divider, Skeleton, User } from "@nextui-org/react";
+import { Avatar, Divider, Skeleton, User as NextUser } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import UpdateProfile from "./UpdateProfile";
 
 type Role = {
-    idroleuser: number;
-    idrol: number;
+    ID_Rol: number;
+    Nombre_Rol: string;
 };
 
 type Docente = {
-    nameuser: string;
-    lastnameuser: string;
-    emailuser: string;
-    profileuser?: string;
+    Nombre: string;
+    Apellido: string;
+    Correo: string;
+    Imagen_Perfil?: string;
 };
 
 type User = {
-    nameuser: string;
-    lastnameuser: string;
-    emailuser: string;
-    profileuser?: string;
-    roles: Role[];
-    user?: Docente;
+    ID_Usuario: number;
+    Nombre: string;
+    Apellido: string;
+    Correo: string;
+    Imagen_Perfil?: string;
+    Roles: Role[];
+    Docente?: Docente;
 };
 
 export default function Profile() {
@@ -29,7 +30,6 @@ export default function Profile() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem("token");
@@ -37,7 +37,7 @@ export default function Profile() {
                 console.error("No token found");
                 return;
             }
-    
+
             try {
                 const response = await fetch(`${backendUrl}/user`, {
                     headers: {
@@ -45,13 +45,13 @@ export default function Profile() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-    
+
                 if (!response.ok) {
                     throw new Error("Error al obtener los datos del usuario");
                 }
-    
+
                 const data = await response.json();
-                setUser(data);
+                setUser(data.data);
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error al obtener los datos del usuario:", error);
@@ -84,7 +84,8 @@ export default function Profile() {
         );
     }
 
-    const isStudent = user.roles.some((role) => role.idrol === 3);
+    const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
+    console.log("Role", isStudent);
 
     return (
         <section className="flex flex-col gap-y-8 p-4">
@@ -101,28 +102,26 @@ export default function Profile() {
                     </div>
                     <div className="flex justify-center">
                         <Avatar
-                            name={`${user.nameuser?.[0] || ""}${user.lastnameuser?.[0] || ""}`}
-                            src={user.profileuser || undefined}
+                            name={`${user.Nombre?.[0] || ""}${user.Apellido?.[0] || ""}`}
+                            src={user.Imagen_Perfil || undefined}
                             className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 text-6xl md:text-7xl"
                         />
                     </div>
                     <p className="text-lg sm:text-xl font-bold">
-                        {`${user.nameuser} ${user.lastnameuser}`}
+                        {`${user.Nombre} ${user.Apellido}`}
                     </p>
                     <p className="font-light text-sm sm:text-base">
-                        {user.emailuser}
+                        {user.Correo}
                     </p>
-                    {isStudent && user.user && (
+                    {isStudent && user.Docente && (
                         <div className="flex flex-col gap-2">
                             <Divider />
-                            <User
-                                name={`${user.user.nameuser} ${user.user.lastnameuser}`}
-                                description={user.user.emailuser}
+                            <NextUser
+                                name={`${user.Docente.Nombre} ${user.Docente.Apellido}`}
+                                description={user.Docente.Correo}
                                 avatarProps={{
-                                    name: !user.user.profileuser
-                                        ? `${user.user.nameuser?.[0] || ""}${user.user.lastnameuser?.[0] || ""}`
-                                        : undefined,
-                                    src: user.user.profileuser || undefined,
+                                    name: !user.Docente.Imagen_Perfil ? `${user.Docente.Nombre?.[0] || ''}${user.Docente.Apellido?.[0] || ''}` : undefined,
+                                    src: user.Docente.Imagen_Perfil || undefined,
                                 }}
                                 className="justify-start"
                             />
@@ -131,9 +130,8 @@ export default function Profile() {
                     )}
                 </div>
                 <div className="w-full md:w-[60%] lg:w-[70%] bg-teal-600 p-4">
-                    
                 </div>
             </div>
         </section>
-    );    
+    );
 }
