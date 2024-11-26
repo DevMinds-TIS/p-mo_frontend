@@ -6,9 +6,10 @@ interface FileUploadProps {
   onChange: (file: File | null) => void;
   existingFile?: { name: string; url: string } | null;
   readOnly?: boolean;
+  className?: string;
 }
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, readOnly = false }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, readOnly = false, className }) => {
   const [file, setFile] = useState<string | undefined>(existingFile?.url);
   const [fileEnter, setFileEnter] = useState(false);
 
@@ -24,7 +25,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
   };
 
   return (
-    <div className="w-full h-full">
+    <div className={`w-full h-full ${className}`}>
       {!file ? (
         <div
           onDragOver={(e) => {

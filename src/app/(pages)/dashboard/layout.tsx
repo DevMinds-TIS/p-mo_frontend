@@ -33,27 +33,16 @@ type User = {
 const getNavItems = (roleId: number): { href: string, icon: any, label: string }[] => {
   const navItems: { [key: number]: { href: string, icon: any, label: string }[] } = {
     1: [
-      { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
-      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
-      // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
-      // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
       { href: "/dashboard/roles", icon: UserSwitchIcon, label: "Roles" },
-      { href: "/dashboard/permissions", icon: LockKeyIcon, label: "Permisos" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     2: [
-      { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
     3: [
-      { href: "/dashboard/announcement", icon: Megaphone01Icon, label: "Anuncios" },
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
-      // { href: "/dashboard/test", icon: TaskDaily01Icon, label: "Evaluaciones" },
-      // { href: "/dashboard/planning", icon: Calendar03Icon, label: "Planificación" },
-      // { href: "/dashboard/team", icon: UserGroupIcon, label: "Equipo" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
   };

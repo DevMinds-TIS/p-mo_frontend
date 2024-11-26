@@ -3,7 +3,45 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import { AddSquareIcon } from "hugeicons-react";
 import React, { useState } from "react";
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+type Team = {
+    ID_Equipo: number;
+    ID_Usuario: number;
+    ID_Espacio: number;
+    Nombre: string;
+    Razón_Social: string;
+    Correo: string;
+    Logo: string;
+}
+
+interface NewTeamProps {
+    onNewTeam: (team: Team) => void;
+}
+
+const fetchUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+
+    const response = await fetch(`${backendUrl}/user`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener los datos del usuario');
+    }
+
+    const userData = await response.json();
+    return userData.data;
+};
+
 const companyteam = [
+    { key: "", label: "Selecciona alguna opción", description: "" },
     { key: "srl", label: "S.R.L.", description: "Sociedad de responsabilidad limitada" },
     { key: "sa", label: "S.A.", description: "Sociedad anónima" },
     { key: "sas", label: "S.A.S.", description: "Sociedades por acciones simplificadas" },
@@ -13,24 +51,66 @@ const companyteam = [
     { key: "scoop", label: "S.Coop.", description: "Sociedades cooperativas" },
 ];
 
-export default function NewTeam() {
+const createTeam = async (teamData: FormData) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+
+    const response = await fetch(`${backendUrl}/teams`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: teamData,
+    });
+
+    if (response.redirected) {
+        throw new Error(`Request was redirected to: ${response.url}`);
+    }
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al crear el equipo');
+    }
+
+    const responseData = await response.json();
+    return responseData;
+};
+
+export default function NewTeam({ onNewTeam }: NewTeamProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [shortName, setShortName] = useState("");
-    const [largeName, setLargeName] = useState("");
-    const [emailStudent, setEmailStudent] = useState("");
     const [emailTeam, setEmailTeam] = useState("");
-    const [projectCode, setProjectCode] = useState("");
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
-
-    const [selectedKey, setSelectedKey] = useState<string>(companyteam[0].key);
-    const selectedDescription = companyteam.find(item => item.key === selectedKey)?.description;
-
+    const [selectedKey, setSelectedKey] = useState<string>("");
+    const selectedDescription = selectedKey === "" ? "" : companyteam.find(item => item.key === selectedKey)?.description;
     const handleSpecificationFileChange = (newFile: File | null) => {
         setSpecificationFile(newFile);
     };
-
     const handleSelectionChange = (keys: React.Key) => {
         setSelectedKey(keys.toString());
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const userData = await fetchUser();
+
+            const teamData = new FormData();
+            teamData.append('nameteam', shortName);
+            teamData.append('companyteam', selectedKey);
+            teamData.append('emailteam', emailTeam);
+            if (specificationFile) {
+                teamData.append('logoteam', specificationFile);
+            }
+            teamData.append('iduser', userData.ID_Usuario);
+
+            const response = await createTeam(teamData);
+            onNewTeam(response);
+            onOpenChange();
+        } catch (error) {
+            console.error('Error al crear el equipo:', error);
+        }
     };
 
     return (
@@ -48,9 +128,9 @@ export default function NewTeam() {
                                     <Input
                                         value={shortName}
                                         onValueChange={setShortName}
-                                        label="Nombre Corto"
+                                        label="Nombre Equipo/Empresa"
                                         placeholder="Escribe el nombre de tu empresa"
-                                        errorMessage="Este nombre ya esta registrado"
+                                        errorMessage="Este nombre ya está registrado"
                                         minLength={2}
                                     />
                                     <Select
@@ -61,29 +141,20 @@ export default function NewTeam() {
                                         onSelectionChange={(keys) => handleSelectionChange([...keys][0])}
                                         className="max-w-xs"
                                     >
-                                        {companyteam.map((companyteam) => (
-                                            <SelectItem key={companyteam.key}>
-                                                {companyteam.label}
+                                        {companyteam.map((company) => (
+                                            <SelectItem key={company.key}>
+                                                {company.label}
                                             </SelectItem>
                                         ))}
                                     </Select>
                                 </div>
-                                <Input
-                                    value={emailStudent}
-                                    onValueChange={setEmailStudent}
-                                    type="email"
-                                    label="Correo electrónico del representante"
-                                    placeholder="Escribe el correo del representante legal de la grupo-empresa"
-                                    errorMessage="Este nombre ya esta registrado"
-                                    maxLength={80}
-                                />
                                 <Input
                                     value={emailTeam}
                                     onValueChange={setEmailTeam}
                                     type="email"
                                     label="Correo electrónico de la grupo-empresa"
                                     placeholder="Escribe el correo de la grupo-empresa"
-                                    errorMessage="Este nombre ya esta registrado"
+                                    errorMessage="Este correo ya está registrado"
                                     maxLength={80}
                                 />
                                 <div>
@@ -92,7 +163,7 @@ export default function NewTeam() {
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button onPress={onClose} className="w-full">
+                                <Button onPress={handleSubmit} className="w-full">
                                     Registrar grupo-empresa
                                 </Button>
                             </ModalFooter>

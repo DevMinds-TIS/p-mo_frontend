@@ -18,6 +18,7 @@ type Space = {
     ID_Usuario: number;
     Nombre: string;
     Usuario: User;
+    Inscritos: number;
 }
 
 type Role = {
