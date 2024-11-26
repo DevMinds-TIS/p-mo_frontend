@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Link from 'next/link';
-import { Calendar03Icon, FolderLibraryIcon, LockKeyIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon, UserSwitchIcon } from "hugeicons-react";
+import { Analytics01Icon, Calendar03Icon, FolderLibraryIcon, LockKeyIcon, Logout03Icon, Megaphone01Icon, Menu01Icon, Notification03Icon, TaskDaily01Icon, UserGroupIcon, UserSwitchIcon } from "hugeicons-react";
 import { useEffect, useState } from 'react';
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 import { usePathname } from "next/navigation";
@@ -40,6 +40,7 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
     2: [
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
+      { href: "/dashboard/reportes", icon: Analytics01Icon, label: "Reportes" }
     ],
     3: [
       { href: "/dashboard/projects", icon: FolderLibraryIcon, label: "Proyectos" },

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import NewSpace from "./NewSpace";
 import Link from "next/link";
+import Avisos from "./Avisos";
 
 type Project = {
     ID_Proyecto: number;
@@ -200,6 +201,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
     }
 
     const isTeacher = user?.Roles?.some(role => role.ID_Rol === 2) ?? false;
+    const isAdmin = user?.Roles?.some(role => role.ID_Rol === 1) ?? false;
 
     const handleNewSpace = async (newSpace: Space) => {
         const token = localStorage.getItem('token');
@@ -328,6 +330,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     ))
                 )}
             </section>
+            <Avisos isAdmin={isAdmin} />
         </section>
     );
 }

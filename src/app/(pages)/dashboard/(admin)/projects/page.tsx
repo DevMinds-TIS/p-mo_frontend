@@ -74,6 +74,7 @@ export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -130,45 +131,74 @@ export default function ProjectsPage() {
         setProjects((prevProjects) => [...prevProjects, newProject]);
     };
 
+    const filteredProjects = projects.filter((project) =>
+        project.Código.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <section className="flex flex-col gap-y-8">
-            <section className="flex w-full h-10 justify-between items-center">
-                <h1 className="text-3xl">Proyectos</h1>
-                <Input
-                    isClearable
-                    radius="lg"
-                    placeholder="Encuéntrame"
-                    className="w-auto"
-                    startContent={<SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />}
-                />
-                {isAdmin && <NewProject onNewProject={handleNewProject} />}
+            {/* Header Section */}
+            <section className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <h1 className="text-2xl sm:text-3xl">Proyectos</h1>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
+                    <Input
+                        isClearable
+                        radius="lg"
+                        placeholder="Encuéntrame"
+                        className="w-full sm:w-auto"
+                        startContent={
+                            <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                        }
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {isAdmin && <NewProject onNewProject={handleNewProject} />}
+                </div>
             </section>
+
+            {/* Projects Section */}
             <section className="flex flex-wrap p-4 gap-8">
                 {isLoadingProjects ? (
                     [...Array(4)].map((_, index) => (
-                        <div key={index} className='flex flex-col w-fit gap-2'>
+                        <div
+                            key={index}
+                            className="flex flex-col w-fit gap-2"
+                        >
                             <Skeleton className="w-64 h-12 rounded-lg" />
                             <Skeleton className="w-64 h-64 rounded-xl" />
                         </div>
                     ))
-                ) : (
-                    projects.map(project => (
-                        <div className='flex flex-col w-fit gap-2' key={project.ID_Proyecto}>
-                            <div className='flex'>
+                ) : filteredProjects.length > 0 ? (
+                    filteredProjects.map((project) => (
+                        <div
+                            className="flex flex-col w-fit gap-2"
+                            key={project.ID_Proyecto}
+                        >
+                            <div className="flex">
                                 <Link
                                     href={`/dashboard/projects/${project.Código}`}
-                                    className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""} ${isTeacher || isStudent ? "rounded-lg" : "none"} bg-[#ff9b5a] p-2`}
+                                    className={`flex w-full items-center gap-2 ${
+                                        isAdmin ? "rounded-l-lg" : ""
+                                    } ${
+                                        isTeacher || isStudent
+                                            ? "rounded-lg"
+                                            : "none"
+                                    } bg-[#ff9b5a] p-2`}
                                 >
-                                    <FolderLinksIcon size={30} color='#FFF' />
-                                    <span className='text-white'>
-                                        {project['Código']}
+                                    <FolderLinksIcon size={30} color="#FFF" />
+                                    <span className="text-white">
+                                        {project["Código"]}
                                     </span>
                                 </Link>
                                 {isAdmin && (
                                     <Popover placement="right" backdrop="blur">
                                         <PopoverTrigger>
-                                            <Button className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]" size="lg" radius="none">
-                                                <MoreVerticalIcon size={30} color='#FFF' />
+                                            <Button
+                                                className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]"
+                                                size="lg"
+                                                radius="none"
+                                            >
+                                                <MoreVerticalIcon size={30} color="#FFF" />
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent>
@@ -196,6 +226,8 @@ export default function ProjectsPage() {
                             </I18nProvider>
                         </div>
                     ))
+                ) : (
+                    <div>No se encontraron proyectos.</div>
                 )}
             </section>
         </section>
