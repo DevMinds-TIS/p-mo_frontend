@@ -87,16 +87,17 @@ export default function ReportesPage() {
     };
 
     return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Reportes de Equipos</h1>
-
+        <div className="p-4 sm:p-6 md:p-8">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">Reportes de Equipos</h1>
+    
             {/* Selector de equipos y filtro de ordenación */}
-            <div className="mb-4 flex gap-4 items-center">
-                <div>
+            <div className="mb-4 flex flex-col sm:flex-row sm:gap-4 sm:items-center">
+                {/* Selector de equipos */}
+                <div className="flex-1">
                     <label htmlFor="team-select" className="mr-2 font-semibold">Selecciona un equipo:</label>
                     <select
                         id="team-select"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded w-full sm:w-auto"
                         value={selectedTeam}
                         onChange={(e) => setSelectedTeam(e.target.value)}
                     >
@@ -108,13 +109,13 @@ export default function ReportesPage() {
                         ))}
                     </select>
                 </div>
-
+    
                 {/* Filtro de ordenación */}
-                <div>
+                <div className="flex-1">
                     <label htmlFor="sort-select" className="mr-2 font-semibold">Ordenar por:</label>
                     <select
                         id="sort-select"
-                        className="border border-gray-300 p-2 rounded"
+                        className="border border-gray-300 p-2 rounded w-full sm:w-auto"
                         value={sortOption}
                         onChange={(e) => setSortOption(e.target.value)}
                     >
@@ -125,59 +126,59 @@ export default function ReportesPage() {
                     </select>
                 </div>
             </div>
-
+    
             {/* Botón de exportación */}
             <button
                 onClick={handleExport}
-                className="mb-4 p-2 bg-[#FE7F2D] text-white rounded"
+                className="mb-4 p-2 bg-[#FE7F2D] text-white rounded w-full sm:w-auto"
             >
                 Exportar a TXT
             </button>
-
+    
             {/* Tabla de equipos */}
             {!selectedTeam && (
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-[#191919] text-white">
-                                <th className="border border-gray-300 px-4 py-2">Nombre</th>
-                                <th className="border border-gray-300 px-4 py-2">Nota</th>
-                                <th className="border border-gray-300 px-4 py-2">Estado</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Nombre</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Nota</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             {sortedTeams.map((team) => (
                                 <tr key={team.name} className="text-center">
-                                    <td className="border border-gray-300 px-4 py-2">{team.name}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{team.score}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{team.progress}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{team.name}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{team.score}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{team.progress}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
             )}
-
+    
             {/* Detalle del equipo seleccionado */}
             {selectedTeam && (
                 <div className="overflow-x-auto mt-6">
-                    <h2 className="text-xl font-semibold mb-4">Detalles del {selectedTeam}</h2>
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-4">Detalles del {selectedTeam}</h2>
                     <table className="w-full border-collapse border border-gray-300">
                         <thead>
                             <tr className="bg-[#191919] text-white">
-                                <th className="border border-gray-300 px-4 py-2">Miembro</th>
-                                <th className="border border-gray-300 px-4 py-2">Tarea</th>
-                                <th className="border border-gray-300 px-4 py-2">Nota</th>
-                                <th className="border border-gray-300 px-4 py-2">Estado</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Miembro</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Tarea</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Nota</th>
+                                <th className="border border-gray-300 px-2 sm:px-4 py-2">Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             {sortedMembers.map((member) => (
                                 <tr key={member.name} className="text-center">
-                                    <td className="border border-gray-300 px-4 py-2">{member.name}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{member.task}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{member.score}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{member.status}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{member.name}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{member.task}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{member.score}</td>
+                                    <td className="border border-gray-300 px-2 sm:px-4 py-2">{member.status}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -185,5 +186,5 @@ export default function ReportesPage() {
                 </div>
             )}
         </div>
-    );
+    );    
 }

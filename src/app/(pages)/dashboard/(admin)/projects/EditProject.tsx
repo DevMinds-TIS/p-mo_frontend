@@ -23,7 +23,7 @@ type NewProjectProps = {
     onNewProject: (project: Project) => void;
 };
 
-export default function NewProject({ onNewProject }: NewProjectProps) {
+export default function EditProject({ onNewProject }: NewProjectProps) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const currentYear = new Date().getFullYear();
@@ -119,8 +119,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
     return (
         <section>
-            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
-                <AddSquareIcon size={30} />
+            <Button onPress={onOpen} className="">
+                Editar
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="center">
                 <ModalContent>

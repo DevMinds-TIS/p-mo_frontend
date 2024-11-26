@@ -104,6 +104,7 @@ export default function StudentSignIn() {
             siscode: siscode,
             use_iduser: docenteId,
         };
+        console.log("Estudiante", userData);
         try {
             const registerResponse = await fetch(`${backendUrl}/register-student`, {
                 method: 'POST',
@@ -126,7 +127,7 @@ export default function StudentSignIn() {
                 throw new Error('Error al iniciar sesión');
             }
             const result = await loginResponse.json();
-            // console.log('Usuario creado e inició sesión:', result);
+            console.log('Usuario creado e inició sesión:', result);
             localStorage.setItem('token', result.token);
             router.push('/dashboard/profile');
         } catch (error) {

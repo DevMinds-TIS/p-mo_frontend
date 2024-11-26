@@ -1,4 +1,5 @@
-import { Card, CardBody, CardFooter } from "@nextui-org/react";
+'use client';
+import { Card, CardBody, CardFooter, Skeleton } from "@nextui-org/react";
 import NewRole from "./NewRole";
 import {
     AccountSetting03Icon,
@@ -10,19 +11,67 @@ import {
     TeacherIcon,
     UserGroupIcon
 } from "hugeicons-react";
+import React, { useEffect, useState } from "react";
 
-const roles = [
-    { Icon: ManagerIcon, title: "Administrador", count: 3 },
-    { Icon: TeacherIcon, title: "Docente", count: 4 },
-    { Icon: StudentIcon, title: "Estudiante", count: 6 },
-    { Icon: HierarchyIcon, title: "Representante legal", count: 1 },
-    { Icon: UserGroupIcon, title: "Miembro de equipo", count: 5 },
-    { Icon: ConversationIcon, title: "Product Owner", count: 4 },
-    { Icon: AccountSetting03Icon, title: "Scrum master", count: 6 },
-    { Icon: ConferenceIcon, title: "Scrum team", count: 6 }
-];
+type Role = {
+    ID_Rol: number;
+    Nombre: string;
+    Icono: string;
+    Cantidad: number;
+};
+
+const iconMapping: { [key: string]: React.ElementType } = {
+    ManagerIcon,
+    TeacherIcon,
+    StudentIcon,
+    HierarchyIcon,
+    UserGroupIcon,
+    ConversationIcon,
+    AccountSetting03Icon,
+    ConferenceIcon,
+};
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+const fetchRoles = async (): Promise<Role[]> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+
+    const response = await fetch(`${backendUrl}/roles`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Error al obtener los roles');
+    }
+
+    const data = await response.json();
+    return data.data;
+};
 
 export default function RolesPage() {
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const rolesData = await fetchRoles();
+                setRoles(rolesData);
+                setIsLoading(false);
+            } catch (error) {
+                console.error(error);
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <section>
             <div className="flex justify-between">
@@ -30,17 +79,33 @@ export default function RolesPage() {
                 <NewRole />
             </div>
             <div className="flex flex-wrap grow gap-4 p-3">
-                {roles.map((role, index) => (
-                    <Card key={index} shadow="sm" isPressable>
-                        <CardBody className="overflow-visible p-2 flex items-center">
-                            <role.Icon size={48} />
-                        </CardBody>
-                        <CardFooter className="text-small gap-4">
-                            <b>{role.title}</b>
-                            <p className="text-default-500">{role.count}</p>
-                        </CardFooter>
-                    </Card>
-                ))}
+                {isLoading ? (
+                    [...Array(8)].map((_, index) => (
+                        <Card key={index} shadow="sm" isPressable>
+                            <CardBody className="overflow-visible p-2 flex items-center">
+                                <Skeleton className="w-28 h-12 rounded-lg" />
+                            </CardBody>
+                            <CardFooter className="text-small gap-4">
+                                <Skeleton className="w-full h-4 rounded-lg" />
+                            </CardFooter>
+                        </Card>
+                    ))
+                ) : (
+                    roles.map(role => {
+                        const RoleIcon = iconMapping[role.Icono] || UserGroupIcon;
+                        return (
+                            <Card key={role.ID_Rol} shadow="sm" isPressable>
+                                <CardBody className="overflow-visible p-2 flex items-center">
+                                    <RoleIcon size={48} />
+                                </CardBody>
+                                <CardFooter className="text-small gap-4">
+                                    <b>{role.Nombre}</b>
+                                    <b>{role.Cantidad}</b>
+                                </CardFooter>
+                            </Card>
+                        );
+                    })
+                )}
             </div>
         </section>
     );
