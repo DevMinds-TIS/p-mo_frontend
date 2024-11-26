@@ -126,7 +126,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
             }
         };
         fetchUserData();
-    }, [params.Código]);
+    }, [params.Código, user]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
