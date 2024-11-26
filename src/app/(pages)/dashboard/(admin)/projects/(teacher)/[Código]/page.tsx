@@ -19,6 +19,7 @@ type Space = {
     ID_Usuario: number;
     Nombre: string;
     Usuario: User;
+    Inscritos: number;
 }
 
 type Document = {
@@ -271,6 +272,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                         onChange={(file) => console.log("File changed:", file)}
                                         existingFile={{ name: document.Nombre, url: `${storageUrl}/${document.Dirección}` }}
                                         readOnly={true}
+                                        className="h-full w-full"
                                     />
                                 </CardBody>
                                 <CardFooter>{document.Nombre}</CardFooter>
@@ -291,8 +293,8 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                         <Skeleton key={index} className="w-60 h-28 rounded-xl" />
                     ))
                 ) : (
-                    spaces.map((space, index) => (
-                        <Link href={`${project?.Código}/${space.Nombre}`} key={index}>
+                    spaces.map(space => (
+                        <Link href={`${project?.Código}/${space.Nombre}`} key={space.ID_Espacio}>
                             <Card className="w-fit">
                                 <CardHeader className="justify-between">
                                     <div className="flex gap-5">
@@ -318,8 +320,9 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                     </div>
                                 </CardHeader>
                                 <CardFooter className="gap-3">
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-1 justify-between w-full">
                                         <p className="font-semibold text-default-400 text-small">{space.Nombre}</p>
+                                        <p className="font-semibold text-default-400 text-small">{space.Inscritos}</p>
                                     </div>
                                 </CardFooter>
                             </Card>

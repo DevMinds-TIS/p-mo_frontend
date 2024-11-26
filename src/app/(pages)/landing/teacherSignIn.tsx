@@ -2,11 +2,15 @@
 import userTeacher from "@/app/_lib/landing/useUserForm";
 import { Button, Input } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 
 export default function TeacherSignIn() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
+    const [isRequestSent, setIsRequestSent] = useState(false);
+    const [isRequestEnabled, setIsRequestEnabled] = useState(false);
+
     const {
         email,
         setEmail,
@@ -39,6 +43,14 @@ export default function TeacherSignIn() {
         setIsVisible,
         toggleVisibility,
     } = userTeacher();
+
+    useEffect(() => {
+        if (name && lastname && email) {
+            setIsRequestEnabled(true);
+        } else {
+            setIsRequestEnabled(false);
+        }
+    }, [name, lastname, email]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -73,6 +85,34 @@ export default function TeacherSignIn() {
             const result = await response.json();
             localStorage.setItem('token', result.token);
             router.push('/dashboard/profile');
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const handleRequestCode = async () => {
+        const requestData = {
+            email: email,
+            name: name,
+        };
+
+        try {
+            const response = await fetch(`${backendUrl}/sendEmail`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al solicitar el código');
+            }
+
+            console.log('Código solicitado exitosamente');
+            setIsRequestSent(true);
+            setIsRequestEnabled(false); // Deshabilitar el botón después de enviar la solicitud
 
         } catch (error) {
             console.error('Error:', error);
@@ -162,11 +202,19 @@ export default function TeacherSignIn() {
                     maxLength={12}
                 >
                 </Input>
-                <Button className="text-white bg-[#ff9b5a] h-auto" isDisabled={true}>
+                <Button
+                    className="text-white bg-[#ff9b5a] h-14"
+                    isDisabled={!isRequestEnabled || isRequestSent}
+                    onClick={handleRequestCode}
+                >
                     Solicitar
                 </Button>
             </div>
-            <Button type="submit" isDisabled={!isSingupValid} className="w-full h-14 bg-[#FF9B5A] text-white">
+            <Button
+                type="submit"
+                isDisabled={!isSingupValid}
+                className="w-full h-14 bg-[#FF9B5A] text-white"
+            >
                 Unirse
             </Button>
         </form>
