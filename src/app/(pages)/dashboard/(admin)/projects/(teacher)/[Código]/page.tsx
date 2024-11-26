@@ -270,6 +270,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                         onChange={(file) => console.log("File changed:", file)}
                                         existingFile={{ name: document.Nombre, url: `${storageUrl}/${document.Dirección}` }}
                                         readOnly={true}
+                                        className="h-full w-full"
                                     />
                                 </CardBody>
                                 <CardFooter>{document.Nombre}</CardFooter>

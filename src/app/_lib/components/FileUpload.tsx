@@ -25,7 +25,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
   };
 
   return (
-    <div className={`w-full h-full ${className}`}>
+    <div className={`${className}`}>
       {!file ? (
         <div
           onDragOver={(e) => {
@@ -55,7 +55,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
               });
             }
           }}
-          className={`${fileEnter ? "border-4" : "border-2"} flex flex-col w-full h-full border-dashed rounded-lg`}
+          className={`${fileEnter ? "border-4" : "border-2"} flex flex-col w-full h-full border-dashed rounded-lg ${className}`}
         >
           <label htmlFor="file" className="h-full flex flex-col justify-center text-center hover:cursor-pointer">
             Haz click para subir o arrastra y suelta
