@@ -92,11 +92,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     });
     const [limitspace, setLimitspace] = useState<number | null>(null);
     const [limitMessage, setLimitMessage] = useState<string>("");
-    const [file, setFile] = useState<File | null>(null);
+    const [registered, setRegistered] = useState<File | null>(null);
     const [user, setUser] = useState<User | null>(null);
 
     const handleFileChange = (newFile: File | null) => {
-        setFile(newFile);
+        setRegistered(newFile);
     };
 
     useEffect(() => {
@@ -147,8 +147,8 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         if (user) {
             formData.append("iduser", user.ID_Usuario.toString());
         }
-        if (file) {
-            formData.append("file", file);
+        if (registered) {
+            formData.append("registered", registered);
         }
         console.log(formData);
         try {

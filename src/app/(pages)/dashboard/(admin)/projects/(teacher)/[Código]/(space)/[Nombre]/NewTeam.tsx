@@ -2,26 +2,41 @@ import { FileUpload } from "@/app/_lib/components/FileUpload";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, Select, SelectItem } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import React, { useState } from "react";
-// import { teachers } from "@/app/_lib/landing/teachers";
+
+const companyteam = [
+    { key: "srl", label: "S.R.L.", description: "Sociedad de responsabilidad limitada" },
+    { key: "sa", label: "S.A.", description: "Sociedad anónima" },
+    { key: "sas", label: "S.A.S.", description: "Sociedades por acciones simplificadas" },
+    { key: "sl", label: "S.L.", description: "Sociedad limitada" },
+    { key: "sll", label: "S.L.L.", description: "Sociedad laboral" },
+    { key: "sc", label: "S.C.", description: "Sociedad colectiva" },
+    { key: "scoop", label: "S.Coop.", description: "Sociedades cooperativas" },
+];
 
 export default function NewTeam() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [shortName, setShortName] = React.useState("");
-    const [largeName, setLargeName] = React.useState("");
-    const [emailStudent, setEmailStudent] = React.useState("");
-    const [emailTeam, setEmailTeam] = React.useState("");
-    const [projectCode, setProjectCode] = React.useState("");
+    const [shortName, setShortName] = useState("");
+    const [largeName, setLargeName] = useState("");
+    const [emailStudent, setEmailStudent] = useState("");
+    const [emailTeam, setEmailTeam] = useState("");
+    const [projectCode, setProjectCode] = useState("");
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
 
+    const [selectedKey, setSelectedKey] = useState<string>(companyteam[0].key);
+    const selectedDescription = companyteam.find(item => item.key === selectedKey)?.description;
 
     const handleSpecificationFileChange = (newFile: File | null) => {
         setSpecificationFile(newFile);
     };
 
+    const handleSelectionChange = (keys: React.Key) => {
+        setSelectedKey(keys.toString());
+    };
+
     return (
         <section>
             <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
-                <AddSquareIcon size={30}/>
+                <AddSquareIcon size={30} />
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="center" size="xl">
                 <ModalContent>
@@ -38,14 +53,20 @@ export default function NewTeam() {
                                         errorMessage="Este nombre ya esta registrado"
                                         minLength={2}
                                     />
-                                    <Input
-                                        value={largeName}
-                                        onValueChange={setLargeName}
-                                        label="Nombre Largo"
-                                        placeholder="Escribe el nombre de tu empresa"
-                                        errorMessage="Este nombre ya esta registrado"
-                                        minLength={2}
-                                    />
+                                    <Select
+                                        label="Razón Social"
+                                        placeholder="Selecciona alguna opción"
+                                        description={selectedDescription}
+                                        selectedKeys={new Set([selectedKey])}
+                                        onSelectionChange={(keys) => handleSelectionChange([...keys][0])}
+                                        className="max-w-xs"
+                                    >
+                                        {companyteam.map((companyteam) => (
+                                            <SelectItem key={companyteam.key}>
+                                                {companyteam.label}
+                                            </SelectItem>
+                                        ))}
+                                    </Select>
                                 </div>
                                 <Input
                                     value={emailStudent}
@@ -65,26 +86,9 @@ export default function NewTeam() {
                                     errorMessage="Este nombre ya esta registrado"
                                     maxLength={80}
                                 />
-                                <div className="flex justify-between gap-x-4">
-                                    <Input
-                                        value={projectCode}
-                                        onValueChange={setProjectCode}
-                                        label="Código del proyecto"
-                                        placeholder="Escribe el código del proyecto"
-                                        errorMessage="Este nombre ya esta registrado"
-                                        maxLength={10}
-                                    />
-                                    {/* <Select
-                                        items={teachers}
-                                        label="Docente"
-                                        placeholder="Seleccione a su tutor/docente"
-                                    >
-                                        {(teacher) => <SelectItem key={teacher.key}>{teacher.label}</SelectItem>}
-                                    </Select> */}
-                                </div>
                                 <div>
                                     <p>Logo de la empresa</p>
-                                    <FileUpload onChange={handleSpecificationFileChange}/>
+                                    <FileUpload onChange={handleSpecificationFileChange} />
                                 </div>
                             </ModalBody>
                             <ModalFooter>
