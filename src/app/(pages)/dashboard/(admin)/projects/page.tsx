@@ -5,17 +5,18 @@ import { SearchIcon } from "@nextui-org/shared-icons";
 import NewProject from "./NewProject";
 import { FolderLinksIcon, MoreVerticalIcon } from "hugeicons-react";
 import Link from 'next/link';
-import Criterios from './(teacher)/criterios/NewCriterio';
 import { I18nProvider } from '@react-aria/i18n';
-import { DateValue, isWeekend, parseDate } from '@internationalized/date';
+import { parseDate } from '@internationalized/date';
+import EditProject from './EditProject';
 
 type Role = {
-    idroleuser: number;
-    idrol: number;
+    ID_Rol: number;
+    Name_Rol: string;
 };
 
 type User = {
-    roles: Role[];
+    data: User;
+    Roles: Role[];
 };
 
 type Project = {
@@ -45,7 +46,7 @@ const fetchUser = async (): Promise<User> => {
     }
 
     const data: User = await response.json();
-    return data;
+    return data.data;
 };
 
 const fetchProjects = async (): Promise<Project[]> => {
@@ -63,7 +64,6 @@ const fetchProjects = async (): Promise<Project[]> => {
         throw new Error('Error al obtener los proyectos');
     }
     const data = await response.json();
-    console.log("Fetched projects:", data);
     if (!Array.isArray(data.data)) {
         throw new Error('Los datos obtenidos no son un array');
     }
@@ -73,17 +73,14 @@ const fetchProjects = async (): Promise<Project[]> => {
 export default function ProjectsPage() {
     const [user, setUser] = useState<User | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
-    // const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [isLoadingProjects, setIsLoadingProjects] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userData = await fetchUser();
                 setUser(userData);
-                // setIsLoadingUser(false);
                 const projectData = await fetchProjects();
                 setProjects(projectData);
                 setIsLoadingProjects(false);
@@ -97,7 +94,6 @@ export default function ProjectsPage() {
                 }
             } catch (error) {
                 console.error(error);
-                // setIsLoadingUser(false);
                 setIsLoadingProjects(false);
             }
         };
@@ -114,7 +110,7 @@ export default function ProjectsPage() {
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
                     {[...Array(4)].map((_, index) => (
-                        <div key={index}  className='flex flex-col w-fit gap-2'>
+                        <div key={index} className='flex flex-col w-fit gap-2'>
                             <Skeleton className="w-64 h-12 rounded-lg" />
                             <Skeleton className="w-64 h-64 rounded-xl" />
                         </div>
@@ -123,15 +119,13 @@ export default function ProjectsPage() {
             </section>
         );
     }
-
     if (!Array.isArray(projects)) {
         return <div>Error al cargar los proyectos.</div>;
     }
 
-
-    const isAdmin = user.roles.some(role => role.idrol === 1);
-    const isTeacher = user.roles.some(role => role.idrol === 2);
-    const isStudent = user.roles.some(role => role.idrol === 3);
+    const isAdmin = user?.Roles?.some(role => role.ID_Rol === 1) ?? false;
+    const isTeacher = user?.Roles?.some(role => role.ID_Rol === 2) ?? false;
+    const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
 
     const handleNewProject = (newProject: Project) => {
         setProjects((prevProjects) => [...prevProjects, newProject]);
@@ -209,12 +203,9 @@ export default function ProjectsPage() {
                                         </PopoverTrigger>
                                         <PopoverContent>
                                             <div className="px-1 py-2">
-                                                <div className="text-small font-bold">
-                                                    Popover Content
-                                                </div>
-                                                <div className="text-tiny">
-                                                    This is the popover content
-                                                </div>
+                                                {/* <div className="text-small font-bold">Popover Content</div>
+                                                <div className="text-tiny">This is the popover content</div> */}
+                                                <EditProject onNewProject={handleNewProject}/>
                                             </div>
                                         </PopoverContent>
                                     </Popover>
