@@ -8,11 +8,15 @@ import {
     ModalContent,
     Input,
 } from "@nextui-org/react";
-import { AddSquareIcon, Delete01Icon } from "hugeicons-react"; // Cambiado a CloseSquareIcon para la "X"
+import { AddSquareIcon, Delete01Icon } from "hugeicons-react";
+import { Chip } from "@nextui-org/chip";
+
+type ImportanceLevel = "low" | "medium" | "high"; // Importancia: Verde, Amarillo, Rojo
 
 type Aviso = {
     id: number;
     text: string;
+    importance: ImportanceLevel; // Nivel de importancia
 };
 
 type AvisosProps = {
@@ -23,10 +27,12 @@ export default function Avisos({ isAdmin }: AvisosProps) {
     const [avisos, setAvisos] = useState<Aviso[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newAvisoText, setNewAvisoText] = useState("");
+    const [importance, setImportance] = useState<ImportanceLevel>("low");
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => {
         setNewAvisoText("");
+        setImportance("low");
         setIsModalOpen(false);
     };
 
@@ -35,7 +41,7 @@ export default function Avisos({ isAdmin }: AvisosProps) {
         if (newAvisoText.trim() !== "") {
             setAvisos((prevAvisos) => [
                 ...prevAvisos,
-                { id: Date.now(), text: newAvisoText.trim() },
+                { id: Date.now(), text: newAvisoText.trim(), importance },
             ]);
             handleCloseModal();
         }
@@ -43,6 +49,18 @@ export default function Avisos({ isAdmin }: AvisosProps) {
 
     const handleDeleteAviso = (id: number) => {
         setAvisos((prevAvisos) => prevAvisos.filter((aviso) => aviso.id !== id));
+    };
+
+    // Función para obtener el color del Chip basado en la importancia
+    const getChipColor = (level: ImportanceLevel) => {
+        switch (level) {
+            case "low":
+                return "success"; // Verde
+            case "medium":
+                return "warning"; // Amarillo
+            case "high":
+                return "danger"; // Rojo
+        }
     };
 
     return (
@@ -70,13 +88,22 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                             key={aviso.id}
                             className="p-4 bg-[#191919] rounded-lg shadow flex justify-between items-center"
                         >
-                            <span>{aviso.text}</span>
+                            <div className="flex items-center gap-4">
+                                <Chip color={getChipColor(aviso.importance)} size="sm">
+                                    {aviso.importance === "low"
+                                        ? "Baja"
+                                        : aviso.importance === "medium"
+                                        ? "Media"
+                                        : "Alta"}
+                                </Chip>
+                                <span>{aviso.text}</span>
+                            </div>
                             {isAdmin && (
                                 <Button
                                     onPress={() => handleDeleteAviso(aviso.id)}
                                     className="min-w-0 p-0 bg-transparent text-red-500 hover:text-red-700"
                                 >
-                                    <Delete01Icon size={20} color={"#fff"}/>
+                                    <Delete01Icon size={20} color={"#fff"} />
                                 </Button>
                             )}
                         </div>
@@ -107,6 +134,29 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                                         onChange={(e) => setNewAvisoText(e.target.value)}
                                         className="w-full"
                                     />
+                                    <div className="flex flex-col mt-4 gap-2">
+                                        <label className="font-medium">Importancia</label>
+                                        <div className="flex gap-2">
+                                            {(["low", "medium", "high"] as ImportanceLevel[]).map((level) => (
+                                                <Button
+                                                    key={level}
+                                                    onPress={() => setImportance(level)}
+                                                    className={`${
+                                                        importance === level
+                                                            ? "border-2 border-current bg-opacity-20"
+                                                            : "bg-transparent"
+                                                    }`}
+                                                    color={getChipColor(level)}
+                                                >
+                                                    {level === "low"
+                                                        ? "Baja"
+                                                        : level === "medium"
+                                                        ? "Media"
+                                                        : "Alta"}
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </ModalBody>
                                 <ModalFooter>
                                     <Button
