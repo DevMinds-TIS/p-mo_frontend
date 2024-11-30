@@ -9,7 +9,7 @@ import { FileUpload } from "@/app/_lib/components/FileUpload";
 
 type Project = {
     ID_Proyecto: number;
-    Código: string;
+    Código_Proyecto: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
 };

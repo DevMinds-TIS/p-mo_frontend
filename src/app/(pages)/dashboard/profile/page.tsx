@@ -1,18 +1,12 @@
 "use client";
-import { Avatar, Divider, Skeleton, User as NextUser } from "@nextui-org/react";
+import { Avatar, Divider, Skeleton, User } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import UpdateProfile from "./UpdateProfile";
 
 type Role = {
     ID_Rol: number;
     Nombre_Rol: string;
-};
-
-type Docente = {
-    Nombre: string;
-    Apellido: string;
-    Correo: string;
-    Imagen_Perfil?: string;
+    Icono_Rol: string;
 };
 
 type User = {
@@ -20,13 +14,14 @@ type User = {
     Nombre: string;
     Apellido: string;
     Correo: string;
-    Imagen_Perfil?: string;
+    Perfil?: string;
     Roles: Role[];
-    Docente?: Docente;
+    Docente?: User;
 };
 
 export default function Profile() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -93,7 +88,7 @@ export default function Profile() {
                 <h1 className="text-2xl sm:text-3xl">Perfil</h1>
             </div>
             <div className="flex flex-col md:flex-row gap-4">
-                <div className="w-full md:w-[40%] lg:w-[30%] flex flex-col gap-4">
+                <div className="w-full md:w-[40%] lg:w-[30%] flex flex-col gap-1">
                     <div className="flex justify-between items-center">
                         <h1 className="font-bold text-lg md:text-xl">
                             Datos personales
@@ -102,26 +97,26 @@ export default function Profile() {
                     </div>
                     <div className="flex justify-center">
                         <Avatar
-                            name={`${user.Nombre?.[0] || ""}${user.Apellido?.[0] || ""}`}
-                            src={user.Imagen_Perfil || undefined}
+                            name={!user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
+                            src={user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined}
                             className="w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 text-6xl md:text-7xl"
                         />
                     </div>
                     <p className="text-lg sm:text-xl font-bold">
                         {`${user.Nombre} ${user.Apellido}`}
                     </p>
-                    <p className="font-light text-sm sm:text-base">
+                    <p className="font-light text-sm text-gray-500 sm:text-base">
                         {user.Correo}
                     </p>
                     {isStudent && user.Docente && (
                         <div className="flex flex-col gap-2">
                             <Divider />
-                            <NextUser
+                            <User
                                 name={`${user.Docente.Nombre} ${user.Docente.Apellido}`}
                                 description={user.Docente.Correo}
                                 avatarProps={{
-                                    name: !user.Docente.Imagen_Perfil ? `${user.Docente.Nombre?.[0] || ''}${user.Docente.Apellido?.[0] || ''}` : undefined,
-                                    src: user.Docente.Imagen_Perfil || undefined,
+                                    name: !user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
+                                    src: user.Docente.Perfil ? `${storageUrl}/${user.Docente.Perfil}` : undefined,
                                 }}
                                 className="justify-start"
                             />

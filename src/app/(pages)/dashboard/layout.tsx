@@ -25,7 +25,7 @@ type User = {
   Nombre: string;
   Apellido: string;
   Correo: string;
-  Imagen_Perfil?: string;
+  Perfil?: string;
   Roles: Role[];
   user?: Docente;
 };
@@ -73,6 +73,7 @@ const translations: { [key: string]: string } = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleNavbar = () => {
@@ -174,11 +175,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </Navbar>
           <section className="flex h-full overflow-hidden">
-            <Navbar className={`flex flex-col ${isExpanded ? 'w-60 rounded-r-xl' : 'w-20'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
+            <Navbar className={`flex flex-col ${isExpanded ? 'w-56 rounded-r-xl' : 'w-16'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
               <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
                 {filteredNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
                   <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
-                    <Link href={item.href} className="flex items-center w-full gap-x-4" color="foreground">
+                    <Link href={item.href} className="flex items-center w-full gap-x-2" color="foreground">
                       {renderIcon(item.icon)}
                       <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>
                     </Link>
@@ -187,10 +188,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Popover placement="right-end" className="gap-x-4">
                   <PopoverTrigger>
                     <NavbarItem
-                      className={`flex items-center gap-x-4 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
+                      className={`flex items-center gap-x-2 ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2 ${pathName && pathName.startsWith('/dashboard/profile') ? "bg-[#EA6611] rounded-lg" : ""}`}>
                       <Avatar
-                        name={!user?.Imagen_Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
-                        src={user?.Imagen_Perfil || undefined}
+                        name={!user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
+                        src={user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined}
                         size="md"
                       />
                       <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>Perfil</p>
@@ -204,8 +205,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             name={`${user?.Nombre} ${user?.Apellido}`}
                             description={user?.Correo}
                             avatarProps={{
-                              name: !user?.Imagen_Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
-                              src: user?.Imagen_Perfil || undefined,
+                              name: !user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
+                              src: user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined,
                             }}
                           />
                         </Tooltip>

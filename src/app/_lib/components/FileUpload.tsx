@@ -85,7 +85,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
             </Tooltip>
           )}
           {!readOnly && (
-            <Button onClick={() => handleFileChange(null)} color="danger" className="w-full">
+            <Button onClick={() => handleFileChange(null)} color="danger" className="w-full h-12 font-bold text-lg">
               Descartar
             </Button>
           )}

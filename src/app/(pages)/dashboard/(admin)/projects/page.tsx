@@ -21,7 +21,7 @@ type User = {
 
 type Project = {
     ID_Proyecto: number;
-    Código: string;
+    Código_Proyecto: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
 };
@@ -106,7 +106,7 @@ export default function ProjectsPage() {
                 <section className="flex w-full h-10 justify-between items-center">
                     <h1 className="text-3xl">Proyectos</h1>
                     <Skeleton className="w-1/4 h-10 rounded-lg" />
-                    <Skeleton className="w-10 h-10 rounded-lg" />
+                    <Skeleton className="w-8 h-8 rounded-lg" />
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
                     {[...Array(4)].map((_, index) => (
@@ -132,7 +132,7 @@ export default function ProjectsPage() {
     };
 
     const filteredProjects = projects.filter((project) =>
-        project.Código.toLowerCase().includes(searchTerm.toLowerCase())
+        project.Código_Proyecto.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -176,7 +176,7 @@ export default function ProjectsPage() {
                         >
                             <div className="flex">
                                 <Link
-                                    href={`/dashboard/projects/${project.Código}`}
+                                    href={`/dashboard/projects/${project.Código_Proyecto}`}
                                     className={`flex w-full items-center gap-2 ${
                                         isAdmin ? "rounded-l-lg" : ""
                                     } ${
@@ -187,7 +187,7 @@ export default function ProjectsPage() {
                                 >
                                     <FolderLinksIcon size={30} color="#FFF" />
                                     <span className="text-white">
-                                        {project["Código"]}
+                                        {project["Código_Proyecto"]}
                                     </span>
                                 </Link>
                                 {isAdmin && (

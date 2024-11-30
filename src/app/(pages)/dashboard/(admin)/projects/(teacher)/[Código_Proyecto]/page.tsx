@@ -8,7 +8,7 @@ import Avisos from "./Avisos";
 
 type Project = {
     ID_Proyecto: number;
-    Código: string;
+    Código_Proyecto: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
 };
@@ -17,7 +17,7 @@ type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
     ID_Usuario: number;
-    Nombre: string;
+    Nombre_Espacio: string;
     Usuario: User;
     Inscritos: number;
 }
@@ -25,8 +25,8 @@ type Space = {
 type Document = {
     ID_Documento: number;
     ID_Proyecto: number;
-    Dirección: string;
-    Nombre: string;
+    Ruta_Documento: string;
+    Nombre_Documento: string;
 };
 
 type Role = {
@@ -41,7 +41,7 @@ type User = {
     Nombre: string;
     Apellido: string;
     Correo: string;
-    Imagen_Perfil: string;
+    Perfil: string;
 };
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -60,7 +60,7 @@ const fetchProjectByCode = async (code: string): Promise<Project | null> => {
     const data = await response.json();
     const projects: Project[] = data.data;
 
-    const project = projects.find((project) => project.Código === code);
+    const project = projects.find((project) => project.Código_Proyecto === code);
     return project || null;
 };
 
@@ -133,7 +133,7 @@ const fetchUser = async (): Promise<User> => {
     return data.data;
 };
 
-export default function ProjectPage({ params }: { params: { Código: string } }) {
+export default function ProjectPage({ params }: { params: { Código_Proyecto: string } }) {
     const [project, setProject] = useState<Project | null>(null);
     const [documents, setDocuments] = useState<Document[]>([]);
     const [user, setUser] = useState<User | null>(null);
@@ -145,7 +145,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const projectData = await fetchProjectByCode(params.Código);
+                const projectData = await fetchProjectByCode(params.Código_Proyecto);
                 if (projectData) {
                     setProject(projectData);
                     const documentData = await fetchDocumentsByProjectId(projectData.ID_Proyecto);
@@ -172,7 +172,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
         };
 
         fetchUserData();
-    }, [params.Código]);
+    }, [params.Código_Proyecto]);
 
     if (!user) {
         return (
@@ -189,7 +189,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                 </section>
                 <section className="flex w-full h-10 justify-between items-center">
                     <h1 className="text-3xl">Espacios</h1>
-                    <Skeleton className="w-10 h-10 rounded-lg" />
+                    <Skeleton className="w-8 h-8 rounded-lg" />
                 </section>
                 <section className="flex flex-wrap gap-4 p-4">
                     {[...Array(4)].map((_, index) => (
@@ -270,12 +270,12 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                 <CardBody className="overflow-visible p-0 w-full h-full">
                                     <FileUpload
                                         onChange={(file) => console.log("File changed:", file)}
-                                        existingFile={{ name: document.Nombre, url: `${storageUrl}/${document.Dirección}` }}
+                                        existingFile={{ name: document.Nombre_Documento, url: `${storageUrl}/${document.Ruta_Documento}` }}
                                         readOnly={true}
                                         className="h-full w-full"
                                     />
                                 </CardBody>
-                                <CardFooter>{document.Nombre}</CardFooter>
+                                <CardFooter>{document.Nombre_Documento}</CardFooter>
                             </Card>
                         ))
                     )}
@@ -284,7 +284,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
             <section className="flex w-full h-10 justify-between items-center">
                 <h1 className="text-3xl">Espacios</h1>
                 {isTeacher && project && user && (
-                    <NewSpace params={{ Código: project.Código }} onNewSpace={handleNewSpace} />
+                    <NewSpace params={{ Código_Proyecto: project.Código_Proyecto }} onNewSpace={handleNewSpace} />
                 )}
             </section>
             <section className="flex flex-wrap gap-4 p-4">
@@ -294,13 +294,13 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     ))
                 ) : (
                     spaces.map(space => (
-                        <Link href={`${project?.Código}/${space.Nombre}`} key={space.ID_Espacio}>
+                        <Link href={`${project?.Código_Proyecto}/${space.Nombre_Espacio}`} key={space.ID_Espacio}>
                             <Card className="w-fit">
                                 <CardHeader className="justify-between">
                                     <div className="flex gap-5">
                                         <Avatar
                                             name={`${space.Usuario?.Nombre?.[0] || ""}${space.Usuario?.Apellido?.[0] || ""}`}
-                                            src={space.Usuario?.Imagen_Perfil || undefined}
+                                            src={space.Usuario?.Perfil || undefined}
                                             isBordered
                                             radius="full"
                                             size="md"
@@ -321,7 +321,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                                 </CardHeader>
                                 <CardFooter className="gap-3">
                                     <div className="flex gap-1 justify-between w-full">
-                                        <p className="font-semibold text-default-400 text-small">{space.Nombre}</p>
+                                        <p className="font-semibold text-default-400 text-small">{space.Nombre_Espacio}</p>
                                         <p className="font-semibold text-default-400 text-small">{space.Inscritos}</p>
                                     </div>
                                 </CardFooter>
