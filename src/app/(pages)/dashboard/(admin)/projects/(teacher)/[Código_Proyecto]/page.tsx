@@ -206,30 +206,30 @@ export default function ProjectPage({ params }: { params: { Código_Proyecto: st
     const handleNewSpace = async (newSpace: Space) => {
         const token = localStorage.getItem('token');
         if (!token) {
-          console.error('No token found');
-          return;
+            console.error('No token found');
+            return;
         }
-      
+
         try {
-          const userResponse = await fetch(`${backendUrl}/users/${newSpace.ID_Usuario}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-      
-          if (!userResponse.ok) {
-            throw new Error('Error al obtener los datos del usuario');
-          }
-      
-          const userData: { data: User } = await userResponse.json();
-          newSpace.Usuario = userData.data;
-      
-          setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
+            const userResponse = await fetch(`${backendUrl}/users/${newSpace.ID_Usuario}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!userResponse.ok) {
+                throw new Error('Error al obtener los datos del usuario');
+            }
+
+            const userData: { data: User } = await userResponse.json();
+            newSpace.Usuario = userData.data;
+
+            setSpaces((prevSpaces) => [...prevSpaces, newSpace]);
         } catch (error) {
-          console.error('Error al obtener los datos del usuario:', error);
+            console.error('Error al obtener los datos del usuario:', error);
         }
-      };      
+    };
 
     return (
         <section className="flex flex-col gap-y-8">
@@ -300,7 +300,7 @@ export default function ProjectPage({ params }: { params: { Código_Proyecto: st
                                     <div className="flex gap-5">
                                         <Avatar
                                             name={`${space.Usuario?.Nombre?.[0] || ""}${space.Usuario?.Apellido?.[0] || ""}`}
-                                            src={space.Usuario?.Perfil || undefined}
+                                            src={space.Usuario?.Perfil ? `${storageUrl}/${space.Usuario.Perfil}` : undefined}
                                             isBordered
                                             radius="full"
                                             size="md"

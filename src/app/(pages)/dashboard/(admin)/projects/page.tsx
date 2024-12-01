@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { I18nProvider } from '@react-aria/i18n';
 import { parseDate } from '@internationalized/date';
 import EditProject from './EditProject';
+import DeleteProject from './DeleteProject';
 
 type Role = {
     ID_Rol: number;
@@ -177,13 +178,11 @@ export default function ProjectsPage() {
                             <div className="flex">
                                 <Link
                                     href={`/dashboard/projects/${project.Código_Proyecto}`}
-                                    className={`flex w-full items-center gap-2 ${
-                                        isAdmin ? "rounded-l-lg" : ""
-                                    } ${
-                                        isTeacher || isStudent
+                                    className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""
+                                        } ${isTeacher || isStudent
                                             ? "rounded-lg"
                                             : "none"
-                                    } bg-[#ff9b5a] p-2`}
+                                        } bg-[#ff9b5a] p-2`}
                                 >
                                     <FolderLinksIcon size={30} color="#FFF" />
                                     <span className="text-white">
@@ -202,10 +201,9 @@ export default function ProjectsPage() {
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent>
-                                            <div className="px-1 py-2">
-                                                {/* <div className="text-small font-bold">Popover Content</div>
-                                                <div className="text-tiny">This is the popover content</div> */}
+                                            <div className="flex flex-col gap-2 p-1">
                                                 <EditProject onNewProject={handleNewProject}/>
+                                                <DeleteProject onNewProject={handleNewProject}/>
                                             </div>
                                         </PopoverContent>
                                     </Popover>

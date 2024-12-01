@@ -20,6 +20,7 @@ type Team = {
     Razón_Social: string;
     Correo_Equipo: string;
     Logo_Equipo: string;
+    Integrantes: number;
 }
 
 type Role = {
@@ -205,8 +206,8 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
                     ))
                 ) : (
                     teams.map(team => (
-                        <Link key={team.ID_Equipo} href={`${space?.Nombre_Espacio}/${team?.Nombre_Equipo}`}>
-                            <Card shadow="sm" isPressable>
+                        <Link key={team.ID_Equipo} href={`${space?.Nombre_Espacio}/${team.Nombre_Equipo}`}>
+                            <Card shadow="sm">
                                 <CardBody className="overflow-visible p-0">
                                     <FileUpload
                                         readOnly={true}
@@ -220,7 +221,7 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
                                         <b>{team.Nombre_Equipo}</b>
                                         <b className="text-gray-500">{team.Razón_Social}</b>
                                     </div>
-                                    <p className="text-default-500">3</p>
+                                    <p className="text-default-500">{team.Integrantes}</p>
                                 </CardFooter>
                             </Card>
                         </Link>

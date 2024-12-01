@@ -102,26 +102,26 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-              console.error('No token found');
-              return;
+                console.error('No token found');
+                return;
             }
             try {
-              const response = await fetch(`${backendUrl}/user`, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
-                },
-              });
-              if (!response.ok) {
-                throw new Error('Error al obtener los datos del usuario');
-              }
-              const data: User = await response.json();
-              setUser(data.data);
+                const response = await fetch(`${backendUrl}/user`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del usuario');
+                }
+                const data: User = await response.json();
+                setUser(data.data);
             } catch (error) {
-              console.error('Error al obtener los datos del usuario:', error);
+                console.error('Error al obtener los datos del usuario:', error);
             }
-          };
-          fetchUserData();
+        };
+        fetchUserData();
     }, [params.Nombre_Equipo]);
 
     const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
@@ -180,7 +180,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                 </div>
             </section>
         );
-    }    
+    }
 
     if (!team) {
         return <div>No se encontró el equipo</div>;
@@ -227,7 +227,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                             description={userTeam.Docente.Correo}
                                             avatarProps={{
                                                 name: !userTeam.Docente.Perfil ? `${userTeam.Docente.Nombre?.[0] || ''}${userTeam.Docente.Apellido?.[0] || ''}` : undefined,
-                                                src: userTeam.Docente.Perfil || undefined,
+                                                src: userTeam.Docente.Perfil ? `${storageUrl}/${userTeam.Docente.Perfil}` : undefined,
                                             }}
                                         />
                                         {userTeam.Docente.Roles.map((role) => {
@@ -253,7 +253,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                         description={userTeam?.Correo}
                                         avatarProps={{
                                             name: !userTeam?.Perfil ? `${userTeam?.Nombre?.[0] || ''}${userTeam?.Apellido?.[0] || ''}` : undefined,
-                                            src: userTeam?.Perfil || undefined,
+                                            src: userTeam?.Perfil ? `${storageUrl}/${userTeam?.Perfil}` : undefined,
                                         }}
                                     />
                                     {userTeam?.Roles.map((role) => {
@@ -281,7 +281,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                             </Link>
                                         </Tooltip>
                                     ) : (
-                                        <Tooltip content="Repositorio remoto no disponible" placement="right">
+                                        <Tooltip content="Repositorio remoto no disponiblfined,e" placement="right">
                                             <Link href="#" className="text-blue-500">
                                                 Repositorio
                                             </Link>

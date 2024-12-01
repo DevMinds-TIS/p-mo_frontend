@@ -37,6 +37,7 @@ type Team = {
     Razón_Social: string;
     Correo_Equipo: string;
     Logo_Equipo: string;
+    Integrantes: number;
 }
 
 interface NewTeamProps {
