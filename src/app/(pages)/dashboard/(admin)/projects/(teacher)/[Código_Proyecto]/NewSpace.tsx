@@ -231,7 +231,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" className="w-full">Guardar</Button>
+                                <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">Crear</Button>
                             </ModalFooter>
                         </form>
                     )}

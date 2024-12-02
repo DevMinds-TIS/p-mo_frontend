@@ -308,7 +308,7 @@ export default function EditTeam({ params, onUpdateTeam }: UpdateTeamProps) {
                                     value={localDeployLink}
                                     onValueChange={setLocalDeployLink}
                                     label="Enlace al despliegue local"
-                                    placeholder="Escribe el enlace de despliegue local"
+                                    placeholder="Escribe el enlace de despliegue de TIS"
                                     errorMessage="Este enlace ya está registrado"
                                     minLength={2}
                                 />
@@ -322,7 +322,7 @@ export default function EditTeam({ params, onUpdateTeam }: UpdateTeamProps) {
                                 />
                             </ModalBody>
                             <ModalFooter>
-                                <Button onPress={handleSubmit} className="w-full">
+                                <Button onPress={handleSubmit} className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
                                     Editar grupo-empresa
                                 </Button>
                             </ModalFooter>

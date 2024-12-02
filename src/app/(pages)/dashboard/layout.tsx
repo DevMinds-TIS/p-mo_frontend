@@ -91,29 +91,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
-      try {
-        const response = await fetch(`${backendUrl}/user`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Error al obtener los datos del usuario');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            return;
         }
-        const data: User = await response.json();
-        setUser(data.data);
-      } catch (error) {
-        console.error('Error al obtener los datos del usuario:', error);
-      }
+        try {
+            const response = await fetch(`${backendUrl}/user`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos del usuario');
+            }
+            const data: User = await response.json();
+            setUser(data.data);
+        } catch (error) {
+            console.error('Error al obtener los datos del usuario:', error);
+        }
     };
-    fetchUserData();
-  }, [backendUrl]);
+    
+    if (!user) {
+        fetchUserData();
+    }
+}, [backendUrl, user]);
 
   const handleLogout = async () => {
     try {

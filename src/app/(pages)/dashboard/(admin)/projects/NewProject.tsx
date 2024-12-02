@@ -45,7 +45,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                 console.error("No token found");
                 return;
             }
-    
+
             try {
                 const response = await fetch(`${backendUrl}/user`, {
                     headers: {
@@ -53,11 +53,11 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-    
+
                 if (!response.ok) {
                     throw new Error("Error al obtener los datos del usuario");
                 }
-    
+
                 const data = await response.json();
                 setUser(data.data);
             } catch (error) {
@@ -86,17 +86,26 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         formData.append("iduser", user?.ID_Usuario.toString() || "");
         formData.append("nameproject", projectName);
         formData.append("codeproject", projectCode);
-        formData.append("startproject", dateRange.start ? new Date(dateRange.start).toISOString().split('T')[0] : "");
-        formData.append("endproject", dateRange.end ? new Date(dateRange.end).toISOString().split('T')[0] : "");
-        const documents = [ 
-            { file: invitationFile, field: "invitation" }, 
-            { file: specificationFile, field: "specification" } 
-        ]; 
-        documents.forEach(document => { 
-            if (document.file) { 
-                formData.append(document.field, document.file); 
-            } 
+
+        const startProjectDate = dateRange.start ? new Date(dateRange.start) : null;
+        const endProjectDate = dateRange.end ? new Date(dateRange.end) : null;
+
+        const termProject = calculateTermProject(startProjectDate, endProjectDate);
+
+        formData.append("startproject", startProjectDate ? startProjectDate.toISOString().split('T')[0] : "");
+        formData.append("endproject", endProjectDate ? endProjectDate.toISOString().split('T')[0] : "");
+        formData.append("termproject", termProject);
+
+        const documents = [
+            { file: invitationFile, field: "invitation" },
+            { file: specificationFile, field: "specification" }
+        ];
+        documents.forEach(document => {
+            if (document.file) {
+                formData.append(document.field, document.file);
+            }
         });
+
         try {
             const response = await fetch(`${backendUrl}/projects`, {
                 method: "POST",
@@ -115,7 +124,23 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         } catch (error) {
             console.error("Error al crear el proyecto:", error);
         }
-    };    
+    };
+
+    const calculateTermProject = (startProjectDate: Date | null, endProjectDate: Date | null): string => {
+        if (!startProjectDate || !endProjectDate) return "";
+
+        const year = startProjectDate.getFullYear();
+        const startMonth = startProjectDate.getMonth() + 1;
+        const endMonth = endProjectDate.getMonth() + 1;
+
+        if (startMonth <= 6 && endMonth <= 6) {
+            return `1/${year}`;
+        } else if (startMonth >= 7 && endMonth >= 7) {
+            return `2/${year}`;
+        } else {
+            return `Span/${year}`;
+        }
+    };
 
     return (
         <section>
@@ -162,8 +187,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button type="submit" className="w-full">
-                                        Guardar
+                                    <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
+                                        Crear
                                     </Button>
                                 </ModalFooter>
                             </form>

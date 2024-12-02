@@ -238,7 +238,7 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button onPress={handleSubmit} className="w-full">
+                                <Button onPress={handleSubmit} className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
                                     Registrar grupo-empresa
                                 </Button>
                             </ModalFooter>

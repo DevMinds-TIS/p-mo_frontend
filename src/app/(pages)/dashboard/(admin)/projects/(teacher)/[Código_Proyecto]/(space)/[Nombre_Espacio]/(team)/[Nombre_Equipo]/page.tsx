@@ -1,10 +1,12 @@
 "use client";
-import { Card, CardBody, CardFooter, Chip, CircularProgress, Skeleton, Tooltip, User } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Chip, CircularProgress, Skeleton, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Tooltip, User } from "@nextui-org/react";
 import { Github01Icon, HierarchyIcon, StudentIcon, TeacherIcon, WebDesign02Icon, WebValidationIcon } from "hugeicons-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import EditTeam from "./EditTeam";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
+import DocumentsPage from "../(documents)/page";
+import MembersPage from "../(members)/page";
 
 type Role = {
     ID_Rol: number;
@@ -45,32 +47,32 @@ const iconMapping: { [key: string]: React.ElementType } = {
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
 
-const fetchTeamByName = async (name: string): Promise<Team | null> => {
+const fetchTeamAndUserById = async (teamName: string): Promise<{ team: Team | null, user: User | null }> => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
-    const response = await fetch(`${backendUrl}/teams`, {
+
+    const teamResponse = await fetch(`${backendUrl}/teams`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
     });
 
-    if (!response.ok) throw new Error('Error al obtener los equipos');
+    if (!teamResponse.ok) throw new Error('Error al obtener los equipos');
+    const teamData = await teamResponse.json();
+    const teams: Team[] = teamData.data;
+    const team = teams.find((team) => team.Nombre_Equipo === teamName) || null; // Asegura que `team` sea `null` si no se encuentra ningún equipo
 
-    const data = await response.json();
-    const teams: Team[] = data.data;
-
-    const team = teams.find((team) => team.Nombre_Equipo === name);
-    return team || null;
-};
-
-const fetchUserById = async (id: number): Promise<User | null> => {
-    const response = await fetch(`${backendUrl}/users/${id}`);
-    if (!response.ok) {
-        throw new Error('Error al obtener los datos del usuario');
+    let user = null;
+    if (team) {
+        const userResponse = await fetch(`${backendUrl}/users/${team.ID_Usuario}`);
+        if (userResponse.ok) {
+            const userData = await userResponse.json();
+            user = userData.data;
+        }
     }
-    const data = await response.json();
-    return data.data;
+
+    return { team, user };
 };
 
 export default function TeamPage({ params }: { params: { Nombre_Equipo: string } }) {
@@ -82,23 +84,18 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const fetchedTeam = await fetchTeamByName(params.Nombre_Equipo);
-                setTeam(fetchedTeam);
-
-                if (fetchedTeam) {
-                    const userData = await fetchUserById(fetchedTeam.ID_Usuario);
-                    console.log("Usuario Data", userData);
-                    setUserTeam(userData);
-                }
-
+                const { team, user } = await fetchTeamAndUserById(params.Nombre_Equipo);
+                setTeam(team);
+                setUserTeam(user);
                 setIsLoading(false);
             } catch (error) {
                 console.error('Error al obtener el equipo:', error);
                 setIsLoading(false);
             }
         };
-
+    
         fetchData();
+    
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -121,17 +118,18 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                 console.error('Error al obtener los datos del usuario:', error);
             }
         };
+    
         fetchUserData();
-    }, [params.Nombre_Equipo]);
+    }, [params.Nombre_Equipo]);        
 
     const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
 
     if (isLoading) {
         return (
             <section>
-                <div className="flex w-full h-10 justify-between items-center">
-                    <h1 className="text-3xl p-4">Equipo</h1>
-                    <Skeleton className="w-10 h-10 rounded-lg" />
+                <div className="flex w-full h-10 justify-between items-center p-4">
+                    <h1 className="text-3xl">Equipo</h1>
+                    <Skeleton className="w-8 h-8 rounded-lg" />
                 </div>
                 <div className="p-4 flex gap-4 justify-between">
                     <Card className="border-none bg-background/60 dark:bg-default-100/50 w-[75%]" shadow="sm">
@@ -155,7 +153,9 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                                 ))}
                                             </div>
                                             {[...Array(index === 1 ? 2 : 1)].map((_, idx) => (
-                                                <Skeleton key={idx} className="w-24 h-8 rounded-full" />
+                                                <div className="flex flex-col gap-1">
+                                                    <Skeleton key={idx} className="w-24 h-8 rounded-full" />
+                                                </div>
                                             ))}
                                         </div>
                                     ))}
@@ -178,6 +178,66 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                         </CardFooter>
                     </Card>
                 </div>
+                <section>
+                    <div className="flex w-full h-10 justify-between items-center p-4">
+                        <h1 className="text-3xl">
+                            Documentos
+                        </h1>
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                    </div>
+                    <div className="p-4">
+                        <Table>
+                            <TableHeader>
+                                <TableColumn>Nombre</TableColumn>
+                                <TableColumn>Usuario</TableColumn>
+                                <TableColumn>Fecha envío</TableColumn>
+                                <TableColumn>Fecha recepción</TableColumn>
+                                <TableColumn>Comentario</TableColumn>
+                                <TableColumn>Estado</TableColumn>
+                                <TableColumn>Acciones</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                                {Array.from({ length: 3 }).map((_, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </section>
+                <section>
+                    <div className="flex w-full h-10 justify-between items-center p-4">
+                        <h1 className="text-3xl">
+                            Miembros
+                        </h1>
+                        <Skeleton className="w-8 h-8 rounded-lg" />
+                    </div>
+                    <div className="p-4">
+                        <Table>
+                            <TableHeader>
+                                <TableColumn>Usuario</TableColumn>
+                                <TableColumn>Roles</TableColumn>
+                                <TableColumn>Acciones</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                                {Array.from({ length: 3 }).map((_, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                        <TableCell><Skeleton className="w-full h-8 rounded-lg" /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </section>
             </section>
         );
     }
@@ -188,8 +248,8 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
 
     return (
         <section>
-            <div className="flex w-full h-10 justify-between items-center">
-                <h1 className="text-3xl p-4">
+            <div className="flex w-full h-10 justify-between items-center p-4">
+                <h1 className="text-3xl">
                     Equipo
                 </h1>
                 {isStudent && (
@@ -230,7 +290,36 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                                 src: userTeam.Docente.Perfil ? `${storageUrl}/${userTeam.Docente.Perfil}` : undefined,
                                             }}
                                         />
-                                        {userTeam.Docente.Roles.map((role) => {
+                                        <div className="flex flex-col gap-1">
+                                            {userTeam.Docente.Roles.map((role) => {
+                                                const RoleIcon = iconMapping[role.Icono_Rol];
+                                                return (
+                                                    <Chip
+                                                        key={role.ID_Rol}
+                                                        endContent={<RoleIcon />}
+                                                        className="capitalize"
+                                                        color="success"
+                                                        size="md"
+                                                        variant="flat"
+                                                    >
+                                                        {role.Nombre_Rol}
+                                                    </Chip>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="flex gap-4 items-center">
+                                    <User
+                                        name={`${userTeam?.Nombre} ${userTeam?.Apellido}`}
+                                        description={userTeam?.Correo}
+                                        avatarProps={{
+                                            name: !userTeam?.Perfil ? `${userTeam?.Nombre?.[0] || ''}${userTeam?.Apellido?.[0] || ''}` : undefined,
+                                            src: userTeam?.Perfil ? `${storageUrl}/${userTeam?.Perfil}` : undefined,
+                                        }}
+                                    />
+                                    <div className="flex flex-col gap-1">
+                                        {userTeam?.Roles.map((role) => {
                                             const RoleIcon = iconMapping[role.Icono_Rol];
                                             return (
                                                 <Chip
@@ -246,31 +335,6 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                             );
                                         })}
                                     </div>
-                                )}
-                                <div className="flex gap-4 items-center">
-                                    <User
-                                        name={`${userTeam?.Nombre} ${userTeam?.Apellido}`}
-                                        description={userTeam?.Correo}
-                                        avatarProps={{
-                                            name: !userTeam?.Perfil ? `${userTeam?.Nombre?.[0] || ''}${userTeam?.Apellido?.[0] || ''}` : undefined,
-                                            src: userTeam?.Perfil ? `${storageUrl}/${userTeam?.Perfil}` : undefined,
-                                        }}
-                                    />
-                                    {userTeam?.Roles.map((role) => {
-                                        const RoleIcon = iconMapping[role.Icono_Rol];
-                                        return (
-                                            <Chip
-                                                key={role.ID_Rol}
-                                                endContent={<RoleIcon />}
-                                                className="capitalize"
-                                                color="success"
-                                                size="md"
-                                                variant="flat"
-                                            >
-                                                {role.Nombre_Rol}
-                                            </Chip>
-                                        );
-                                    })}
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <Github01Icon size={38} />
@@ -281,8 +345,8 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                             </Link>
                                         </Tooltip>
                                     ) : (
-                                        <Tooltip content="Repositorio remoto no disponiblfined,e" placement="right">
-                                            <Link href="#" className="text-blue-500">
+                                        <Tooltip content="Repositorio remoto no disponible" placement="right">
+                                            <Link href="#" className="text-red-500">
                                                 Repositorio
                                             </Link>
                                         </Tooltip>
@@ -298,7 +362,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                         </Tooltip>
                                     ) : (
                                         <Tooltip content="Despliegue interno no disponible" placement="right">
-                                            <Link href="#" className="text-blue-500">
+                                            <Link href="#" className="text-red-500">
                                                 Despliegue Interno
                                             </Link>
                                         </Tooltip>
@@ -314,7 +378,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                         </Tooltip>
                                     ) : (
                                         <Tooltip content="Despliegue externo no disponible" placement="right">
-                                            <Link href="#" className="text-blue-500">
+                                            <Link href="#" className="text-red-500">
                                                 Despliegue Externo
                                             </Link>
                                         </Tooltip>
@@ -351,6 +415,8 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                     </CardFooter>
                 </Card>
             </div>
+            <DocumentsPage params={{ Nombre_Equipo: team.Nombre_Equipo }} />
+            <MembersPage params={{ Nombre_Equipo: team.Nombre_Equipo }} />
         </section>
     );
 }
