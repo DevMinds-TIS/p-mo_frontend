@@ -48,6 +48,17 @@ export default function StudentSignIn() {
     const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [docenteId, setDocenteId] = useState<number | null>(null);
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+    const [isInvalidUMSSEmail, setIsInvalidUMSSEmail] = useState(false);
+
+    const validateUMSSEmail = (email: string) => {
+        const domain = email.split('@')[1];
+        if (domain !== 'est.umss.edu') {
+            setIsInvalidUMSSEmail(true);
+        } else {
+            setIsInvalidUMSSEmail(false);
+        }
+    };
+
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -55,17 +66,17 @@ export default function StudentSignIn() {
                 const response = await fetch(`${backendUrl}/role-user`);
                 const data = await response.json();
                 console.log('Role-User Data:', data);
-                
+
                 // Filtra los IDs de los docentes
                 const teacherIds = data.data
                     .filter((user: { 'ID_Rol': number }) => user['ID_Rol'] === 2)
                     .map((user: { 'ID_Usuario': number }) => user['ID_Usuario']);
                 console.log('Teacher IDs:', teacherIds);
-        
+
                 const teachersResponse = await fetch(`${backendUrl}/users`);
                 const teachersData = await teachersResponse.json();
                 console.log('Users Data:', teachersData);
-        
+
                 if (Array.isArray(teachersData.data)) {
                     // Filtra los datos de los docentes
                     const teachersList: Teacher[] = teachersData.data
@@ -74,20 +85,20 @@ export default function StudentSignIn() {
                             key: teacher['ID_Usuario'],
                             label: `${teacher['Nombre']} ${teacher['Apellido']}`,
                         }));
-                    
+
                     setTeachers(teachersList);
                     console.log('Teachers List:', teachersList);
                 } else {
                     console.error('Error: Expected an array but got:', teachersData.data);
                 }
-        
+
             } catch (error) {
                 console.error('Error al obtener los docentes:', error);
             }
         };
         fetchTeachers();
     }, [backendUrl]);
-    
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -173,11 +184,12 @@ export default function StudentSignIn() {
                 type="email"
                 label="Correo Electrónico"
                 placeholder="Ingrese su correo electrónico"
-                isInvalid={isEmailTouched && isInvalidEmail}
-                errorMessage="Por favor, ingrese un correo electrónico valido"
+                isInvalid={(isEmailTouched && isInvalidEmail) || isInvalidUMSSEmail}
+                errorMessage={isInvalidUMSSEmail ? "Usted no pertenece a la U.M.S.S." : "Por favor, ingrese un correo electrónico válido"}
                 onValueChange={(email) => {
                     setEmail(email);
                     setIsEmailTouched(true);
+                    validateUMSSEmail(email);
                 }}
                 maxLength={60}
             />
@@ -237,7 +249,7 @@ export default function StudentSignIn() {
                     </SelectItem>
                 ))}
             </Select>
-            <Button type="submit" isDisabled={!isSingupValid || !docenteId} className="w-full h-14 bg-[#FF9B5A] text-white">
+            <Button type="submit" isDisabled={!isSingupValid || !docenteId || isInvalidUMSSEmail} className="w-full h-14 bg-[#FF9B5A] text-white">
                 Unirse
             </Button>
         </form>

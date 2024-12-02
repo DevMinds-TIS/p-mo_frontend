@@ -5,18 +5,11 @@ import { useEffect, useState } from "react";
 import userStudent from "@/app/_lib/landing/useUserForm";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
+import { useRouter } from 'next/navigation';
 
 type Role = {
     ID_Rol: number;
     Nombre_Rol: string;
-};
-
-type Docente = {
-    ID_Usuario: number;
-    Nombre: string;
-    Apellido: string;
-    Correo: string;
-    Imagen_Perfil?: string;
 };
 
 type User = {
@@ -25,16 +18,18 @@ type User = {
     Nombre: string;
     Apellido: string;
     Correo: string;
-    Imagen_Perfil?: string;
+    Perfil?: string;
     Roles: Role[];
-    Docente?: Docente;
+    Docente?: User;
 };
 
 export default function UpdateProfile() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
+    const router = useRouter();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [user, setUser] = useState<User | null>(null);
-    const [docentes, setDocentes] = useState<Docente[]>([]);
+    const [docentes, setDocentes] = useState<User[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
     const [profileuser, setProfileuser] = useState<File | null>(null);
@@ -72,18 +67,20 @@ export default function UpdateProfile() {
                 const teachersResponse = await fetch(`${backendUrl}/users`);
                 const teachersData = await teachersResponse.json();
                 if (Array.isArray(teachersData.data)) {
-                    const teachersList: Docente[] = teachersData.data
+                    const teachersList: User[] = teachersData.data
                         .filter((user: { ID_Usuario: number }) => teacherIds.includes(user['ID_Usuario']))
                         .map((teacher: {
                             ID_Usuario: number;
                             Nombre: string;
                             Apellido: string;
                             Correo: string;
+                            Perfil: string;
                         }) => ({
                             ID_Usuario: teacher['ID_Usuario'],
                             Nombre: teacher['Nombre'],
                             Apellido: teacher['Apellido'],
                             Correo: teacher['Correo'],
+                            Perfil: teacher['Perfil'],
                         }));
                     setDocentes(teachersList);
                 } else {
@@ -152,10 +149,10 @@ export default function UpdateProfile() {
 
     const handleFileChange = async (newFile: File | null) => {
         setProfileuser(newFile);
-        if (!newFile && user?.Imagen_Perfil) {
-            const response = await fetch(user.Imagen_Perfil);
+        if (!newFile && user?.Perfil) {
+            const response = await fetch(user.Perfil);
             const blob = await response.blob();
-            setProfileuser(new File([blob], "Imagen_Perfil", { type: blob.type }));
+            setProfileuser(new File([blob], "Perfil", { type: blob.type }));
         }
     };
 
@@ -166,46 +163,39 @@ export default function UpdateProfile() {
             console.error("No token found");
             return;
         }
-
         const formData = new FormData();
         formData.append("nameuser", name);
         formData.append("lastnameuser", lastname);
-
         if (passwd) {
             formData.append("passworduser", passwd);
         }
-
         if (selectedKeys.size > 0) {
             formData.append("use_iduser", Array.from(selectedKeys)[0]);
         }
-
         if (profileuser) {
             formData.append("profileuser", profileuser);
         }
-
         for (const [key, value] of formData.entries()) {
             console.log(key, value);
         }
-
-        console.log("Sending fetch request to update user...");
-
+        console.log("FormData", Array.from(formData.entries()));
         try {
             const response = await fetch(`${backendUrl}/users/${user.ID_Usuario}`, {
-                method: "PUT",
+                method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
+                    "X-HTTP-Method-Override": "PUT",
                 },
                 body: formData,
             });
-
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Error response from server:", errorData);
                 throw new Error(`Error al actualizar el usuario: ${errorData.message}`);
             }
-
             const data = await response.json();
-            setUser(data);
+            console.log("SendingData", data);
+            setUser(data.data);
             onOpenChange();
             window.location.reload();
         } catch (error) {
@@ -225,65 +215,70 @@ export default function UpdateProfile() {
                             <ModalHeader className="flex flex-col gap-1">Actualiza tu perfil</ModalHeader>
                             <ModalBody>
                                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-4">
                                         <div className="h-full">
+                                            <p>Imagen de perfil</p>
                                             <FileUpload
                                                 onChange={handleFileChange}
-                                                existingFile={user?.Imagen_Perfil ? { name: "Imagen_Perfil", url: user.Imagen_Perfil } : null}
+                                                existingFile={user?.Perfil ? { name: 'Perfil', url: `${storageUrl}/${user.Perfil}` } : null}
                                                 readOnly={false}
+                                                className="w-52"
                                             />
                                         </div>
-                                        <div className="flex flex-col">
-                                            <div className="flex gap-2">
+                                        <div className="flex flex-col justify-between">
+                                            <div>
+                                                <p>Datos personales</p>
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        value={name}
+                                                        isClearable
+                                                        label="Nombre"
+                                                        placeholder="Ingrese su nombre"
+                                                        isInvalid={isNameTouched && isInvalidName}
+                                                        errorMessage="El campo nombre debe contener al menos 3 caracteres"
+                                                        onValueChange={(name) => {
+                                                            setName(name);
+                                                            setIsNameTouched(true);
+                                                        }}
+                                                        maxLength={60}
+                                                    />
+                                                    <Input
+                                                        value={lastname}
+                                                        isClearable
+                                                        label="Apellido"
+                                                        placeholder="Ingrese su apellido"
+                                                        isInvalid={isLastNameTouched && isInvalidLastname}
+                                                        errorMessage="El campo apellido debe contener al menos 5 caracteres"
+                                                        onValueChange={(lastname) => {
+                                                            setLastname(lastname);
+                                                            setIsLastNameTouched(true);
+                                                        }}
+                                                        maxLength={60}
+                                                    />
+                                                </div>
                                                 <Input
-                                                    value={name}
-                                                    isClearable
-                                                    label="Nombre"
-                                                    placeholder="Ingrese su nombre"
-                                                    isInvalid={isNameTouched && isInvalidName}
-                                                    errorMessage="El campo nombre debe contener al menos 3 caracteres"
-                                                    onValueChange={(name) => {
-                                                        setName(name);
-                                                        setIsNameTouched(true);
+                                                    value={passwd}
+                                                    label="Contraseña"
+                                                    placeholder="Ingrese su contraseña"
+                                                    isInvalid={isPasswdTouched && isInvalidPasswd}
+                                                    errorMessage={passwordError}
+                                                    onValueChange={(passwd) => {
+                                                        setPasswd(passwd);
+                                                        setIsPasswdTouched(true);
                                                     }}
-                                                    maxLength={60}
-                                                />
-                                                <Input
-                                                    value={lastname}
-                                                    isClearable
-                                                    label="Apellido"
-                                                    placeholder="Ingrese su apellido"
-                                                    isInvalid={isLastNameTouched && isInvalidLastname}
-                                                    errorMessage="El campo apellido debe contener al menos 5 caracteres"
-                                                    onValueChange={(lastname) => {
-                                                        setLastname(lastname);
-                                                        setIsLastNameTouched(true);
-                                                    }}
-                                                    maxLength={60}
+                                                    endContent={
+                                                        <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                                                            {isVisible ? (
+                                                                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                            ) : (
+                                                                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                                            )}
+                                                        </button>
+                                                    }
+                                                    type={isVisible ? "text" : "password"}
+                                                    maxLength={20}
                                                 />
                                             </div>
-                                            <Input
-                                                value={passwd}
-                                                label="Contraseña"
-                                                placeholder="Ingrese su contraseña"
-                                                isInvalid={isPasswdTouched && isInvalidPasswd}
-                                                errorMessage={passwordError}
-                                                onValueChange={(passwd) => {
-                                                    setPasswd(passwd);
-                                                    setIsPasswdTouched(true);
-                                                }}
-                                                endContent={
-                                                    <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                                                        {isVisible ? (
-                                                            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                                                        ) : (
-                                                            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                                                        )}
-                                                    </button>
-                                                }
-                                                type={isVisible ? "text" : "password"}
-                                                maxLength={20}
-                                            />
                                             {isStudent && user.Docente && (
                                                 <Select
                                                     items={docentes}
@@ -293,13 +288,12 @@ export default function UpdateProfile() {
                                                     classNames={{ base: "w-full", trigger: "h-12" }}
                                                     selectedKeys={selectedKeys}
                                                     onSelectionChange={handleSelectionChange}
-                                                    renderValue={(items: SelectedItems<Docente>) => {
+                                                    renderValue={(items: SelectedItems<User>) => {
                                                         return items.map((item) => (
                                                             <div key={item.key} className="flex items-center gap-2">
                                                                 <Avatar
-                                                                    alt={item.data?.Nombre}
                                                                     name={`${item.data?.Nombre?.[0] || ""}${item.data?.Apellido?.[0] || ""}`}
-                                                                    src={item.data?.Imagen_Perfil || undefined}
+                                                                    src={item.data?.Perfil ? `${storageUrl}/${item.data.Perfil}` : undefined}
                                                                     className="flex-shrink-0"
                                                                     size="sm"
                                                                 />
@@ -315,11 +309,9 @@ export default function UpdateProfile() {
                                                         <SelectItem key={docente.ID_Usuario.toString()} textValue={docente.Nombre}>
                                                             <div className="flex gap-2 items-center">
                                                                 <Avatar
-                                                                    alt={docente.Nombre}
-                                                                    name={`${docente.Nombre?.[0] || ""}${docente.Apellido?.[0] || ""}`}
-                                                                    src={docente.Imagen_Perfil || undefined}
-                                                                    className="flex-shrink-0"
-                                                                    size="sm"
+                                                                    name={!docente?.Perfil ? `${docente?.Nombre?.[0] || ''}${docente?.Apellido?.[0] || ''}` : undefined}
+                                                                    src={docente?.Perfil ? `${storageUrl}/${docente.Perfil}` : undefined}
+                                                                    size="md"
                                                                 />
                                                                 <div className="flex flex-col">
                                                                     <span className="text-small">{docente.Nombre} {docente.Apellido}</span>
@@ -332,7 +324,7 @@ export default function UpdateProfile() {
                                             )}
                                         </div>
                                     </div>
-                                    <Button className="w-full" type="submit">
+                                    <Button className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold" type="submit">
                                         Actualizar
                                     </Button>
                                 </form>

@@ -1,3 +1,4 @@
+"use client";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, DateRangePicker } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { parseDate, isWeekend, DateValue } from "@internationalized/date";
@@ -7,7 +8,7 @@ import { FileUpload } from "@/app/_lib/components/FileUpload";
 
 type Project = {
     ID_Proyecto: number;
-    Código: string;
+    Código_Proyecto: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
 };
@@ -16,7 +17,7 @@ type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
     ID_Usuario: number;
-    Nombre: string;
+    Nombre_Espacio: string;
     Usuario: User;
     Inscritos: number;
 }
@@ -33,11 +34,11 @@ type User = {
     Nombre: string;
     Apellido: string;
     Correo: string;
-    Imagen_Perfil: string;
+    Perfil: string;
 };
 
 type NewSpaceProps = {
-    params: { Código: string };
+    params: { Código_Proyecto: string };
     onNewSpace: (space: Space) => void;
 };
 
@@ -56,7 +57,7 @@ const fetchProjectByCode = async (code: string): Promise<Project | null> => {
     const data = await response.json();
     const projects: Project[] = data.data;
 
-    const project = projects.find((project) => project.Código === code);
+    const project = projects.find((project) => project.Código_Proyecto === code);
     return project || null;
 };
 
@@ -77,7 +78,6 @@ const fetchUser = async (): Promise<User> => {
     const data = await response.json();
     return data.data;
 };
-
 
 export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -103,30 +103,17 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const projectData = await fetchProjectByCode(params.Código);
-                if (projectData) {
-                    setProject(projectData);
-                } else {
-                    console.error('No se encontró el proyecto con el código proporcionado');
-                }
+                const projectData = await fetchProjectByCode(params.Código_Proyecto);
+                setProject(projectData);
+
+                const userData = await fetchUser();
+                setUser(userData);
             } catch (error) {
-                console.error('Error al obtener los datos del proyecto o documentos:', error);
+                console.error('Error al obtener los datos del proyecto o usuario:', error);
             }
         };
         fetchData();
-    
-        const fetchUserData = async () => {
-            try {
-                const userData = await fetchUser();
-                setUser(userData);
-                console.log(userData);
-                console.log(user);
-            } catch (error) {
-                console.error('Error al obtener los datos del usuario:', error);
-            }
-        };
-        fetchUserData();
-    }, [params.Código, user]);
+    }, [params.Código_Proyecto]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -244,7 +231,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" className="w-full">Guardar</Button>
+                                <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">Crear</Button>
                             </ModalFooter>
                         </form>
                     )}
