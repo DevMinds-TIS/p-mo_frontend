@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
-import { AddSquareIcon, PencilEdit02Icon } from "hugeicons-react";
+import { AddSquareIcon, Delete02Icon, PencilEdit02Icon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
 import { isWeekend } from "@internationalized/date";
@@ -23,7 +23,7 @@ type NewProjectProps = {
     onNewProject: (project: Project) => void;
 };
 
-export default function EditProject({ onNewProject }: NewProjectProps) {
+export default function DeleteProject({ onNewProject }: NewProjectProps) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const currentYear = new Date().getFullYear();
@@ -121,10 +121,10 @@ export default function EditProject({ onNewProject }: NewProjectProps) {
         <section>
             <Button
                 onPress={onOpen}
-                className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-yellow-700 bg-transparent w-full justify-start"
-                startContent={<PencilEdit02Icon />}
+                className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-red-700 bg-transparent w-full"
+                startContent={<Delete02Icon />}
             >
-                Editar proyecto
+                Eliminar proyecto
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="center">
                 <ModalContent>

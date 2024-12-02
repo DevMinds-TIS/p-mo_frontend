@@ -10,6 +10,7 @@ export default function TeacherSignIn() {
     const router = useRouter();
     const [isRequestSent, setIsRequestSent] = useState(false);
     const [isRequestEnabled, setIsRequestEnabled] = useState(false);
+    const [isInvalidUMSSTeacherEmail, setIsInvalidUMSSTeacherEmail] = useState(false);
 
     const {
         email,
@@ -43,6 +44,16 @@ export default function TeacherSignIn() {
         setIsVisible,
         toggleVisibility,
     } = userTeacher();
+
+    const validateUMSSTeacherEmail = (email: string) => {
+        const domain = email.split('@')[1];
+        if (domain !== 'fcyt.umss.edu.bo') {
+            setIsInvalidUMSSTeacherEmail(true);
+        } else {
+            setIsInvalidUMSSTeacherEmail(false);
+        }
+    };
+
 
     useEffect(() => {
         if (name && lastname && email) {
@@ -112,7 +123,7 @@ export default function TeacherSignIn() {
 
             console.log('Código solicitado exitosamente');
             setIsRequestSent(true);
-            setIsRequestEnabled(false); // Deshabilitar el botón después de enviar la solicitud
+            setIsRequestEnabled(false);
 
         } catch (error) {
             console.error('Error:', error);
@@ -157,11 +168,12 @@ export default function TeacherSignIn() {
                 type="email"
                 label="Correo Electrónico"
                 placeholder="Ingrese su correo electrónico"
-                isInvalid={isEmailTouched && isInvalidEmail}
-                errorMessage="Por favor, ingrese un correo electrónico valido"
+                isInvalid={(isEmailTouched && isInvalidEmail) || isInvalidUMSSTeacherEmail}
+                errorMessage={isInvalidUMSSTeacherEmail ? "Usted no pertenece a la U.M.S.S." : "Por favor, ingrese un correo electrónico válido"}
                 onValueChange={(email) => {
                     setEmail(email);
                     setIsEmailTouched(true);
+                    validateUMSSTeacherEmail(email);
                 }}
                 maxLength={60}
             />
@@ -212,7 +224,7 @@ export default function TeacherSignIn() {
             </div>
             <Button
                 type="submit"
-                isDisabled={!isSingupValid}
+                isDisabled={!isSingupValid || isInvalidUMSSTeacherEmail}
                 className="w-full h-14 bg-[#FF9B5A] text-white"
             >
                 Unirse

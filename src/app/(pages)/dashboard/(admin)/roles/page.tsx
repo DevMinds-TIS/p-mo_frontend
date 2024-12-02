@@ -15,9 +15,9 @@ import React, { useEffect, useState } from "react";
 
 type Role = {
     ID_Rol: number;
-    Nombre: string;
-    Icono: string;
-    Cantidad: number;
+    Nombre_Rol: string;
+    Icono_Rol: string;
+    Cantidad_Rol: number;
 };
 
 const iconMapping: { [key: string]: React.ElementType } = {
@@ -51,6 +51,7 @@ const fetchRoles = async (): Promise<Role[]> => {
     }
 
     const data = await response.json();
+    console.log("DataRoles", data.data);
     return data.data;
 };
 
@@ -92,15 +93,15 @@ export default function RolesPage() {
                     ))
                 ) : (
                     roles.map(role => {
-                        const RoleIcon = iconMapping[role.Icono] || UserGroupIcon;
+                        const RoleIcon = iconMapping[role.Icono_Rol] || UserGroupIcon;
                         return (
                             <Card key={role.ID_Rol} shadow="sm" isPressable>
                                 <CardBody className="overflow-visible p-2 flex items-center">
                                     <RoleIcon size={48} />
                                 </CardBody>
                                 <CardFooter className="text-small gap-4">
-                                    <b>{role.Nombre}</b>
-                                    <b>{role.Cantidad}</b>
+                                    <b>{role.Nombre_Rol}</b>
+                                    <b>{role.Cantidad_Rol}</b>
                                 </CardFooter>
                             </Card>
                         );

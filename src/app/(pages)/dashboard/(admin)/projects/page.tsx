@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { I18nProvider } from '@react-aria/i18n';
 import { parseDate } from '@internationalized/date';
 import EditProject from './EditProject';
+import DeleteProject from './DeleteProject';
 
 type Role = {
     ID_Rol: number;
@@ -21,7 +22,7 @@ type User = {
 
 type Project = {
     ID_Proyecto: number;
-    Código: string;
+    Código_Proyecto: string;
     Fecha_Inicio: string;
     Fecha_Fin: string;
 };
@@ -106,7 +107,7 @@ export default function ProjectsPage() {
                 <section className="flex w-full h-10 justify-between items-center">
                     <h1 className="text-3xl">Proyectos</h1>
                     <Skeleton className="w-1/4 h-10 rounded-lg" />
-                    <Skeleton className="w-10 h-10 rounded-lg" />
+                    <Skeleton className="w-8 h-8 rounded-lg" />
                 </section>
                 <section className="flex flex-wrap p-4 gap-8">
                     {[...Array(4)].map((_, index) => (
@@ -132,7 +133,7 @@ export default function ProjectsPage() {
     };
 
     const filteredProjects = projects.filter((project) =>
-        project.Código.toLowerCase().includes(searchTerm.toLowerCase())
+        project.Código_Proyecto.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -176,18 +177,16 @@ export default function ProjectsPage() {
                         >
                             <div className="flex">
                                 <Link
-                                    href={`/dashboard/projects/${project.Código}`}
-                                    className={`flex w-full items-center gap-2 ${
-                                        isAdmin ? "rounded-l-lg" : ""
-                                    } ${
-                                        isTeacher || isStudent
+                                    href={`/dashboard/projects/${project.Código_Proyecto}`}
+                                    className={`flex w-full items-center gap-2 ${isAdmin ? "rounded-l-lg" : ""
+                                        } ${isTeacher || isStudent
                                             ? "rounded-lg"
                                             : "none"
-                                    } bg-[#ff9b5a] p-2`}
+                                        } bg-[#ff9b5a] p-2`}
                                 >
                                     <FolderLinksIcon size={30} color="#FFF" />
                                     <span className="text-white">
-                                        {project["Código"]}
+                                        {project["Código_Proyecto"]}
                                     </span>
                                 </Link>
                                 {isAdmin && (
@@ -202,10 +201,9 @@ export default function ProjectsPage() {
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent>
-                                            <div className="px-1 py-2">
-                                                {/* <div className="text-small font-bold">Popover Content</div>
-                                                <div className="text-tiny">This is the popover content</div> */}
+                                            <div className="flex flex-col gap-2 p-1">
                                                 <EditProject onNewProject={handleNewProject}/>
+                                                <DeleteProject onNewProject={handleNewProject}/>
                                             </div>
                                         </PopoverContent>
                                     </Popover>
