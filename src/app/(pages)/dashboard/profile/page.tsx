@@ -2,6 +2,7 @@
 import { Avatar, Divider, Skeleton, User } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 import UpdateProfile from "./UpdateProfile";
+import { ComingSoon02Icon } from "hugeicons-react";
 
 type Role = {
     ID_Rol: number;
@@ -124,7 +125,9 @@ export default function Profile() {
                         </div>
                     )}
                 </div>
-                <div className="w-full md:w-[60%] lg:w-[70%] bg-teal-600 p-4">
+                <div className=" flex w-full md:w-[60%] lg:w-[70%] p-4 justify-center items-center">
+                    <ComingSoon02Icon size={80} />
+                    <h1 className="text-2xl font-bold">Novedades, próximamente</h1>
                 </div>
             </div>
         </section>
