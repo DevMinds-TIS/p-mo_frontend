@@ -2,6 +2,7 @@ import { Divider, Skeleton, Table, TableBody, TableCell, TableColumn, TableHeade
 import { useEffect, useState } from "react";
 import NewDocument from "./NewDocument";
 import { Delete02Icon, EyeIcon, PencilEdit02Icon } from "hugeicons-react";
+import Link from "next/link";
 
 type Role = {
     ID_Rol: number;
@@ -10,7 +11,6 @@ type Role = {
 };
 
 type User = {
-    data: User;
     ID_Usuario: number;
     Nombre: string;
     Apellido: string;
@@ -111,9 +111,7 @@ const fetchTrackingByTeamId = async (teamId: number): Promise<Tracking[]> => {
 const fetchUsersByIds = async (ids: number[]): Promise<Map<number, User>> => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
-
     const usersMap = new Map<number, User>();
-
     for (const id of ids) {
         const response = await fetch(`${backendUrl}/users/${id}`, {
             headers: {
@@ -121,12 +119,10 @@ const fetchUsersByIds = async (ids: number[]): Promise<Map<number, User>> => {
                 'Authorization': `Bearer ${token}`,
             },
         });
-
         if (!response.ok) throw new Error('Error al obtener los datos del usuario');
         const user = await response.json();
-        usersMap.set(user.ID_Usuario, user);
+        usersMap.set(user.data.ID_Usuario, user.data); // Accede correctamente al objeto data
     }
-
     return usersMap;
 };
 
@@ -213,26 +209,20 @@ export default function DocumentsPage({ params }: { params: { Nombre_Equipo: str
             try {
                 const fetchedTeam = await fetchTeamByName(params.Nombre_Equipo);
                 setTeam(fetchedTeam);
-                
                 if (fetchedTeam) {
                     const trackingData = await fetchTrackingByTeamId(fetchedTeam.ID_Equipo);
                     setTrackings(trackingData);
-                    
                     const documentData = await fetchDocumentsByTeamId(fetchedTeam.ID_Equipo);
                     setDocuments(documentData);
-                    
                     const spaceData = await fetchSpaceByTeamId(fetchedTeam.ID_Espacio);
                     setSpace(spaceData);
-                    
                     const userIds = trackingData.map(tracking => tracking.ID_Usuario);
                     const usersMap = await fetchUsersByIds(userIds);
                     setUsersTracking(usersMap);
-                    console.log("Fetch UserData", Array.from(usersMap.values()));
-                    
+                    console.log("Fetch UserData Documents", Array.from(usersMap.values()));
                     const teamMembers = await fetchTeamMembersByTeamId(fetchedTeam.ID_Equipo);
                     setTeamMembers(teamMembers);
                 }
-                
                 const authenticatedUser = await fetchAuthenticatedUser();
                 setAuthenticatedUser(authenticatedUser);
                 setIsLoading(false);
@@ -241,9 +231,8 @@ export default function DocumentsPage({ params }: { params: { Nombre_Equipo: str
                 setIsLoading(false);
             }
         };
-        
         fetchData();
-    }, [params.Nombre_Equipo]);    
+    }, [params.Nombre_Equipo]);
 
     if (isLoading) {
         return (
@@ -292,30 +281,24 @@ export default function DocumentsPage({ params }: { params: { Nombre_Equipo: str
         try {
             const trackingData = await fetchTrackingByTeamId(newDocument.ID_Equipo);
             setTrackings(trackingData);
-            
             const documentData = await fetchDocumentsByTeamId(newDocument.ID_Equipo);
             setDocuments(documentData);
-            
             const userIds = trackingData.map(tracking => tracking.ID_Usuario);
             const usersMap = await fetchUsersByIds(userIds);
             setUsersTracking(usersMap);
         } catch (error) {
             console.error('Error al actualizar los datos:', error);
         }
-    };    
+    };
 
-    const isUserAuthorized = authenticatedUser && (
-        teamMembers.some(member => member.ID_Usuario === authenticatedUser.ID_Usuario) ||
+    const isUserAuthorized = authenticatedUser && (teamMembers.some(member => member.ID_Usuario === authenticatedUser.ID_Usuario) ||
         authenticatedUser.ID_Usuario === team?.ID_Usuario ||
-        authenticatedUser.ID_Usuario === space?.ID_Usuario
-    );
+        authenticatedUser.ID_Usuario === space?.ID_Usuario);
 
     return (
         <section>
             <div className="flex w-full h-10 justify-between items-center p-4">
-                <h1 className="text-3xl">
-                    Documentos
-                </h1>
+                <h1 className="text-3xl">Documentos</h1>
                 {isUserAuthorized && (
                     <NewDocument params={{ Nombre_Equipo: team.Nombre_Equipo }} onNewDocument={handleNewDocument} />
                 )}
@@ -332,38 +315,45 @@ export default function DocumentsPage({ params }: { params: { Nombre_Equipo: str
                         <TableColumn>Acciones</TableColumn>
                     </TableHeader>
                     <TableBody emptyContent={"No hay documentos para mostrar"}>
-                        {trackings.map((tracking) => (
-                            <TableRow key={tracking.ID_Seguimiento}>
-                                <TableCell>{tracking.Nombre_Tracking}</TableCell>
-                                <TableCell>
-                                    {usersTracking.has(tracking.ID_Usuario) && (
-                                        <User
-                                            name={`${usersTracking.get(tracking.ID_Usuario)?.Nombre} ${usersTracking.get(tracking.ID_Usuario)?.Apellido}`}
-                                            description={usersTracking.get(tracking.ID_Usuario)?.Correo}
-                                            avatarProps={{
-                                                name: usersTracking.get(tracking.ID_Usuario)?.Nombre && usersTracking.get(tracking.ID_Usuario)?.Apellido
-                                                    ? `${usersTracking.get(tracking.ID_Usuario)?.Nombre[0]}${usersTracking.get(tracking.ID_Usuario)?.Apellido[0]}`
-                                                    : undefined,
-                                                src: usersTracking.get(tracking.ID_Usuario)?.Perfil
-                                                    ? `${storageUrl}/${usersTracking.get(tracking.ID_Usuario)?.Perfil}`
-                                                    : undefined,
-                                            }}
-                                        />
-                                    )}
-                                </TableCell>
-                                <TableCell>{tracking.Fecha_Entrega}</TableCell>
-                                <TableCell>{tracking.Fecha_Devolución}</TableCell>
-                                <TableCell>{tracking.Comentario_Tracking}</TableCell>
-                                <TableCell>{tracking.ID_Estado}</TableCell>
-                                <TableCell>
-                                    <div className="flex gap-4">
-                                        <EyeIcon />
-                                        <PencilEdit02Icon />
-                                        <Delete02Icon />
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {trackings.map((tracking) => {
+                            const document = documents.find(doc => doc.ID_Seguimiento === tracking.ID_Seguimiento); // Encuentra el documento correspondiente
+                            return (
+                                <TableRow key={tracking.ID_Seguimiento}>
+                                    <TableCell>{tracking.Nombre_Tracking}</TableCell>
+                                    <TableCell>
+                                        {usersTracking.has(tracking.ID_Usuario) && (
+                                            <User
+                                                name={`${usersTracking.get(tracking.ID_Usuario)?.Nombre} ${usersTracking.get(tracking.ID_Usuario)?.Apellido}`}
+                                                description={usersTracking.get(tracking.ID_Usuario)?.Correo}
+                                                avatarProps={{
+                                                    name: usersTracking.get(tracking.ID_Usuario)?.Nombre && usersTracking.get(tracking.ID_Usuario)?.Apellido
+                                                        ? `${usersTracking.get(tracking.ID_Usuario)?.Nombre[0]}${usersTracking.get(tracking.ID_Usuario)?.Apellido[0]}`
+                                                        : undefined,
+                                                    src: usersTracking.get(tracking.ID_Usuario)?.Perfil
+                                                        ? `${storageUrl}/${usersTracking.get(tracking.ID_Usuario)?.Perfil}`
+                                                        : undefined,
+                                                }}
+                                            />
+                                        )}
+                                    </TableCell>
+                                    <TableCell>{tracking.Fecha_Entrega}</TableCell>
+                                    <TableCell>{tracking.Fecha_Devolución}</TableCell>
+                                    <TableCell>{tracking.Comentario_Tracking}</TableCell>
+                                    <TableCell>{tracking.ID_Estado}</TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-4">
+                                            {document && (
+                                                <Link href={`${storageUrl}/${document.Ruta_Documento}`} passHref target="_blank" rel="noopener noreferrer">
+                                                    <EyeIcon />
+                                                </Link>
+                                            )}
+                                            <PencilEdit02Icon />
+                                            <Delete02Icon />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </div>

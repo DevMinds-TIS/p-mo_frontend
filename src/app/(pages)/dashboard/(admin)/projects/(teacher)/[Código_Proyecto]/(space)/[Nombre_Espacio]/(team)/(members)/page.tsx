@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Chip, Skeleton, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, User } from "@nextui-org/react";
-import { Delete02Icon, HierarchyIcon, PencilEdit02Icon, StudentIcon } from "hugeicons-react";
+import { Delete02Icon, HierarchyIcon, PencilEdit02Icon, StudentIcon, UserGroupIcon } from "hugeicons-react";
 import NewMember from "./NewMember";
 
 type Role = {
@@ -34,6 +34,7 @@ type TeamMember = {
 const iconMapping: { [key: string]: React.ElementType } = {
     StudentIcon,
     HierarchyIcon,
+    UserGroupIcon,
 };
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
