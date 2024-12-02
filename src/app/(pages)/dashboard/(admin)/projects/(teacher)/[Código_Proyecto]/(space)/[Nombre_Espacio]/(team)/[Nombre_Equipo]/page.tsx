@@ -93,9 +93,9 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                 setIsLoading(false);
             }
         };
-    
+
         fetchData();
-    
+
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -118,9 +118,9 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                 console.error('Error al obtener los datos del usuario:', error);
             }
         };
-    
+
         fetchUserData();
-    }, [params.Nombre_Equipo]);        
+    }, [params.Nombre_Equipo]);
 
     const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
 
@@ -149,12 +149,12 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
                                             <Skeleton className="w-12 h-12 rounded-full" />
                                             <div className="flex flex-col gap-1 items-center">
                                                 {[...Array(2)].map((_, idx) => (
-                                                    <Skeleton key={idx} className="w-36 h-4 rounded-lg" />
+                                                    <Skeleton key={`inner-${index}-${idx}`} className="w-36 h-4 rounded-lg" />
                                                 ))}
                                             </div>
                                             {[...Array(index === 1 ? 2 : 1)].map((_, idx) => (
-                                                <div className="flex flex-col gap-1">
-                                                    <Skeleton key={idx} className="w-24 h-8 rounded-full" />
+                                                <div key={`outer-${index}-${idx}`} className="flex flex-col gap-1">
+                                                    <Skeleton className="w-24 h-8 rounded-full" />
                                                 </div>
                                             ))}
                                         </div>
