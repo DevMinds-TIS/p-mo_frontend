@@ -330,7 +330,7 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     ))
                 )}
             </section>
-            <Avisos isAdmin={isAdmin} />
+            <Avisos isAdmin={true} userType="admin" />
         </section>
     );
 }
