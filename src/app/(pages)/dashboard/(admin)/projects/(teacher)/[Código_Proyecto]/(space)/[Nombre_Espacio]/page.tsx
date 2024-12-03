@@ -4,6 +4,7 @@ import Link from "next/link";
 import NewTeam from "./NewTeam";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
+import Avisos from "../../Avisos";
 
 type Space = {
     ID_Espacio: number;
@@ -176,6 +177,7 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
     }
 
     const isStudent = user?.Roles?.some(role => role.ID_Rol === 3) ?? false;
+    const isTeacher = user?.Roles?.some(role => role.ID_Rol === 2) ?? false;
 
     const handleNewTeam = (newTeam: Team) => {
         setTeams(prevTeams => [...prevTeams, newTeam]);
@@ -243,6 +245,7 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
                     Criterios de Evaluaciones cruzadas
                 </h1>
             </div>
+            <Avisos isAdmin={isTeacher} userType="teacher" />
         </section>
     );
 }
