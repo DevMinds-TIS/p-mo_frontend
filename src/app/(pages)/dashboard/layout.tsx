@@ -107,8 +107,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         const data: User = await response.json();
         setUser(data.data);
-        console.log(user);
-        console.log(data);
       } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
       }

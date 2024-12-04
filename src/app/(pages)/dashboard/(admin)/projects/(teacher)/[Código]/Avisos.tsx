@@ -11,55 +11,114 @@ import {
 import { AddSquareIcon, Delete01Icon } from "hugeicons-react";
 import { Chip } from "@nextui-org/chip";
 
-type ImportanceLevel = "low" | "medium" | "high"; // Importancia: Verde, Amarillo, Rojo
+type ImportanceLevel = "low" | "medium" | "high";
 
 type Aviso = {
     id: number;
     text: string;
-    importance: ImportanceLevel; // Nivel de importancia
+    importance: ImportanceLevel;
 };
 
-type AvisosProps = {
-    isAdmin: boolean; // Prop para determinar si el usuario es admin
+type Space = {
+    ID_Espacio: number;
+    ID_Proyecto: number;
+    ID_Usuario: number;
+    Nombre: string;
 };
 
-export default function Avisos({ isAdmin }: AvisosProps) {
-    const [avisos, setAvisos] = useState<Aviso[]>([]);
+type Project = {
+    ID_Proyecto: number;
+    Código: string;
+    Fecha_Inicio: string;
+    Fecha_Fin: string;
+};
+
+interface AvisosProps {
+    isAdmin?: boolean;
+    userType?: "admin" | "teacher";
+    space?: Space["ID_Espacio"];
+    project?: Project["ID_Proyecto"];
+}
+
+export default function Avisos({ isAdmin, userType, space, project }: AvisosProps) {
+    const [avisos, setAvisos] = useState<{ [key in "admin" | "teacher"]: Aviso[] }>({
+        admin: [],
+        teacher: [],
+    });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newAvisoText, setNewAvisoText] = useState("");
     const [importance, setImportance] = useState<ImportanceLevel>("low");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => {
         setNewAvisoText("");
         setImportance("low");
+        setErrorMessage("");
         setIsModalOpen(false);
     };
 
     const handleCreateAviso = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newAvisoText.trim() !== "") {
-            setAvisos((prevAvisos) => [
-                ...prevAvisos,
-                { id: Date.now(), text: newAvisoText.trim(), importance },
-            ]);
-            handleCloseModal();
+        if (!userType) {
+            setErrorMessage("Tipo de usuario no definido.");
+            return;
         }
+        if (newAvisoText.trim() === "") {
+            setErrorMessage("El campo no puede estar vacío.");
+            return;
+        }
+        setAvisos((prevAvisos) => ({
+            ...prevAvisos,
+            [userType]: [
+                ...prevAvisos[userType],
+                { id: Date.now(), text: newAvisoText.trim(), importance },
+            ],
+        }));
+        handleCloseModal();
     };
 
     const handleDeleteAviso = (id: number) => {
-        setAvisos((prevAvisos) => prevAvisos.filter((aviso) => aviso.id !== id));
+        if (!userType) return;
+        setAvisos((prevAvisos) => ({
+            ...prevAvisos,
+            [userType]: prevAvisos[userType].filter((aviso) => aviso.id !== id),
+        }));
     };
 
-    // Función para obtener el color del Chip basado en la importancia
     const getChipColor = (level: ImportanceLevel) => {
         switch (level) {
             case "low":
-                return "success"; // Verde
+                return "success";
             case "medium":
-                return "warning"; // Amarillo
+                return "warning";
             case "high":
-                return "danger"; // Rojo
+                return "danger";
+        }
+    };
+
+    const handleRequestCode = async () => {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+        try {
+            if (space) {
+                const response = await fetch(`${backendUrl}/sendAvisos`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ID_Espacio: space }),
+                });
+                if (!response.ok) throw new Error("Error al enviar el aviso");
+                return "Correo enviado a espacios.";
+            } else if (project) {
+                const response = await fetch(`${backendUrl}/sendAvisos`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ID_Proyecto: project }),
+                });
+                if (!response.ok) throw new Error("Error al enviar el aviso");
+                return "Correo enviado a proyectos.";
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
     };
 
@@ -67,7 +126,9 @@ export default function Avisos({ isAdmin }: AvisosProps) {
         <section className="flex flex-col gap-y-4 p-4">
             {/* Header */}
             <section className="flex w-full justify-between items-center">
-                <h1 className="text-3xl font-bold">Avisos</h1>
+                <h1 className="text-3xl font-bold">
+                    Avisos ({userType === "admin" ? "Administradores" : "Docentes"})
+                </h1>
                 {isAdmin && (
                     <Button
                         onPress={handleOpenModal}
@@ -77,13 +138,13 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                     </Button>
                 )}
             </section>
-
             {/* Lista de avisos */}
             <section className="flex flex-col gap-y-4">
-                {avisos.length === 0 ? (
+                {userType && avisos[userType].length === 0 ? (
                     <p className="text-gray-500">No hay avisos disponibles.</p>
                 ) : (
-                    avisos.map((aviso) => (
+                    userType &&
+                    avisos[userType].map((aviso) => (
                         <div
                             key={aviso.id}
                             className="p-4 bg-[#191919] rounded-lg shadow flex justify-between items-center"
@@ -110,7 +171,6 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                     ))
                 )}
             </section>
-
             {/* Modal para crear aviso */}
             {isAdmin && (
                 <Modal
@@ -131,9 +191,18 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                                         label="Nuevo aviso"
                                         placeholder="Escribe el texto del aviso"
                                         value={newAvisoText}
-                                        onChange={(e) => setNewAvisoText(e.target.value)}
+                                        onChange={(e) => {
+                                            setNewAvisoText(e.target.value);
+                                            setErrorMessage("");
+                                        }}
                                         className="w-full"
+                                        color={errorMessage ? "danger" : "default"}
                                     />
+                                    {errorMessage && (
+                                        <p className="text-danger text-sm mt-2">
+                                            {errorMessage}
+                                        </p>
+                                    )}
                                     <div className="flex flex-col mt-4 gap-2">
                                         <label className="font-medium">Importancia</label>
                                         <div className="flex gap-2">
@@ -143,10 +212,16 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                                                     onPress={() => setImportance(level)}
                                                     className={`${
                                                         importance === level
-                                                            ? "border-2 border-current bg-opacity-20"
-                                                            : "bg-transparent"
+                                                            ? "border-2 border-current"
+                                                            : ""
                                                     }`}
-                                                    color={getChipColor(level)}
+                                                    style={{
+                                                        backgroundColor:
+                                                            importance === level
+                                                                ? `var(--${getChipColor(level)}-500)`
+                                                                : `var(--${getChipColor(level)}-200)`,
+                                                        color: "white",
+                                                    }}
                                                 >
                                                     {level === "low"
                                                         ? "Baja"
@@ -167,7 +242,7 @@ export default function Avisos({ isAdmin }: AvisosProps) {
                                     >
                                         Cancelar
                                     </Button>
-                                    <Button type="submit" color="success">
+                                    <Button type="submit" color="success" onClick={handleRequestCode}>
                                         Publicar
                                     </Button>
                                 </ModalFooter>

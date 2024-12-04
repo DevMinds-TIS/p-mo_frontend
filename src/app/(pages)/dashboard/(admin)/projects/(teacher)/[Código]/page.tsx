@@ -200,6 +200,10 @@ export default function ProjectPage({ params }: { params: { Código: string } })
         );
     }
 
+    if (!project) {
+        return"";
+    }
+
     const isTeacher = user?.Roles?.some(role => role.ID_Rol === 2) ?? false;
     const isAdmin = user?.Roles?.some(role => role.ID_Rol === 1) ?? false;
 
@@ -330,7 +334,11 @@ export default function ProjectPage({ params }: { params: { Código: string } })
                     ))
                 )}
             </section>
-            <Avisos isAdmin={isAdmin} />
+            <Avisos isAdmin={isAdmin} userType="admin" project={project.ID_Proyecto} />
+            
+            {/*<Avisos isAdmin={isAdmin} />
+            <Avisos isAdmin={isTeacher} userType="teacher" />*/}
+
         </section>
     );
 }
