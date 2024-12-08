@@ -61,7 +61,7 @@ const fetchTeamAndUserById = async (teamName: string): Promise<{ team: Team | nu
     if (!teamResponse.ok) throw new Error('Error al obtener los equipos');
     const teamData = await teamResponse.json();
     const teams: Team[] = teamData.data;
-    const team = teams.find((team) => team.Nombre_Equipo === teamName) || null; // Asegura que `team` sea `null` si no se encuentra ningún equipo
+    const team = teams.find((team) => team.Nombre_Equipo === teamName) || null;
 
     let user = null;
     if (team) {
