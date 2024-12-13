@@ -7,7 +7,8 @@ export default function Landing(){
             <div className="flex justify-center p-2">
                 <ThemeSwitcher/>
             </div>
-            <LogIn/>  
+           
+            <LogIn/> 
         </section>    
     );
 }
