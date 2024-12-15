@@ -1,8 +1,17 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
+import ErrorModal from "@/app/mensajes"; // Import the ErrorModal
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Button,
+    useDisclosure,
+    Input,
+} from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
-import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
@@ -34,9 +43,10 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
     const [projectName, setProjectName] = useState("");
     const [projectCode, setProjectCode] = useState("");
-    const [dateRange, setDateRange] = useState<{ start: string | null, end: string | null }>({ start: null, end: null });
+    const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
+    const [message, setMessage] = useState<string | null>(null); // State for success or error messages
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -79,7 +89,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         event.preventDefault();
         const token = localStorage.getItem("token");
         if (!token) {
-            console.error("No token found");
+            setMessage("Error: No se encontró el token de autenticación.");
             return;
         }
         const formData = new FormData();
@@ -92,15 +102,15 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
         const termProject = calculateTermProject(startProjectDate, endProjectDate);
 
-        formData.append("startproject", startProjectDate ? startProjectDate.toISOString().split('T')[0] : "");
-        formData.append("endproject", endProjectDate ? endProjectDate.toISOString().split('T')[0] : "");
+        formData.append("startproject", startProjectDate ? startProjectDate.toISOString().split("T")[0] : "");
+        formData.append("endproject", endProjectDate ? endProjectDate.toISOString().split("T")[0] : "");
         formData.append("termproject", termProject);
 
         const documents = [
             { file: invitationFile, field: "invitation" },
-            { file: specificationFile, field: "specification" }
+            { file: specificationFile, field: "specification" },
         ];
-        documents.forEach(document => {
+        documents.forEach((document) => {
             if (document.file) {
                 formData.append(document.field, document.file);
             }
@@ -120,9 +130,11 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
             const result = await response.json();
             console.log("Proyecto creado exitosamente:", result);
             onNewProject(result.data);
-            onOpenChange();
+            setMessage("Se creó el proyecto de forma exitosa."); // Show success message
+            onOpenChange(); // Close modal
         } catch (error) {
             console.error("Error al crear el proyecto:", error);
+            setMessage("Error al crear el proyecto."); // Show error message
         }
     };
 
@@ -174,7 +186,9 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                             maxValue={maxDate}
                                             visibleMonths={3}
                                             pageBehavior="single"
-                                            onChange={(range) => setDateRange({ start: range.start.toString(), end: range.end.toString() })}
+                                            onChange={(range) =>
+                                                setDateRange({ start: range.start.toString(), end: range.end.toString() })
+                                            }
                                         />
                                     </I18nProvider>
                                     <div className="space-y-2">
@@ -196,6 +210,13 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                     )}
                 </ModalContent>
             </Modal>
+            {message && (
+                <ErrorModal
+                    message={message}
+                    onClose={() => setMessage(null)} // Clear the message on close
+                    className="z-100"
+                />
+            )}
         </section>
     );
 }
