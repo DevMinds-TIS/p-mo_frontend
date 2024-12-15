@@ -324,7 +324,7 @@ export default function UpdateProfile() {
                                             )}
                                         </div>
                                     </div>
-                                    <Button className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold" type="submit">
+                                    <Button className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold" type="submit">
                                         Actualizar
                                     </Button>
                                 </form>

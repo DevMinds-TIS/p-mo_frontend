@@ -157,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
 
-  const userRoleId = user?.Roles?.[0]?.ID_Rol ?? 0;
+const userRoleId = user?.Roles?.[0]?.ID_Rol ?? 0;
 const filteredNavItems = getNavItems(userRoleId);
 const notificationItem = filteredNavItems.find(item => item.label === "Notificaciones");
 const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaciones");
@@ -192,8 +192,8 @@ const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaci
               <Popover placement="right-end" className="gap-x-4" onOpenChange={(open) => setIsPopoverOpen(open)}>
   <PopoverTrigger>
   <NavbarItem
-  className={`flex items-center gap-x-2 p-2 hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer 
-  ${isHovered || isPopoverOpen ? "bg-[#FE7F2D] text-white" : ""} rounded-lg`}  // Asegúrate de que rounded-lg esté aquí
+  className={`flex items-center gap-x-2 p-2 hover:scale-105 hover:bg-[#2e6cb5] hover:rounded-lg hover:text-white hover:cursor-pointer 
+  ${isHovered || isPopoverOpen ? "bg-[#2e6cb5] text-white" : ""} rounded-lg`}  // Asegúrate de que rounded-lg esté aquí
   onMouseEnter={() => setIsHovered(true)} 
   onMouseLeave={() => setIsHovered(false)}
 >
@@ -237,7 +237,7 @@ const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaci
             <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
   {/* Renderiza otros ítems de navegación */}
   {otherNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
-    <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
+    <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#2e6cb5] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
       <Link href={item.href} className="flex items-center w-full gap-x-2" color="foreground">
         {renderIcon(item.icon)}
         <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>
@@ -247,7 +247,7 @@ const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaci
   {/* Renderiza el ítem de notificaciones en el centro */}
   <div className="flex-grow flex flex-col justify-center" style={{ paddingBottom: '120px'}}>
     {notificationItem && (
-      <NavbarItem className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(notificationItem.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
+      <NavbarItem className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#2e6cb5] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(notificationItem.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
         <Link href={notificationItem.href} className="flex items-center w-full gap-x-2" color="foreground">
           {renderIcon(notificationItem.icon)}
               <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{notificationItem.label}</p>

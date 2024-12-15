@@ -249,7 +249,7 @@ export default function StudentSignIn() {
                     </SelectItem>
                 ))}
             </Select>
-            <Button type="submit" isDisabled={!isSingupValid || !docenteId || isInvalidUMSSEmail} className="w-full h-14 bg-[#FF9B5A] text-white">
+            <Button type="submit" isDisabled={!isSingupValid || !docenteId || isInvalidUMSSEmail} className="w-full h-14 bg-[#2E6CB5] text-white">
                 Unirse
             </Button>
         </form>
