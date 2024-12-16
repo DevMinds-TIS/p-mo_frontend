@@ -1,10 +1,10 @@
-"use client";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, DateRangePicker } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { parseDate, isWeekend, DateValue } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
+import ErrorModal from "@/app/mensajes"; // Import the ErrorModal
 
 type Project = {
     ID_Proyecto: number;
@@ -20,7 +20,7 @@ type Space = {
     Nombre_Espacio: string;
     Usuario: User;
     Inscritos: number;
-}
+};
 
 type Role = {
     ID_Rol: number;
@@ -95,6 +95,8 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const [limitMessage, setLimitMessage] = useState<string>("");
     const [registered, setRegistered] = useState<File | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string>(""); // State for success message
+    const [errorMessage, setErrorMessage] = useState<string>(""); // State for error message
 
     const handleFileChange = (newFile: File | null) => {
         setRegistered(newFile);
@@ -151,16 +153,18 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
             const result = await response.json();
             console.log("Espacio creado exitosamente:", result.data);
             onNewSpace(result.data);
+            setSuccessMessage("Espacio creado exitosamente."); // Set success message
             onOpenChange();
         } catch (error) {
             console.error("Error al crear el espacio:", error);
+            setErrorMessage("Error al crear el espacio."); // Set error message
         }
     };
 
     const handleLimitspaceChange = (value: string) => {
         const numValue = Number(value);
-        if (numValue < 0) {
-            setLimitMessage("Solo se aceptan números positivos");
+        if (numValue < 2) {
+            setLimitMessage("El límite de integrantes debe ser al menos 2");
         } else {
             setLimitMessage("");
             setLimitspace(numValue);
@@ -227,16 +231,55 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                 />
                                 <div>
                                     <p>Lista de alumnos</p>
-                                    <FileUpload onChange={handleFileChange} />
+                                    <FileUpload
+                                        onChange={(newFile: File | null) => {
+                                            if (newFile && newFile.type !== "application/pdf") {
+                                                setLimitMessage("Solo se aceptan archivos PDF");
+                                                setRegistered(null);
+                                            } else {
+                                                setLimitMessage("");
+                                                setRegistered(newFile);
+                                            }
+                                        }}
+                                    />
+                                    {limitMessage && <p className="text-red-500 text-sm mt-1">{limitMessage}</p>}
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">Crear</Button>
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold"
+                                    isDisabled={
+                                        !namespace || // Nombre del espacio vacío
+                                        !registered || // Archivo no cargado
+                                        registered?.type !== "application/pdf" || // Archivo no es PDF
+                                        limitspace === null || // Límite no definido
+                                        limitspace < 2 // Límite menor que 2
+                                    }
+                                >
+                                    Crear
+                                </Button>
                             </ModalFooter>
                         </form>
                     )}
                 </ModalContent>
             </Modal>
+            
+            {/* Display success or error messages */}
+            {successMessage && (
+                <ErrorModal
+                    message={successMessage}
+                    onClose={() => setSuccessMessage('')} // Clear success message on close
+                    className="z-100"
+                />
+            )}
+            {errorMessage && (
+                <ErrorModal
+                    message={errorMessage}
+                    onClose={() => setErrorMessage('')} // Clear error message on close
+                    className="z-100"
+                />
+            )}
         </section>
     );
 }

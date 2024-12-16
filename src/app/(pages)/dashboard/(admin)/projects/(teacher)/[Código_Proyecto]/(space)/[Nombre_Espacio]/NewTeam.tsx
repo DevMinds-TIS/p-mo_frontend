@@ -131,12 +131,34 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
     const [user, setUser] = useState<User | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
     const [selectedKey, setSelectedKey] = useState<string>("");
+    const [fileError, setFileError] = useState<string | null>(null);
+    const [emailError, setEmailError] = useState<string | null>(null);
+
     const selectedDescription = selectedKey === "" ? "" : companyteam.find(item => item.key === selectedKey)?.description;
+
     const handleSpecificationFileChange = (newFile: File | null) => {
-        setSpecificationFile(newFile);
+        if (newFile) {
+            const validFormats = ["image/jpeg", "image/png", "image/jpg"];
+            if (!validFormats.includes(newFile.type)) {
+                setFileError("Solo se permiten imágenes en formato JPG, PNG o JPEG.");
+                setSpecificationFile(null);
+            } else {
+                setFileError(null);
+                setSpecificationFile(newFile);
+            }
+        } else {
+            setSpecificationFile(null);
+            setFileError(null);
+        }
     };
-    const handleSelectionChange = (keys: React.Key) => {
-        setSelectedKey(keys.toString());
+
+    const handleEmailChange = (value: string) => {
+        setEmailTeam(value);
+        if (!value.includes("@")) {
+            setEmailError("Correo electrónico no es válido");
+        } else {
+            setEmailError(null);
+        }
     };
 
     useEffect(() => {
@@ -153,7 +175,7 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
             }
         };
         fetchData();
-    
+
         const fetchUserData = async () => {
             try {
                 const userData = await fetchUser();
@@ -188,6 +210,8 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
         }
     };
 
+    const isSubmitDisabled = !emailTeam.includes("@") || !!emailError || !!fileError || !specificationFile;
+
     return (
         <section>
             <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
@@ -213,7 +237,7 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
                                         placeholder="Selecciona alguna opción"
                                         description={selectedDescription}
                                         selectedKeys={new Set([selectedKey])}
-                                        onSelectionChange={(keys) => handleSelectionChange([...keys][0])}
+                                        onSelectionChange={(keys) => setSelectedKey([...keys][0].toString())}
                                         className="max-w-xs"
                                     >
                                         {companyteam.map((company) => (
@@ -223,22 +247,29 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
                                         ))}
                                     </Select>
                                 </div>
-                                <Input
-                                    value={emailTeam}
-                                    onValueChange={setEmailTeam}
-                                    type="email"
-                                    label="Correo electrónico de la grupo-empresa"
-                                    placeholder="Escribe el correo de la grupo-empresa"
-                                    errorMessage="Este correo ya está registrado"
-                                    maxLength={80}
-                                />
-                                <div>
+                                <div className="flex flex-col">
+                                    <Input
+                                        value={emailTeam}
+                                        onValueChange={handleEmailChange}
+                                        type="email"
+                                        label="Correo electrónico de la grupo-empresa"
+                                        placeholder="Escribe el correo de la grupo-empresa"
+                                        maxLength={80}
+                                    />
+                                    {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
+                                </div>
+                                <div className="flex flex-col">
                                     <p>Logo de la empresa</p>
                                     <FileUpload onChange={handleSpecificationFileChange} />
+                                    {fileError && <p className="text-red-500 text-sm mt-2">{fileError}</p>}
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button onPress={handleSubmit} className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
+                                <Button
+                                    onPress={handleSubmit}
+                                    className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold"
+                                    isDisabled={isSubmitDisabled}
+                                >
                                     Registrar grupo-empresa
                                 </Button>
                             </ModalFooter>
