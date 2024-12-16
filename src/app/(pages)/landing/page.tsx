@@ -20,9 +20,6 @@ export default function Landing() {
                     <Image src="/umss-logo.png" alt="Logo de la universidad" width={165} height={60} className="bg-white p-1 rounded-lg sm:w-[165px] w-[100px]"/>
                 </div>
 
-                {/* <div className="flex flex-1 justify-center">
-                </div> */}
-
                 <div className="flex items-center gap-4 justify-self-end">
                     <Popover placement="left" className="gap-x-4" onOpenChange={(open) => setIsLoginPopoverOpen(open)}>
                         <PopoverTrigger>
@@ -48,9 +45,10 @@ export default function Landing() {
                             <SingUp />
                         </PopoverContent>
                     </Popover>
-                    <ThemeSwitcher />
+                    {/* <ThemeSwitcher /> */}
                 </div>
             </header>
+
             <h1 className="lg:text-[100px] sm:text-[60px] text-[45px] text-center font-light lg:p-12 p-3">Bienvenido al evaluador basado en proyectos <br/> <i>P-MO</i></h1>
             <Divider className="border-solid"/>
             <div className="px-4 flex flex-col gap-y-2">
