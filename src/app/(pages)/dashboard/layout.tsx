@@ -1,4 +1,6 @@
 'use client';
+
+
 import Image from "next/image";
 import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Link from 'next/link';
@@ -15,10 +17,12 @@ type Role = {
   Nombre_Rol: string;
 };
 
+
 type Docente = {
   Nombre: string;
   Apellido: string;
 };
+
 
 type User = {
   data: User;
@@ -29,6 +33,7 @@ type User = {
   Roles: Role[];
   user?: Docente;
 };
+
 
 const getNavItems = (roleId: number): { href: string, icon: any, label: string }[] => {
   const navItems: { [key: number]: { href: string, icon: any, label: string }[] } = {
@@ -47,6 +52,7 @@ const getNavItems = (roleId: number): { href: string, icon: any, label: string }
       { href: "/dashboard/notification", icon: Notification03Icon, label: "Notificaciones" },
     ],
   };
+
 
   return navItems[roleId] || [];
 };
@@ -78,11 +84,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);  // Para saber cuando el ratón está encima
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);  // Para saber si el Popover está abierto
   const toggleNavbar = () => {
     setIsExpanded(!isExpanded);
   };
+
+
   const pathName = usePathname();
   const pathArray = pathName ? pathName.split('/').filter(x => x) : [];
   const dashboardIndex = pathArray.indexOf('dashboard');
@@ -90,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
   const [user, setUser] = useState<User | null>(null);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -158,9 +165,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
   const userRoleId = user?.Roles?.[0]?.ID_Rol ?? 0;
-const filteredNavItems = getNavItems(userRoleId);
-const notificationItem = filteredNavItems.find(item => item.label === "Notificaciones");
-const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaciones");
+  const filteredNavItems = getNavItems(userRoleId);
 
 
   return (
@@ -187,76 +192,66 @@ const otherNavItems = filteredNavItems.filter(item => item.label !== "Notificaci
               )}
             </div>
 
+
             <div className="flex items-center gap-4">
               {/* Popover con Perfil y Cerrar Sesión */}
-              <Popover placement="right-end" className="gap-x-4" onOpenChange={(open) => setIsPopoverOpen(open)}>
-  <PopoverTrigger>
-  <NavbarItem
-  className={`flex items-center gap-x-2 p-2 hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer 
-  ${isHovered || isPopoverOpen ? "bg-[#FE7F2D] text-white" : ""} rounded-lg`}  // Asegúrate de que rounded-lg esté aquí
-  onMouseEnter={() => setIsHovered(true)} 
-  onMouseLeave={() => setIsHovered(false)}
->
-  <Avatar
-    name={!user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
-    src={user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined}
-    size="md"
-  />
-</NavbarItem>
-  </PopoverTrigger>
-  <PopoverContent>
-    <div className="flex flex-col px-1 py-2 gap-y-2">
-      <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
-        <Tooltip content="Editar perfil" placement="left">
-          <User
-            name={`${user?.Nombre} ${user?.Apellido}`}
-            description={user?.Correo}
-            avatarProps={{
-              name: !user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
-              src: user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined,
-            }}
-          />
-        </Tooltip>
-      </Link>
-      <Button
-        className="bg-[#FF0000] min-w-1 text-white"
-        onClick={handleLogout}
-      >
-        <Logout03Icon />
-        <p>Cerrar sesión</p>
-      </Button>
-    </div>
-  </PopoverContent>
-</Popover>
+              <Popover placement="right-end" className="gap-x-4">
+                <PopoverTrigger>
+                  <NavbarItem className="flex items-center gap-x-2 hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2">
+                    <Avatar
+                      name={!user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
+                      src={user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined}
+                      size="md"
+                    />
+                  </NavbarItem>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div className="flex flex-col px-1 py-2 gap-y-2">
+                    <Link href={"/dashboard/profile"} className="hover:border-1 hover:rounded-lg p-1 flex items-center w-full" color="foreground">
+                      <Tooltip content="Editar perfil" placement="left">
+                        <User
+                          name={`${user?.Nombre} ${user?.Apellido}`}
+                          description={user?.Correo}
+                          avatarProps={{
+                            name: !user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined,
+                            src: user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined,
+                          }}
+                        />
+                      </Tooltip>
+                    </Link>
+                    <Button
+                      className="bg-[#FF0000] min-w-1 text-white"
+                      onClick={handleLogout}
+                    >
+                      <Logout03Icon />
+                      <p>Cerrar sesión</p>
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+
               {/* Botón de Modo Noche sin texto */}
               <ThemeSwitcher />
             </div>
           </Navbar>
+
+
           <section className="flex h-full overflow-hidden">
             <Navbar className={`flex flex-col ${isExpanded ? 'w-56 rounded-r-xl' : 'w-16'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
-            <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
-  {/* Renderiza otros ítems de navegación */}
-  {otherNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
-    <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
-      <Link href={item.href} className="flex items-center w-full gap-x-2" color="foreground">
-        {renderIcon(item.icon)}
-        <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>
-      </Link>
-    </NavbarItem>
-  ))}
-  {/* Renderiza el ítem de notificaciones en el centro */}
-  <div className="flex-grow flex flex-col justify-center" style={{ paddingBottom: '120px'}}>
-    {notificationItem && (
-      <NavbarItem className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(notificationItem.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
-        <Link href={notificationItem.href} className="flex items-center w-full gap-x-2" color="foreground">
-          {renderIcon(notificationItem.icon)}
-              <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{notificationItem.label}</p>
-             </Link>
-            </NavbarItem>
-           )}
-          </div>
-        </NavbarContent>
+              <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
+                {filteredNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
+                  <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
+                    <Link href={item.href} className="flex items-center w-full gap-x-2" color="foreground">
+                      {renderIcon(item.icon)}
+                      <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>
+                    </Link>
+                  </NavbarItem>
+                ))}
+              </NavbarContent>
             </Navbar>
+
+
             <section className="w-full h-full overflow-auto p-2">
               {children}
             </section>
