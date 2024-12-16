@@ -210,7 +210,20 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
         }
     };
 
-    const isSubmitDisabled = !emailTeam.includes("@") || !!emailError || !!fileError || !specificationFile;
+    const [shortNameError, setShortNameError] = useState<string | null>(null);
+    const isSubmitDisabled =
+    !shortName || !!shortNameError || // Validar nombre
+    !emailTeam.includes("@") || !!emailError || // Validar correo
+    !!fileError || !specificationFile; // Validar archivo
+
+    const handleShortNameChange = (value: string) => {
+        if (/\s/.test(value)) {
+            setShortNameError("El nombre no puede contener espacios.");
+        } else {
+            setShortNameError(null);
+        }
+        setShortName(value);
+    };
 
     return (
         <section>
@@ -226,10 +239,10 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
                                 <div className="flex justify-between gap-x-4">
                                     <Input
                                         value={shortName}
-                                        onValueChange={setShortName}
+                                        onValueChange={handleShortNameChange}
                                         label="Nombre Equipo/Empresa"
                                         placeholder="Escribe el nombre de tu empresa"
-                                        errorMessage="Este nombre ya está registrado"
+                                        errorMessage={shortNameError || undefined}
                                         minLength={2}
                                     />
                                     <Select
@@ -247,6 +260,7 @@ export default function NewTeam({ params, onNewTeam }: NewTeamProps) {
                                         ))}
                                     </Select>
                                 </div>
+                                {shortNameError && <p className="text-red-500 text-sm mt-2">{shortNameError}</p>}
                                 <div className="flex flex-col">
                                     <Input
                                         value={emailTeam}

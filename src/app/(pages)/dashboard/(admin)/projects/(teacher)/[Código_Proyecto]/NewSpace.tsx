@@ -97,6 +97,16 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const [user, setUser] = useState<User | null>(null);
     const [successMessage, setSuccessMessage] = useState<string>(""); // State for success message
     const [errorMessage, setErrorMessage] = useState<string>(""); // State for error message
+    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
+
+    const handleNamespaceChange = (value: string) => {
+        if (/\s/.test(value)) {
+            setNamespaceError("El nombre no puede contener espacios.");
+        } else {
+            setNamespaceError("");
+        }
+        setNamespace(value);
+    };
 
     const handleFileChange = (newFile: File | null) => {
         setRegistered(newFile);
@@ -192,8 +202,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                     label="Nombre del espacio"
                                     placeholder="Digite el nombre del espacio"
                                     value={namespace}
-                                    onChange={(e) => setNamespace(e.target.value)}
+                                    onChange={(e) => handleNamespaceChange(e.target.value)}
+                                    className="mb-2"
                                 />
+                                {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
+
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -251,6 +264,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                     className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold"
                                     isDisabled={
                                         !namespace || // Nombre del espacio vacío
+                                        namespaceError !== "" || // Error en el nombre (espacios u otros)
                                         !registered || // Archivo no cargado
                                         registered?.type !== "application/pdf" || // Archivo no es PDF
                                         limitspace === null || // Límite no definido
