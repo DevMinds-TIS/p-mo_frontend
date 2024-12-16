@@ -1,53 +1,14 @@
 'use client';
-import { ThemeSwitcher } from "@/app/ThemeSwitcher";
-import LogIn from "./LogIn";
-import { Divider, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 import Image from "next/image";
-import SingUp from "./SingUp";
 import { UniversityIcon, Facebook02Icon, GithubIcon, HeartCheckIcon, CopyrightIcon } from "hugeicons-react"
-import { useState } from "react";
+import Header from "./Header";
 
 export default function Landing() {
-    const [isLoginPopoverOpen, setIsLoginPopoverOpen] = useState(false);
-    const [isRegisterPopoverOpen, setIsRegisterPopoverOpen] = useState(false);
 
     return (
         <section className="flex flex-col items-stretch gap-y-8 bg-[#212121] text-white">
-            <header className="py-2 gap-4 flex flex-wrap px-2 lg:justify-between justify-center bg-black">
-                <div className="sm:ml-4 ml-1 flex sm:gap-4 gap-2 justify-center items-center lg:w-auto w-full">
-                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={50} height={65} className="md:h-10 md:w-auto" />
-                    <p className="text-inherit flex">Project Management Officer</p>
-                    <Image src="/umss-logo.png" alt="Logo de la universidad" width={165} height={60} className="bg-white p-1 rounded-lg sm:w-[165px] w-[100px]"/>
-                </div>
-
-                <div className="flex items-center gap-4 justify-self-end">
-                    <Popover placement="left" className="gap-x-4" onOpenChange={(open) => setIsLoginPopoverOpen(open)}>
-                        <PopoverTrigger>
-                            <span
-                                className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
-                            >
-                                Iniciar Sesión
-                            </span>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            <LogIn />
-                        </PopoverContent>
-                    </Popover>
-                    <Popover placement="left" className="gap-x-4" onOpenChange={(open) => setIsRegisterPopoverOpen(open)}>
-                        <PopoverTrigger>
-                            <span
-                                className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
-                            >
-                                Registrarme
-                            </span>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            <SingUp />
-                        </PopoverContent>
-                    </Popover>
-                    {/* <ThemeSwitcher /> */}
-                </div>
-            </header>
+            <Header />
 
             <h1 className="lg:text-[100px] sm:text-[60px] text-[45px] text-center font-light lg:p-12 p-3">Bienvenido al evaluador basado en proyectos <br/> <i>P-MO</i></h1>
             <Divider className="border-solid"/>
