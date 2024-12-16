@@ -31,12 +31,12 @@ export default function LogIn(){
 
     const handleLogin = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-    
+
         const loginData = {
             emailuser: email,
             passworduser: passwd,
         };
-    
+
         try {
             const response = await fetch(`${backendUrl}/login`, {
                 method: 'POST',
@@ -45,7 +45,7 @@ export default function LogIn(){
                 },
                 body: JSON.stringify(loginData),
             });
-    
+
             if (!response.ok) {
                 throw new Error('Error al iniciar sesión');
             }
@@ -59,30 +59,16 @@ export default function LogIn(){
             console.error('Error:', error);
         }
     };
-    
+
     return(
-        <section className="flex md:flex-row flex-col justify-center gap-10 h-screen">
-            <div className="flex md:flex-col justify-center gap-4">
-                <Image
-                    src="/p-mo.svg"
-                    alt="Logo de la aplicación"
-                    width={50}
-                    height={65}
-                    className="md:h-[60%] md:w-auto"
-                    priority
-                />
-                <div className="flex flex-col md:text-center">
-                    <h1 className="text-3xl md:text-5xl">P-MO</h1>
-                    <p className="text-[#777777]">PROJECT MANAGEMENT OFFICER</p>
-                </div>
-            </div>
-            <div className="flex flex-col md:justify-center items-center self-center gap-4 md:w-[30%] w-[90%]">
+        <section className="gap-10 p-2">
+            <div className="flex flex-col md:justify-center items-center self-center gap-4">
                 <h1 className="text-5xl">Inicia Sesión</h1>
                 <form onSubmit={handleLogin} className="w-full space-y-4">
                     <Input
                         value={email}
-                        isClearable 
-                        type="email" 
+                        isClearable
+                        type="email"
                         label="Correo Electrónico"
                         placeholder="Ingrese su correo electrónico"
                         isInvalid={isEmailTouched && isInvalidEmail}
@@ -115,13 +101,11 @@ export default function LogIn(){
                         type={isVisible ? "text" : "password"}
                         maxLength={20}
                     />
-                    <Button type="submit" isDisabled={!isLoginValid} className="w-full h-14 bg-[#FF9B5A] text-white">
+                    <Button type="submit" isDisabled={!isLoginValid} className="w-full h-14 bg-[#2E6CB5] text-white">
                         Iniciar Sesión
                     </Button>
                 </form>
                 <Link href="#" className="h-8 text-[#777777]">¿Olvidó su contraseña?</Link>
-                <Divider className="my-4"/>
-                <SingUp />
             </div>
         </section>
     );
