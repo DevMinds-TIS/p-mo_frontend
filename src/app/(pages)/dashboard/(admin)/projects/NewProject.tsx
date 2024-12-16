@@ -46,6 +46,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
     const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
+    const [invitationError, setInvitationError] = useState<string | null>(null); // Error for invitation file
+    const [specificationError, setSpecificationError] = useState<string | null>(null); // Error for specification file
     const [message, setMessage] = useState<string | null>(null); // State for success or error messages
 
     useEffect(() => {
@@ -77,12 +79,25 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         fetchUserData();
     }, [backendUrl]);
 
+    const handleFileValidation = (file: File | null, setError: React.Dispatch<React.SetStateAction<string | null>>): File | null => {
+        if (file) {
+            if (file.type !== "application/pdf") {
+                setError("Solo se permiten archivos en formato PDF.");
+                return null;
+            } else {
+                setError(null);
+                return file;
+            }
+        }
+        return null;
+    };
+
     const handleInvitationFileChange = (newFile: File | null) => {
-        setInvitationFile(newFile);
+        setInvitationFile(handleFileValidation(newFile, setInvitationError));
     };
 
     const handleSpecificationFileChange = (newFile: File | null) => {
-        setSpecificationFile(newFile);
+        setSpecificationFile(handleFileValidation(newFile, setSpecificationError));
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -106,15 +121,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         formData.append("endproject", endProjectDate ? endProjectDate.toISOString().split("T")[0] : "");
         formData.append("termproject", termProject);
 
-        const documents = [
-            { file: invitationFile, field: "invitation" },
-            { file: specificationFile, field: "specification" },
-        ];
-        documents.forEach((document) => {
-            if (document.file) {
-                formData.append(document.field, document.file);
-            }
-        });
+        if (invitationFile) formData.append("invitation", invitationFile);
+        if (specificationFile) formData.append("specification", specificationFile);
 
         try {
             const response = await fetch(`${backendUrl}/projects`, {
@@ -154,6 +162,17 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         }
     };
 
+    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
+    
+    const handleNamespaceChange = (value: string) => {
+        if (/\s/.test(value)) {
+            setNamespaceError("El código no puede contener espacios.");
+        } else {
+            setNamespaceError("");
+        }
+        setProjectCode(value);
+    };
+
     return (
         <section>
             <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
@@ -176,8 +195,9 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                         label="Código del proyecto"
                                         placeholder="Escribe el código del proyecto"
                                         value={projectCode}
-                                        onChange={(e) => setProjectCode(e.target.value)}
+                                        onChange={(e) => handleNamespaceChange(e.target.value)}
                                     />
+                                    {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
                                     <I18nProvider locale="es-BO">
                                         <DateRangePicker
                                             allowsNonContiguousRanges
@@ -194,14 +214,27 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                     <div className="space-y-2">
                                         <p>Invitación del proyecto</p>
                                         <FileUpload onChange={handleInvitationFileChange} />
+                                        {invitationError && <p className="text-red-500 text-sm mt-1">{invitationError}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <p>Pliego de especificaciones del proyecto</p>
                                         <FileUpload onChange={handleSpecificationFileChange} />
+                                        {specificationError && <p className="text-red-500 text-sm mt-1">{specificationError}</p>}
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
+                                    <Button
+                                        type="submit"
+                                        className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold"
+                                        isDisabled={
+                                            !projectCode || // Código del proyecto vacío
+                                            namespaceError !== "" || // Error en el código (espacios u otros)
+                                            invitationError !== null || // Error en archivo de invitación
+                                            specificationError !== null || // Error en archivo de especificaciones
+                                            invitationFile?.type !== "application/pdf" || // Archivo de invitación no es PDF
+                                            specificationFile?.type !== "application/pdf" // Archivo de especificaciones no es PDF
+                                        }
+                                    >
                                         Crear
                                     </Button>
                                 </ModalFooter>
