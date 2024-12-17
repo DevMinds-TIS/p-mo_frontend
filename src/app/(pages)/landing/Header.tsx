@@ -1,11 +1,12 @@
-import { Avatar, Button, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
 import Image from "next/image";
 import LogIn from "./LogIn";
 import SingUp from "./SingUp";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Logout03Icon } from "hugeicons-react";
+import { AddTeamIcon, FolderLibraryIcon, Layers02Icon, Login03Icon, Logout03Icon, Logout05Icon, StepIntoIcon, UserAccountIcon } from "hugeicons-react";
 import { useRouter } from "next/navigation";
+import { ThemeSwitcher } from "@/app/ThemeSwitcher";
 
 type Role = {
     ID_Rol: number;
@@ -81,68 +82,107 @@ export default function Header() {
         fetchUserData();
     }, []);
 
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('No token found');
+                return;
+            }
 
 
-      const response = await fetch(`${backendUrl}/logout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      });
+            const response = await fetch(`${backendUrl}/logout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
 
 
-      if (!response.ok) {
-        throw new Error('Error al cerrar sesión');
-      }
+            if (!response.ok) {
+                throw new Error('Error al cerrar sesión');
+            }
 
 
-      localStorage.removeItem('token');
-      router.push('/landing');
+            localStorage.removeItem('token');
+            router.push('/landing');
 
 
-      console.log('Cierre de sesión exitoso');
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+            console.log('Cierre de sesión exitoso');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     return (
-        <header className="py-2 gap-4 flex lg:flex-nowrap flex-wrap px-2 lg:justify-between justify-center bg-black">
+        <header className="py-2 gap-4 flex lg:flex-nowrap flex-wrap px-2 lg:justify-between justify-center bg-black sticky top-0 z-10">
             <div className="sm:ml-4 ml-1 flex sm:gap-4 gap-2 lg:justify-start justify-center items-center lg:w-1/3 w-full">
                 <Image
                     src="/p-mo.svg"
                     alt="Logo de la aplicación"
                     width={50}
                     height={65}
-                    className="md:h-10 md:w-auto"
+                    className="md:h-12 md:w-auto"
                 />
-                <p className="text-inherit flex">Project Management Officer</p>
+                <div className="text-inherit text-sm flex flex-col">
+                    <p>Project</p>
+                    <p>Management</p>
+                    <p>Officer</p>
+                </div>
                 <Image
                     src="/umss-logo.png"
                     alt="Logo de la universidad"
                     width={165}
                     height={60}
-                    className="bg-white p-1 rounded-lg sm:w-[165px] w-[100px]"
+                    className="bg-white p-1 rounded-lg sm:w-[165px] w-[60px]"
                 />
             </div>
-            {
-                user ?
-                    <div className="flex gap-4 items-center justify-center">
+            <div className="flex gap-4 items-center justify-center">
+                <Dropdown placement="bottom-end">
+                    <DropdownTrigger>
+                        <div className="flex items-center gap-2 cursor-pointer">
+                            <StepIntoIcon />
+                            <p>Tutoriales</p>
+                        </div>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Tutorials Actions" variant="flat">
+                        <DropdownItem key="projects" className="h-14">
+                            <div className="flex items-center gap-3">
+                                <FolderLibraryIcon />
+                                <p>Crear proyectos</p>
+                            </div>
+                        </DropdownItem>
+                        <DropdownItem key="spaces" className="h-14">
+                            <div className="flex items-center gap-3">
+                                <UserAccountIcon />
+                                <p>Crear espacios</p>
+                            </div>
+                        </DropdownItem>
+                        <DropdownItem key="teams" className="h-14">
+                            <div className="flex items-center gap-3">
+                                <Layers02Icon />
+                                <p>Crear equipos</p>
+                            </div>
+                        </DropdownItem>
+                        <DropdownItem key="teams" className="h-14">
+                            <div className="flex items-center gap-3">
+                                <AddTeamIcon />
+                                <p>Agregar miembros a un equipo</p>
+                            </div>
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+                {
+                    user ? <>
                         {navItems[user?.Roles?.[0]?.ID_Rol].map((item) => {
                             return <a key={item.href} href={item.href}>{item.label}</a>;
                         })}
-                    </div>
-                    :
-                    null
-            }
+                    </>
+                        :
+                        null
+                }
+            </div>
 
             <div className="flex items-center lg:justify-end justify-center gap-4 justify-self-end lg:w-1/3 w-full">
                 {user ? <>
@@ -189,11 +229,15 @@ export default function Header() {
                             onOpenChange={(open) => setIsLoginPopoverOpen(open)}
                         >
                             <PopoverTrigger>
-                                <button
+                                <Button color="primary" radius="full">
+                                    <Login03Icon />
+                                    <p>Iniciar Sesión</p>
+                                </Button>
+                                {/* <button
                                     className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
                                 >
                                     Iniciar Sesión
-                                </button>
+                                </button> */}
                             </PopoverTrigger>
                             <PopoverContent>
                                 <LogIn />
@@ -205,11 +249,15 @@ export default function Header() {
                             onOpenChange={(open) => setIsRegisterPopoverOpen(open)}
                         >
                             <PopoverTrigger>
-                                <button
+                                <Button variant="bordered" color="secondary">
+                                    <Logout05Icon />
+                                    <p>Registrarse</p>
+                                </Button>
+                                {/* <button
                                     className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
                                 >
                                     Registrarme
-                                </button>
+                                </button> */}
                             </PopoverTrigger>
                             <PopoverContent>
                                 <SingUp />
@@ -217,7 +265,7 @@ export default function Header() {
                         </Popover>
                     </>
                 }
-                {/* <ThemeSwitcher /> */}
+                <ThemeSwitcher />
             </div>
         </header>
     );
