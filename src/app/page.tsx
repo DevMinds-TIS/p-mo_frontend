@@ -1,6 +1,6 @@
 "use client";
 import { inria, bricolage } from "@/app/fonts";
-import { Alert, Listbox, ListboxItem } from "@nextui-org/react";
+import { Alert, Divider, Listbox, ListboxItem } from "@nextui-org/react";
 import { useAlert } from "@/contexts/AlertContext";
 import Image from "next/image";
 
@@ -9,19 +9,11 @@ export default function Page() {
 
   return (
     <section>
-      <div className="p-20 m-24 bottom-1/3">
+      <div className="p-20 m-24">
         <h1 className={`${inria.className} text-center text-7xl`}>Bienvenido al evaluador basado en proyectos</h1>
         <h1 className={`${inria.className} text-center text-7xl italic`}>P-MO</h1>
       </div>
-      <div className="p-4">
-        <Image
-          alt="Pantallazo general de la aplicación"
-          src={"/prueba.png"}
-          width={100}
-          height={100}
-          className="w-full rounded-xl"
-        />
-      </div>
+      <Divider className="border-solid"/>
       <div className="flex-col m-24 space-y-4">
         <h1 className={`${inria.className} text-center text-5xl font-bold`}>Propósito</h1>
         <p className={`${bricolage.className} italic text-center text-xl`}>P-MO fue desarrollado para facilitar la gestión organizativa de los docentes de la materia de Taller de Ingeniería de Software</p>
@@ -71,7 +63,6 @@ export default function Page() {
             description={alertDescription}
             onClose={hideAlert}
             variant="solid"
-          // radius="full"
           />
         </div>
       )}
