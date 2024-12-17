@@ -1,7 +1,11 @@
-import { Add01Icon } from 'hugeicons-react';
 import { useState } from 'react';
 
-export default function Criterios() {
+type CriteriosProps = {
+  onClose: () => void; // Función para cerrar el modal
+  tipoEvaluacion: string; // Tipo de evaluación que se pasa como prop
+};
+
+export default function Criterios({ onClose, tipoEvaluacion }: CriteriosProps) {
   const [calificacion, setCalificacion] = useState('');
   const [error, setError] = useState('');
   const [criterios, setCriterios] = useState([
@@ -29,15 +33,23 @@ export default function Criterios() {
   const manejarEnvio = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const calificacionNumerica = parseInt(calificacion, 10); // Convierte el string a número
+
+    // Verificar si hay al menos un criterio
+    if (criterios.length === 0) {
+      setError('Debe haber al menos un criterio');
+      return;
+    }
+
     if (calificacionNumerica >= 1 && calificacionNumerica <= 100) {
       setError(''); // Limpiar error si está en rango
       console.log('Calificación:', calificacionNumerica);
       console.log('Criterios:', criterios);
+      onClose(); // Cerrar el modal al guardar
     } else {
       setError('La calificación debe ser un número entre 1 y 100');
     }
   };
-  
+
   const manejarCambioCalificacion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value;
     setCalificacion(valor);
@@ -48,12 +60,11 @@ export default function Criterios() {
       setError('');
     }
   };
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div className="bg-[#000] p-8 rounded-md shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4 text-white">Criterios de Evaluación</h2>
+        <h2 className="text-2xl font-bold mb-4 text-white">Criterios de Evaluación ({tipoEvaluacion})</h2>
         <form onSubmit={manejarEnvio}>
           {/* Campo para calificación */}
           <div className="mb-4">
@@ -78,12 +89,10 @@ export default function Criterios() {
                   <span className="text-white">{criterio}</span>
                   <button
                     type="button"
-                    className="text-red-500 hover:text-red-700"
+                    className="text-white hover:text-red-500"
                     onClick={() => eliminarCriterio(index)}
                   >
-                    <Add01Icon 
-                        size={24} 
-                    />
+                    X
                   </button>
                 </li>
               ))}
@@ -99,7 +108,7 @@ export default function Criterios() {
               <button
                 type="button"
                 onClick={agregarCriterio}
-                className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="ml-2 px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#FE7111]"
               >
                 Agregar
               </button>
@@ -110,13 +119,14 @@ export default function Criterios() {
           <div className="flex justify-center gap-[10px]">
             <button
               type="button"
-              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#9E7F2E]"
+              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#FE7111]"
+              onClick={onClose} // Cerrar el modal
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#9E7F2E]"
+              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#FE7111]"
             >
               Guardar
             </button>
