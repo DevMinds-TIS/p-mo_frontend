@@ -9,7 +9,7 @@ export default function SingUp() {
             <h3 className="p-2">
                 <AdminSignIn/>
             </h3>
-            <Tabs aria-label="Options" size="lg" fullWidth>
+            <Tabs aria-label="Options" color="primary" size="lg" fullWidth>
                 <Tab key="student" title="Estudiante">
                     <StudentSignIn></StudentSignIn>
                 </Tab>
