@@ -60,6 +60,12 @@ export default function Header() {
     const { theme } = useTheme();
 
     useEffect(() => {
+        setIsLoginPopoverOpen(false);
+        setIsProfilePopoverOpen(false);
+        setIsRegisterPopoverOpen(false);
+    }, [user]);
+
+    useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
             return;
@@ -215,7 +221,7 @@ export default function Header() {
                                     </Link>
                                     <Button
                                         className="bg-[#FF0000] min-w-1 text-white"
-                                        onClick={handleLogout}
+                                        onPress={handleLogout}
                                     >
                                         <Logout03Icon />
                                         <p>Cerrar sesión</p>
