@@ -150,8 +150,8 @@ export default function FooterComponent() {
                         <p className="flex items-center gap-1">Todos los derechos reservados <Copyright size={32} weight="fill" /> 2024</p>
                     </div>
                 </div>
-                <div className="w-[30%] p-2">
-                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={100} height={100} className="w-full" />
+                <div className="w-[30%] p-2 flex justify-center">
+                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={80} height={80} className="w-64" />
                 </div>
             </div>
         </section>
