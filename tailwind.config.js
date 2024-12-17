@@ -12,21 +12,21 @@ module.exports = {
   theme: {
     extend: {
       // colors: {
-        // background: "#202020",
-        // foreground: "#F2F0E3",
-        // default: "#F2F0E3",
-        // primary: "#003770",
-        // secondary: "#FF9B5A",
-        // success: "#EA6611",
-        // warning: "#FE7F2D",
-        // danger: "#E30613",
-        // content1: "#202020",
-        // content2: "#242424",
-        // content2Foreground: "#F2F0E3",
-        // content3: "#2E2E2E",
-        // content3Foreground: "#E0E0E0",
-        // content4: "#383838",
-        // content4Foreground: "#CCCCCC",
+      // background: "#202020",
+      // foreground: "#F2F0E3",
+      // default: "#F2F0E3",
+      // primary: "#003770",
+      // secondary: "#FF9B5A",
+      // success: "#EA6611",
+      // warning: "#FE7F2D",
+      // danger: "#E30613",
+      // content1: "#202020",
+      // content2: "#242424",
+      // content2Foreground: "#F2F0E3",
+      // content3: "#2E2E2E",
+      // content3Foreground: "#E0E0E0",
+      // content4: "#383838",
+      // content4Foreground: "#CCCCCC",
       // },
       // boxShadow: {
       //   small: '0px 0px 5px 0px rgb(0 0 0 / 0.05), 0px 2px 10px 0px rgb(0 0 0 / 0.2), inset 0px 0px 1px 0px rgb(255 255 255 / 0.15)',
@@ -76,15 +76,19 @@ module.exports = {
             primary: {
               DEFAULT: "#003770",
               foreground: "#F2F0E3",
-              focus: "#003770"
+              focus: "#003770",
             },
-            secondary: "#FF9B5A",
+            secondary: {
+              DEFAULT: "#006AD9",
+              foreground: "#F2F0E3",
+              focus: "#006AD9",
+            },
             success: {
               DEFAULT: "#EA6611",
               foreground: "#F2F0E3",
               light: "#EA6611",
               background: "#EA6611",
-              success: "#EA6611"
+              success: "#EA6611",
             },
             warning: "#FE7F2D",
             danger: {
@@ -93,7 +97,7 @@ module.exports = {
             },
             content1: {
               DEFAULT: "#202020",
-              foreground: "#F2F0E3"
+              foreground: "#F2F0E3",
             },
             // content2: "#242424",
             // content2Foreground: "#F2F0E3",
@@ -110,29 +114,33 @@ module.exports = {
             default: {
               DEFAULT: "#DFDAB9",
               foreground: "#202020",
-              focus: "#F3EAD4"
+              focus: "#F3EAD4",
             },
             primary: {
               DEFAULT: "#003770",
               foreground: "#F2F0E3",
               focus: "#003770",
             },
-            secondary: "#FF9B5A",
+            secondary: {
+              DEFAULT: "#006AD9",
+              foreground: "#F2F0E3",
+              focus: "#006AD9",
+            },
             success: {
               DEFAULT: "#EA6611",
               foreground: "#F2F0E3",
               light: "#EA6611",
-              background: "#EA6611"
+              background: "#EA6611",
             },
             warning: "#FE7F2D",
             danger: {
               DEFAULT: "#E30613",
               foreground: "#F2F0E3",
-              background: "#E30613"
+              background: "#E30613",
             },
             content1: {
               DEFAULT: "#F2F0E3",
-              foreground: "#202020"
+              foreground: "#202020",
             },
             // content2: "#E0E0E0",
             // content2Foreground: "#202020",
@@ -145,4 +153,4 @@ module.exports = {
       },
     }),
   ],
-}
+};
