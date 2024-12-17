@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AddTeamIcon, FolderLibraryIcon, Layers02Icon, Login03Icon, Logout03Icon, Logout05Icon, StepIntoIcon, UserAccountIcon } from "hugeicons-react";
 import { useRouter } from "next/navigation";
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
+import { useTheme } from "next-themes";
 
 type Role = {
     ID_Rol: number;
@@ -55,6 +56,8 @@ export default function Header() {
 
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
+
+    const { theme } = useTheme();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -116,7 +119,7 @@ export default function Header() {
     };
 
     return (
-        <header className="py-2 gap-4 flex lg:flex-nowrap flex-wrap px-2 lg:justify-between justify-center bg-black sticky top-0 z-10">
+        <header className={`py-2 gap-4 flex lg:flex-nowrap flex-wrap px-2 lg:justify-between justify-center ${theme === "dark" ? "bg-black text-light" : "bg-white text-dark"} sticky top-0 z-10`}>
             <div className="sm:ml-4 ml-1 flex sm:gap-4 gap-2 lg:justify-start justify-center items-center lg:w-1/3 w-full">
                 <Image
                     src="/p-mo.svg"
@@ -125,7 +128,7 @@ export default function Header() {
                     height={65}
                     className="md:h-12 md:w-auto"
                 />
-                <div className="text-inherit text-sm flex flex-col">
+                <div className="text-sm flex flex-col">
                     <p>Project</p>
                     <p>Management</p>
                     <p>Officer</p>
@@ -148,28 +151,28 @@ export default function Header() {
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Tutorials Actions" variant="flat">
                         <DropdownItem key="projects" className="h-14">
-                            <div className="flex items-center gap-3">
+                            <a href="#project-scroll" className="flex items-center gap-3">
                                 <FolderLibraryIcon />
                                 <p>Crear proyectos</p>
-                            </div>
+                            </a>
                         </DropdownItem>
                         <DropdownItem key="spaces" className="h-14">
-                            <div className="flex items-center gap-3">
+                            <a href="#space-scroll" className="flex items-center gap-3">
                                 <UserAccountIcon />
                                 <p>Crear espacios</p>
-                            </div>
+                            </a>
                         </DropdownItem>
                         <DropdownItem key="teams" className="h-14">
-                            <div className="flex items-center gap-3">
+                            <a href="#team-scroll" className="flex items-center gap-3">
                                 <Layers02Icon />
                                 <p>Crear equipos</p>
-                            </div>
+                            </a>
                         </DropdownItem>
                         <DropdownItem key="teams" className="h-14">
-                            <div className="flex items-center gap-3">
+                            <a href="#add-member-scroll" className="flex items-center gap-3">
                                 <AddTeamIcon />
                                 <p>Agregar miembros a un equipo</p>
-                            </div>
+                            </a>
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
