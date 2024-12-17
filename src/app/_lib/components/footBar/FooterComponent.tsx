@@ -107,10 +107,11 @@ export default function FooterComponent() {
                                     Enlaces
                                 </h1>
                                 <div className="flex gap-2">
-                                    <BankIcon size={25}/>
-                                    <Globe02Icon size={25}/>
-                                    <CourtHouseIcon size={25}/>
-                                    <Github01Icon size={25}/>
+                                    <Link href={"#"}></Link>
+                                        <BankIcon size={25} />
+                                    <Globe02Icon size={25} />
+                                    <CourtHouseIcon size={25} />
+                                    <Github01Icon size={25} />
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-2">
