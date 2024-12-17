@@ -8,7 +8,7 @@ export default function Landing() {
 
     return (
         <section className="flex flex-col items-stretch gap-y-8 bg-[#212121] text-white">
-            <Header />
+            {/* <Header /> */}
 
             <h1 className="lg:text-[100px] sm:text-[60px] text-[45px] text-center font-light lg:p-12 p-3">Bienvenido al evaluador basado en proyectos <br/> <i>P-MO</i></h1>
             <Divider className="border-solid"/>
