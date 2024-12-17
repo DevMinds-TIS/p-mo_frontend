@@ -1,11 +1,12 @@
 "use client";
-import { Card, CardBody, CardFooter, Skeleton } from "@nextui-org/react";
+import { Button, Card, CardBody, CardFooter, Skeleton } from "@nextui-org/react";
 import Link from "next/link";
 import NewTeam from "./NewTeam";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import Avisos from "../../Avisos";
-
+import NewCriterio from "../criterios/NewCriterio";
+import { AddSquareIcon } from "hugeicons-react";
 type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
@@ -103,10 +104,13 @@ const fetchUser = async (): Promise<User> => {
 };
 
 export default function TeamsPage({ params }: { params: { Nombre_Espacio: string } }) {
+    // Aquí van los hooks al principio
     const [space, setSpace] = useState<Space | null>(null);
     const [teams, setTeams] = useState<Team[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
+    const [isOpen, setIsOpen] = useState(false); // Estado para controlar si el modal está abierto
+    const [tipoModal, setTipoModal] = useState<string>(''); // Estado para el tipo de evaluación
 
     useEffect(() => {
         const fetchData = async () => {
@@ -183,12 +187,20 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
         setTeams(prevTeams => [...prevTeams, newTeam]);
     };
 
+    const handleOpenModal = (tipo: string) => {
+        setIsOpen(true); // Abre el modal
+        setTipoModal(tipo); // Guarda el tipo de evaluación en el estado
+      };
+      
+      const handleCloseModal = () => {
+        setIsOpen(false); // Cierra el modal
+        setTipoModal(''); // Resetea el tipo de evaluación
+      };
+
     return (
         <section>
             <div className="flex justify-between">
-                <h1 className="text-4xl p-4">
-                    Equipos
-                </h1>
+                <h1 className="text-4xl p-4">Equipos</h1>
                 {isStudent && space && user && (
                     <NewTeam params={{ Nombre_Espacio: space.Nombre_Espacio }} onNewTeam={handleNewTeam} />
                 )}
@@ -207,14 +219,18 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
                         </Card>
                     ))
                 ) : (
-                    teams.map(team => (
+                    teams.map((team) => (
                         <Link key={team.ID_Equipo} href={`${space?.Nombre_Espacio}/${team.Nombre_Equipo}`}>
                             <Card shadow="sm">
                                 <CardBody className="overflow-visible p-0">
                                     <FileUpload
                                         readOnly={true}
-                                        existingFile={team.Logo_Equipo ? { name: team.Nombre_Equipo, url: `${storageUrl}/${team.Logo_Equipo}` } : null}
-                                        onChange={() => { }}
+                                        existingFile={
+                                            team.Logo_Equipo
+                                                ? { name: team.Nombre_Equipo, url: `${storageUrl}/${team.Logo_Equipo}` }
+                                                : null
+                                        }
+                                        onChange={() => {}}
                                         className="w-44 h-36"
                                     />
                                 </CardBody>
@@ -230,20 +246,46 @@ export default function TeamsPage({ params }: { params: { Nombre_Espacio: string
                     ))
                 )}
             </div>
-            <div>
-                <h1 className="text-3xl p-4">
-                    Criterios de Autoevaluación
-                </h1>
+            <div className="flex w-full justify-between items-center">
+                <h1 className="text-3xl p-4">Criterios de Autoevaluación</h1>
+                {isTeacher && (
+                    <>
+                    <Button onPress={() => handleOpenModal('autoevaluacion')} className="min-w-0 p-0 bg-transparent items-center">
+                        <AddSquareIcon size={30} />
+                    </Button>
+                    </>
+                )}
+                {isOpen && tipoModal === 'autoevaluacion' && (
+                    <NewCriterio onClose={handleCloseModal} tipoEvaluacion="autoevaluacion" />
+                )}
             </div>
-            <div>
-                <h1 className="text-3xl p-4">
-                    Criterios de Evaluación de pares
-                </h1>
+
+            <div className="flex w-full justify-between items-center">
+                <h1 className="text-3xl p-4">Criterios de Evaluación de pares</h1>
+                {isTeacher && (
+                    <>
+                    <Button onPress={() => handleOpenModal('pares')} className="min-w-0 p-0 bg-transparent items-center">
+                        <AddSquareIcon size={30} />
+                    </Button>
+                    </>
+                )}
+                {isOpen && tipoModal === 'pares' && (
+                    <NewCriterio onClose={handleCloseModal} tipoEvaluacion="pares" />
+                )}
             </div>
-            <div>
-                <h1 className="text-3xl p-4">
-                    Criterios de Evaluaciones cruzadas
-                </h1>
+
+            <div className="flex w-full justify-between items-center">
+                <h1 className="text-3xl p-4">Criterios de Evaluaciones cruzadas</h1>
+                {isTeacher && (
+                    <>
+                    <Button onPress={() => handleOpenModal('cruzada')} className="min-w-0 p-0 bg-transparent items-center">
+                        <AddSquareIcon size={30} />
+                    </Button>
+                    </>
+                )}
+                {isOpen && tipoModal === 'cruzada' && (
+                    <NewCriterio onClose={handleCloseModal} tipoEvaluacion="cruzada" />
+                )}
             </div>
             <Avisos isAdmin={isTeacher} userType="teacher" />
         </section>
