@@ -6,6 +6,7 @@ import userStudent from "@/app/_lib/landing/useUserForm";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import { useRouter } from 'next/navigation';
+import ErrorModal from "@/app/mensajes";
 
 type Role = {
     ID_Rol: number;
@@ -33,6 +34,9 @@ export default function UpdateProfile() {
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
     const [profileuser, setProfileuser] = useState<File | null>(null);
+    const [imageError, setImageError] = useState<string | null>(null);  // Estado para el error de la imagen
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const {
         passwd,
@@ -54,7 +58,6 @@ export default function UpdateProfile() {
         isVisible,
         toggleVisibility,
     } = userStudent();
-
 
     useEffect(() => {
         const fetchDocentes = async () => {
@@ -148,6 +151,16 @@ export default function UpdateProfile() {
     };
 
     const handleFileChange = async (newFile: File | null) => {
+        if (newFile) {
+            // Verificar el tipo de archivo
+            const validFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validFormats.includes(newFile.type)) {
+                setImageError("Por favor, sube una imagen en formato JPG, JPEG o PNG.");  // Establecer el mensaje de error
+                return; // No actualices el estado si el archivo no es válido
+            }
+            setImageError(null);  // Limpiar el error si el archivo es válido
+        }
+    
         setProfileuser(newFile);
         if (!newFile && user?.Perfil) {
             const response = await fetch(user.Perfil);
@@ -155,6 +168,7 @@ export default function UpdateProfile() {
             setProfileuser(new File([blob], "Perfil", { type: blob.type }));
         }
     };
+    
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -175,10 +189,7 @@ export default function UpdateProfile() {
         if (profileuser) {
             formData.append("profileuser", profileuser);
         }
-        for (const [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
-        console.log("FormData", Array.from(formData.entries()));
+    
         try {
             const response = await fetch(`${backendUrl}/users/${user.ID_Usuario}`, {
                 method: "POST",
@@ -188,30 +199,33 @@ export default function UpdateProfile() {
                 },
                 body: formData,
             });
+    
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Error response from server:", errorData);
-                throw new Error(`Error al actualizar el usuario: ${errorData.message}`);
+                setErrorMessage(`Error al actualizar los datos de usuario: ${errorData.message}`);
+                throw new Error(`Error al actualizar los datos de usuario: ${errorData.message}`);
             }
+    
             const data = await response.json();
-            console.log("SendingData", data);
             setUser(data.data);
+            setSuccessMessage("Los datos se actualizaron con éxito.");
             onOpenChange();
             window.location.reload();
         } catch (error) {
-            console.error("Error al actualizar el usuario:", error);
+            console.error("Error al actualizar los datos del usuario:", error);
+            setErrorMessage("Error al actualizar los datos de usuario");
         }
     };
-
+    
     return (
-        <section>
+        <section>  
             <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
                 <PencilEdit02Icon size={28} />
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
                 <ModalContent>
                     {(onClose) => (
-                        <div>
+                        <div>                     
                             <ModalHeader className="flex flex-col gap-1">Actualiza tu perfil</ModalHeader>
                             <ModalBody>
                                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -224,6 +238,7 @@ export default function UpdateProfile() {
                                                 readOnly={false}
                                                 className="w-52"
                                             />
+                                            {imageError && <p className="text-red-500 text-sm">{imageError}</p>} {/* Mensaje de error debajo de la imagen */}
                                         </div>
                                         <div className="flex flex-col justify-between">
                                             <div>
@@ -259,7 +274,7 @@ export default function UpdateProfile() {
                                                 <Input
                                                     value={passwd}
                                                     label="Contraseña"
-                                                    placeholder="Ingrese su contraseña"
+                                                    placeholder="Ingrese su nueva contraseña"
                                                     isInvalid={isPasswdTouched && isInvalidPasswd}
                                                     errorMessage={passwordError}
                                                     onValueChange={(passwd) => {
@@ -327,6 +342,13 @@ export default function UpdateProfile() {
                                     <Button className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold" type="submit">
                                         Actualizar
                                     </Button>
+                                    {errorMessage && (
+                                        <ErrorModal
+                                            message={errorMessage}
+                                            onClose={() => setErrorMessage('')} // Limpiar mensaje de error al cerrar
+                                            className="z-100"
+                                        />
+                                    )}
                                 </form>
                             </ModalBody>
                         </div>

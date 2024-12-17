@@ -4,12 +4,14 @@ import { useRouter } from 'next/navigation';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { Modal, ModalContent, ModalHeader, ModalBody, Button, useDisclosure, Input } from "@nextui-org/react";
 import { useState } from "react";
+import ErrorModal from "@/app/mensajes"; // Import the ErrorModal
 
 export default function AdminSignIn() {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [clickCount, setClickCount] = useState(0);
     const targetClicks = 3;
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleButtonClick = () => {
         setClickCount((prev) => {
@@ -49,7 +51,6 @@ export default function AdminSignIn() {
         isInvalidPasswd,
         isInvalidName,
         isInvalidLastname,
-        isInvalidCode,
         isSingupValid,
         isVisible,
         setIsVisible,
@@ -68,7 +69,7 @@ export default function AdminSignIn() {
             lastnameuser: lastname,
             emailuser: email,
             passworduser: passwd,
-            idrol: 1,
+            idrol: 1, // Role for admin
         };
         console.log(userData);
 
@@ -86,14 +87,14 @@ export default function AdminSignIn() {
             }
 
             const result = await response.json();
-            // console.log('Usuario creado:', result);
-            // Redirigir a /dashboard después de un registro exitoso
+            // Save the token to localStorage after a successful registration
             localStorage.setItem('token', result.token);
-            router.push('/dashboard/profile');
+            router.push('/dashboard/profile'); // Redirect to dashboard
 
         } catch (error) {
             console.error('Error:', error);
-            // Manejar el error, como mostrar un mensaje de error al usuario
+            // Show error modal with a message
+            setErrorMessage('Correo ya registrado.');
         }
     };
 
@@ -102,7 +103,7 @@ export default function AdminSignIn() {
             <Button onPress={handleButtonClick} className="bg-transparent text-5xl h-full pt-2 px-0 cursor-default">
                 Únete
             </Button>
-            <Modal isOpen={isOpen} onOpenChange={(isOpen) => {if (!isOpen) {handleModalClose();}onOpenChange();}} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">
+            <Modal isOpen={isOpen} onOpenChange={(isOpen) => { if (!isOpen) { handleModalClose(); } onOpenChange(); }} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">
                 <ModalContent>
                     {(onClose) => (
                         <div>
@@ -178,6 +179,14 @@ export default function AdminSignIn() {
                                     <Button type="submit" isDisabled={!isSingupValid} className="w-full h-14 bg-[#2E6CB5] text-white">
                                         Unirse
                                     </Button>
+                                    {/* Error Modal */}
+                                    {errorMessage && (
+                                        <ErrorModal
+                                            message={errorMessage}
+                                            onClose={() => setErrorMessage('')} // Clear error message on close
+                                            className="z-100"
+                                        />
+                                    )}
                                 </form>
                             </ModalBody>
                         </div>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import {Button, Divider, Input, Link} from "@nextui-org/react";
 import {EyeFilledIcon} from "@nextui-org/shared-icons";
 import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
-import React from "react";
+import React, { useState } from "react";
 import userForms from "@/app/_lib/landing/useUserForm";
 import SingUp from "./SingUp";
 import { useRouter } from 'next/navigation';
@@ -29,6 +29,8 @@ export default function LogIn(){
         toggleVisibility,
     } = userForms();
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     const handleLogin = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
@@ -47,7 +49,9 @@ export default function LogIn(){
             });
 
             if (!response.ok) {
-                throw new Error('Error al iniciar sesión');
+                setErrorMessage("El correo o la contraseña son incorrectos.");
+                //throw new Error('Error al iniciar sesión');
+                return;
             }
             const result = await response.json();
             console.log('Inicio de sesión exitoso:', result);
@@ -57,6 +61,7 @@ export default function LogIn(){
             router.push('/dashboard/profile');
         } catch (error) {
             console.error('Error:', error);
+            setErrorMessage("El correo o la contraseña son incorrectos.");
         }
     };
 
@@ -76,6 +81,7 @@ export default function LogIn(){
                         onValueChange={(email) => {
                             setEmail(email);
                             setIsEmailTouched(true);
+                            setErrorMessage("");
                         }}
                         maxLength={60}
                     />
@@ -88,6 +94,7 @@ export default function LogIn(){
                         onValueChange={(passwd) => {
                             setPasswd(passwd);
                             setIsPasswdTouched(true);
+                            setErrorMessage("");
                         }}
                         endContent={
                             <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
@@ -101,6 +108,9 @@ export default function LogIn(){
                         type={isVisible ? "text" : "password"}
                         maxLength={20}
                     />
+                    {errorMessage && (
+                        <p className="text-red-500 text-sm text-center mt-2">{errorMessage}</p>
+                    )}
                     <Button type="submit" isDisabled={!isLoginValid} className="w-full h-14 bg-[#2E6CB5] text-white">
                         Iniciar Sesión
                     </Button>
