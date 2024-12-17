@@ -20,18 +20,18 @@ export default function Page() {
       </div>
       <div className="flex w-full justify-between p-4">
         <div className="w-1/3 space-y-4">
-          <h1 className={`${inria.className} text-5xl font-bold`}>Funcionalidades</h1>
+          <h1 id="project-scroll" className={`${inria.className} text-5xl font-bold`}>Funcionalidades</h1>
           <Listbox className={`${bricolage.className}`} aria-label="Features" variant="flat" onAction={(key) => alert(key)}>
             <ListboxItem key="projects" className="p-4 mb-2">
-              <p className="text-3xl font-bold">Proyectos</p>
+              <p id="space-scroll" className="text-3xl font-bold scroll-mt-[90px]">Proyectos</p>
               <p>Puerta de inicio para todos los involucrados</p>
             </ListboxItem>
             <ListboxItem key="spaces" className="p-4 mb-2">
-              <p className="text-3xl font-bold">Espacios</p>
+              <p id="team-scroll" className="text-3xl font-bold">Espacios</p>
               <p>Puerta de inicio para los docentes</p>
             </ListboxItem>
             <ListboxItem key="teams" className="p-4 mb-2">
-              <p className="text-3xl font-bold">Equipos</p>
+              <p id="add-member-scroll" className="text-3xl font-bold">Equipos</p>
               <p>Puerta de inicio para los estudiantes</p>
             </ListboxItem>
             <ListboxItem key="tests" className="p-4 mb-2">
