@@ -58,7 +58,7 @@ export default function LogIn(){
             // Almacena el token en el localStorage
             localStorage.setItem('token', result.token);
             // Redirige al dashboard u otra página
-            router.push('/dashboard/profile');
+            router.push('/');
         } catch (error) {
             console.error('Error:', error);
             setErrorMessage("El correo o la contraseña son incorrectos.");
