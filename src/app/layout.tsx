@@ -1,12 +1,15 @@
-"use client";
 import "./globals.css";
 import { amiko } from "./fonts";
+import type { Metadata } from 'next'
 import { Providers } from "./provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AlertProvider } from "@/contexts/AlertContext";
 import FooterComponent from "./_lib/components/footBar/FooterComponent";
-import NavBarComponent from "./_lib/components/topBar/NavbarComponent";
-import Header from "./(pages)/landing/Header";
+
+export const metadata: Metadata = {
+  title: 'P-MO Project Management Officer',
+  description: 'P-MO fue desarrollado para facilitar la gestión organizativa de los docentes de la materia de Taller de Ingeniería de Software',
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
@@ -15,8 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
         <Providers>
           <AuthProvider>
             <AlertProvider>
-              {/* <NavBarComponent /> */}
-              <Header />
               <section>
                 {children}
               </section>

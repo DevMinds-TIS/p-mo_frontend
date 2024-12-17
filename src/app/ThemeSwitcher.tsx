@@ -17,8 +17,8 @@ export function ThemeSwitcher() {
         size="lg"
         color="success"
         onChange={handleTheme}
-        startContent={<SunIcon />}
-        endContent={<MoonIcon />}
+        endContent={<SunIcon />}
+        startContent={<MoonIcon />}
       />
   )
 };
