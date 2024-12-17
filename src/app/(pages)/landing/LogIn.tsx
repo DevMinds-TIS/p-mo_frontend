@@ -8,7 +8,7 @@ import userForms from "@/app/_lib/landing/useUserForm";
 import SingUp from "./SingUp";
 import { useRouter } from 'next/navigation';
 
-export default function LogIn(){
+export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const {
@@ -57,6 +57,14 @@ export default function LogIn(){
             console.log('Inicio de sesión exitoso:', result);
             // Almacena el token en el localStorage
             localStorage.setItem('token', result.token);
+            const userRequest = await fetch(`${backendUrl}/user`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${result.token}`,
+                },
+            });
+            const userRequestData = await userRequest.json();
+            setUser(userRequestData.data);
             // Redirige al dashboard u otra página
             router.push('/');
         } catch (error) {

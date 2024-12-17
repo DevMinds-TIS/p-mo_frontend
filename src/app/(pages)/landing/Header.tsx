@@ -109,7 +109,8 @@ export default function Header() {
 
 
             localStorage.removeItem('token');
-            router.push('/landing');
+            setUser(null);
+            router.push('/');
 
 
             console.log('Cierre de sesión exitoso');
@@ -238,7 +239,7 @@ export default function Header() {
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent>
-                                <LogIn />
+                                <LogIn setUser={setUser} />
                             </PopoverContent>
                         </Popover>
                         <Popover
