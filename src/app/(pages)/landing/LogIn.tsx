@@ -74,7 +74,7 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
     };
 
     return(
-        <section className="gap-10 p-2">
+        <section className="gap-10 p-3">
             <div className="flex flex-col md:justify-center items-center self-center gap-4">
                 <h1 className="text-5xl">Inicia Sesión</h1>
                 <form onSubmit={handleLogin} className="w-full space-y-4">

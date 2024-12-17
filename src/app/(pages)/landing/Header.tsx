@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Popover, PopoverContent, PopoverTrigger, Tooltip, User } from "@nextui-org/react";
+import { Avatar, Button, Drawer, DrawerContent, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Popover, PopoverContent, PopoverTrigger, Tooltip, useDisclosure, User } from "@nextui-org/react";
 import Image from "next/image";
 import LogIn from "./LogIn";
 import SingUp from "./SingUp";
@@ -47,8 +47,9 @@ const navItems: { [key: number]: { href: string, label: string }[] } = {
 
 
 export default function Header() {
-    const [isLoginPopoverOpen, setIsLoginPopoverOpen] = useState(false);
-    const [isRegisterPopoverOpen, setIsRegisterPopoverOpen] = useState(false);
+    const { isOpen: isLoginOpen, onOpen: onLoginOpen, onClose: onLoginClose, onOpenChange: onLoginOpenChange } = useDisclosure();
+    const { isOpen: isRegisterOpen, onOpen: onRegisterOpen, onClose: onRegisterClose, onOpenChange: onRegisterOpenChange } = useDisclosure();
+
     const [isProfilePopoverOpen, setIsProfilePopoverOpen] = useState(false);
 
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -60,10 +61,10 @@ export default function Header() {
     const { theme } = useTheme();
 
     useEffect(() => {
-        setIsLoginPopoverOpen(false);
+        onLoginClose();
+        onRegisterClose();
         setIsProfilePopoverOpen(false);
-        setIsRegisterPopoverOpen(false);
-    }, [user]);
+    }, [user, onLoginClose, onRegisterClose]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -233,36 +234,24 @@ export default function Header() {
                 </>
                     :
                     <>
-                        <Popover
-                            placement="left"
-                            className="gap-x-4"
-                            onOpenChange={(open) => setIsLoginPopoverOpen(open)}
-                        >
-                            <PopoverTrigger>
-                                <Button color="primary" radius="full">
+                                <Button color="primary" radius="full" onPress={onLoginOpen}>
                                     <Login03Icon />
                                     <p>Iniciar Sesión</p>
                                 </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                <LogIn setUser={setUser} />
-                            </PopoverContent>
-                        </Popover>
-                        <Popover
-                            placement="left"
-                            className="gap-x-4"
-                            onOpenChange={(open) => setIsRegisterPopoverOpen(open)}
-                        >
-                            <PopoverTrigger>
-                                <Button variant="bordered" color="secondary">
+                            <Drawer isOpen={isLoginOpen} onOpenChange={onLoginOpenChange} placement="right" size="xl">
+                                <DrawerContent>
+                                    <LogIn setUser={setUser} />
+                                </DrawerContent>
+                            </Drawer>
+                                <Button variant="bordered" color="secondary" onPress={onRegisterOpen}>
                                     <Logout05Icon />
                                     <p>Registrarse</p>
                                 </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
+                            <Drawer isOpen={isRegisterOpen} onOpenChange={onRegisterOpenChange} placement="right" size="xl">
+                                <DrawerContent>
                                 <SingUp />
-                            </PopoverContent>
-                        </Popover>
+                                </DrawerContent>
+                            </Drawer>
                     </>
                 }
                 <ThemeSwitcher />

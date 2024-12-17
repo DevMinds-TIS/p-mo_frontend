@@ -5,8 +5,8 @@ import AdminSignIn from "./adminSignIn";
 
 export default function SingUp() {
     return (
-        <section className="w-full">
-            <h3 className="p-2">
+        <section className="w-full p-3">
+            <h3>
                 <AdminSignIn/>
             </h3>
             <Tabs aria-label="Options" color="primary" size="lg" fullWidth>
