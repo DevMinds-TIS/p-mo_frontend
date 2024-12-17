@@ -3,31 +3,31 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    scroll-behavior: smooth;
+}
 
 .bg-dark {
-    background-color: #202020;
-  }
-  
-  .text-light {
-    color: #F2F0E3;
-  }
-  
-  .bg-light {
-    background-color: #F2F0E3;
-  }
-  
-  .text-dark {
-    color: #202020;
-  }
-  .alert-fixed {
-    position: fixed !important;
-    bottom: 16px; /* Ajusta la distancia desde el fondo */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999 !important; /* Asegura que la alerta esté por encima de todos los demás elementos */
-    width: 100%;
-    max-width: 400px; /* Ajusta el ancho máximo */
-  }
-  
-  
-  
+  background-color: #202020;
+}
+
+.text-light {
+  color: #f2f0e3;
+}
+
+.bg-light {
+  background-color: #f2f0e3;
+}
+
+.text-dark {
+  color: #202020;
+}
+.alert-fixed {
+  position: fixed !important;
+  bottom: 16px; /* Ajusta la distancia desde el fondo */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999 !important; /* Asegura que la alerta esté por encima de todos los demás elementos */
+  width: 100%;
+  max-width: 400px; /* Ajusta el ancho máximo */
+}
