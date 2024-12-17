@@ -233,11 +233,6 @@ export default function Header() {
                                     <Login03Icon />
                                     <p>Iniciar Sesión</p>
                                 </Button>
-                                {/* <button
-                                    className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
-                                >
-                                    Iniciar Sesión
-                                </button> */}
                             </PopoverTrigger>
                             <PopoverContent>
                                 <LogIn />
@@ -253,11 +248,6 @@ export default function Header() {
                                     <Logout05Icon />
                                     <p>Registrarse</p>
                                 </Button>
-                                {/* <button
-                                    className={`flex items-center gap-x-2 p-2 hover:scale-105 bg-[#2e6cb5] text-white hover:cursor-pointer rounded-lg`}
-                                >
-                                    Registrarme
-                                </button> */}
                             </PopoverTrigger>
                             <PopoverContent>
                                 <SingUp />
