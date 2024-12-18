@@ -1,6 +1,6 @@
 {
   "name": "p-mo_frontend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.17.0",
+    "@emotion/css": "^11.13.5",
     "@internationalized/date": "^3.5.6",
-    "@nextui-org/react": "^2.4.8",
-    "@nextui-org/shared-icons": "^2.0.9",
+    "@nextui-org/react": "^2.6.8",
+    "@phosphor-icons/react": "^2.1.7",
     "@react-aria/i18n": "^3.12.3",
     "axios": "^1.7.7",
     "http-proxy-middleware": "^3.0.3",

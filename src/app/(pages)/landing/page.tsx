@@ -1,13 +1,14 @@
 import { ThemeSwitcher } from "@/app/ThemeSwitcher";
-import LogIn from "./LogIn";
+import LogIn from "../../_lib/components/topBar/auth/LogIn";
 
 export default function Landing(){
     return(
         <section>
-            <div className="flex justify-center p-2">
+            {/* <div className="flex justify-center p-2">
                 <ThemeSwitcher/>
-            </div>
-            <LogIn/>  
+            </div> */}
+            {/* <LogIn/> */}
+            Hola mundo
         </section>    
     );
 }

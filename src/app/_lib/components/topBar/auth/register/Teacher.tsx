@@ -4,8 +4,10 @@ import { Button, Input } from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAlert } from "@/contexts/AlertContext";
 
-export default function TeacherSignIn() {
+export default function TeacherSignIn({ onClose }: { onClose: () => void }) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const [isRequestSent, setIsRequestSent] = useState(false);
@@ -54,6 +56,9 @@ export default function TeacherSignIn() {
         }
     };
 
+    const { registerTeacher, requestTeacherCode } = useAuth();
+    const { showAlert } = useAlert();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (name && lastname && email) {
@@ -78,53 +83,30 @@ export default function TeacherSignIn() {
             idrol: 2,
             teacherpermission: code,
         };
+
         console.log(userData);
 
+        setIsLoading(true);
+
         try {
-            const response = await fetch(`${backendUrl}/register-teacher`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al crear el usuario');
-            }
-
-            const result = await response.json();
-            localStorage.setItem('token', result.token);
-            router.push('/dashboard/profile');
-
+            await registerTeacher(userData);
+            showAlert("¡Registro exitoso!", "El usuario ha sido creado exitosamente y ha iniciado sesión.", "success");
+            onClose();
+            router.push('/profile');
         } catch (error) {
             console.error('Error:', error);
+            showAlert("Error de registro", "Error al registrar el docente. Por favor, intente de nuevo.", "danger");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleRequestCode = async () => {
-        const requestData = {
-            email: email,
-            name: name,
-        };
-
         try {
-            const response = await fetch(`${backendUrl}/sendEmail`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al solicitar el código');
-            }
-
+            await requestTeacherCode(email, name);
             console.log('Código solicitado exitosamente');
             setIsRequestSent(true);
             setIsRequestEnabled(false);
-
         } catch (error) {
             console.error('Error:', error);
         }
@@ -137,7 +119,7 @@ export default function TeacherSignIn() {
                     value={name}
                     isClearable
                     label="Nombre"
-                    placeholder="Ingrese su nombre"
+                    placeholder="ej. Francisco"
                     isInvalid={isNameTouched && isInvalidName}
                     errorMessage="El campo nombre debe contener al menos 3 caracteres"
                     onValueChange={(name) => {
@@ -151,7 +133,7 @@ export default function TeacherSignIn() {
                     value={lastname}
                     isClearable
                     label="Apellido"
-                    placeholder="Ingrese su apellido"
+                    placeholder="ej. Lobo"
                     isInvalid={isLastNameTouched && isInvalidLastname}
                     errorMessage="El campo apellido debe contener al menos 5 caracteres"
                     onValueChange={(lastname) => {
@@ -167,7 +149,7 @@ export default function TeacherSignIn() {
                 isClearable
                 type="email"
                 label="Correo Electrónico"
-                placeholder="Ingrese su correo electrónico"
+                placeholder="ej. francisco.l@fcyt.umss.edu.bo"
                 isInvalid={(isEmailTouched && isInvalidEmail) || isInvalidUMSSTeacherEmail}
                 errorMessage={isInvalidUMSSTeacherEmail ? "Usted no pertenece a la U.M.S.S." : "Por favor, ingrese un correo electrónico válido"}
                 onValueChange={(email) => {
@@ -180,7 +162,7 @@ export default function TeacherSignIn() {
             <Input
                 value={passwd}
                 label="Contraseña"
-                placeholder="Ingrese su contraseña"
+                placeholder="●●●●●●●●"
                 isInvalid={isPasswdTouched && isInvalidPasswd}
                 errorMessage={passwordError}
                 onValueChange={(passwd) => {
@@ -204,7 +186,7 @@ export default function TeacherSignIn() {
                     value={code}
                     isClearable
                     label="Código secreto"
-                    placeholder="Solicita el código y escríbele aquí"
+                    placeholder="Solicita el código y revise su bandeja de entrada"
                     isInvalid={isCodeTouched && isInvalidCode}
                     errorMessage="El código debe contener al menos 8 caracteres"
                     onValueChange={(code) => {
@@ -215,20 +197,28 @@ export default function TeacherSignIn() {
                 >
                 </Input>
                 <Button
-                    className="text-white bg-[#ff9b5a] h-14"
+                    className="text-white h-14"
+                    color="success"
                     isDisabled={!isRequestEnabled || isRequestSent}
-                    onClick={handleRequestCode}
+                    onPress={handleRequestCode}
                 >
                     Solicitar
                 </Button>
             </div>
-            <Button
-                type="submit"
-                isDisabled={!isSingupValid || isInvalidUMSSTeacherEmail}
-                className="w-full h-14 bg-[#FF9B5A] text-white"
-            >
-                Unirse
-            </Button>
+            {isLoading ? (
+                <Button isLoading className="w-full h-14 text-light" color="success">
+                    Registrando docente...
+                </Button>
+            ) : (
+                <Button
+                    type="submit"
+                    color="success"
+                    isDisabled={!isSingupValid || isInvalidUMSSTeacherEmail}
+                    className="w-full h-14"
+                >
+                    Registrarse
+                </Button>
+            )}
         </form>
     );
 }

@@ -198,7 +198,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={3}
                                         pageBehavior="single"
-                                        onChange={setDateRange}
+                                        // onChange={setDateRange}
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
@@ -211,7 +211,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={2}
                                         pageBehavior="single"
-                                        onChange={setRegistrationRange}
+                                        // onChange={setRegistrationRange}
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
