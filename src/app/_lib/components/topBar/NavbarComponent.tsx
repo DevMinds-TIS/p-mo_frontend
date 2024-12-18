@@ -32,8 +32,8 @@ export default function NavBarComponent() {
             </NavbarContent>
 
             <NavbarContent className="" justify="start">
-                <NavbarBrand>
-                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={60} height={75} />
+                <NavbarBrand className="flex gap-4">
+                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={40} height={55} />
                     <div className="text-sm flex-col">
                         <p>Project</p>
                         <p>Management</p>

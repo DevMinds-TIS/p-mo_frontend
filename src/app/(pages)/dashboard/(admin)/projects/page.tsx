@@ -7,7 +7,7 @@ import { FolderLinksIcon, MoreVerticalIcon } from "hugeicons-react";
 import Link from 'next/link';
 import { I18nProvider } from '@react-aria/i18n';
 import { parseDate } from '@internationalized/date';
-import EditProject from './EditProject';
+// import EditProject from './EditProject';
 
 type Role = {
     ID_Rol: number;
@@ -201,7 +201,7 @@ export default function ProjectsPage() {
                                         </PopoverTrigger>
                                         <PopoverContent>
                                             <div className="flex flex-col gap-2 p-1">
-                                                <EditProject onNewProject={handleNewProject}/>
+                                                {/* <EditProject onNewProject={handleNewProject}/> */}
                                             </div>
                                         </PopoverContent>
                                     </Popover>
