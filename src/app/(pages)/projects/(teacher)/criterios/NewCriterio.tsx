@@ -110,13 +110,13 @@ export default function Criterios() {
           <div className="flex justify-center gap-[10px]">
             <button
               type="button"
-              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#9E7F2E]"
+              className="px-4 py-2 bg-[#2e6cb5] text-white rounded-md hover:bg-[#9E7F2E]"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#FE7F2D] text-white rounded-md hover:bg-[#9E7F2E]"
+              className="px-4 py-2 bg-[#2e6cb5] text-white rounded-md hover:bg-[#9E7F2E]"
             >
               Guardar
             </button>

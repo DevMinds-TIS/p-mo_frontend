@@ -291,7 +291,7 @@ export default function TeamPage() {
                 <div className="flex flex-col w-fit space-y-4">
                     <Link
                         href="team/planning"
-                        className="bg-[#EA6611] rounded-lg text-center p-4 text-white"
+                        className="bg-[#2E6CB5] rounded-lg text-center p-4 text-white"
                     >
                         Sprint #1
                     </Link>

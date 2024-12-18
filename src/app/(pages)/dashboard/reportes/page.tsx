@@ -130,7 +130,7 @@ export default function ReportesPage() {
             {/* Botón de exportación */}
             <button
                 onClick={handleExport}
-                className="mb-4 p-2 bg-[#FE7F2D] text-white rounded w-full sm:w-auto"
+                className="mb-4 p-2 bg-[#2e6cb5] text-white rounded w-full sm:w-auto"
             >
                 Exportar a TXT
             </button>

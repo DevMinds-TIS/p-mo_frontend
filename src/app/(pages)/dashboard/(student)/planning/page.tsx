@@ -19,7 +19,7 @@
 //             <section className="flex flex-col w-fit space-y-4">
 //                 <Link
 //                     href="/dashboard/planning/details"
-//                     className="bg-[#EA6611] rounded-lg text-center p-4 text-white"
+//                     className="bg-[#2E6CB5] rounded-lg text-center p-4 text-white"
 //                 >
 //                     Sprint #1
 //                 </Link>
