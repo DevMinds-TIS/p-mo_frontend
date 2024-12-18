@@ -148,7 +148,7 @@ export default function FooterComponent() {
                                 Ayuda
                             </h1>
                             <div className="flex-col">
-                                <p className="font-normal">Reportar un problema</p>
+                                <a href="mailto:devminds44@gmail.com" className="font-normal">Reportar un problema</a>
                             </div>
                         </div>
                     </div>
