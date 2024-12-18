@@ -13,18 +13,18 @@ export default function Page() {
     return (<>
         <Header />
         <main>
-            <div className="p-20 m-24">
-                <h1 className={`${inria.className} text-center text-7xl`}>Bienvenido al evaluador basado en proyectos</h1>
-                <h1 className={`${inria.className} text-center text-7xl italic`}>P-MO</h1>
+            <div className="lg:p-20 md:p-10 p-2 lg:m-24 md:m-12 m-3">
+                <h1 className={`${inria.className} text-center lg:text-7xl text-5xl`}>Bienvenido al evaluador basado en proyectos</h1>
+                <h1 className={`${inria.className} text-center lg:text-7xl text-5xl italic`}>P-MO</h1>
             </div>
             <Divider className="border-solid" />
-            <div className="flex-col m-24 space-y-4">
+            <div className="flex-col m-20 space-y-4">
                 <h1 className={`${inria.className} text-center text-5xl font-bold`}>Propósito</h1>
                 <p className={`${bricolage.className} italic text-center text-xl`}>P-MO fue desarrollado para facilitar la gestión organizativa de los docentes de la materia de Taller de Ingeniería de Software</p>
             </div>
             <div className="flex w-full justify-between p-4">
                 <div className="w-1/3 space-y-4">
-                    <h1 id="project-scroll" className={`${inria.className} text-5xl font-bold`}>Funcionalidades</h1>
+                    <h1 id="project-scroll" className={`${inria.className} md:text-5xl text-4xl font-bold`}>Funcionalidades</h1>
                     <Listbox className={`${bricolage.className}`} aria-label="Features" variant="flat" onAction={(key:any) => setFunctionImage(key)}>
                         <ListboxItem key="/proyecto-slide.png" className="p-4 mb-2">
                             <p id="space-scroll" className="text-3xl font-bold scroll-mt-[90px]">Proyectos</p>
