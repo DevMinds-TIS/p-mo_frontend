@@ -127,10 +127,10 @@ module.exports = {
               focus: "#006AD9",
             },
             success: {
-              DEFAULT: "#EA6611",
+              DEFAULT: "#003770",
               foreground: "#F2F0E3",
-              light: "#EA6611",
-              background: "#EA6611",
+              light: "#003770",
+              background: "#003770",
             },
             warning: "#FE7F2D",
             danger: {
