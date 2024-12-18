@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
       localStorage.removeItem('token');
-      router.push('/landing');
+      router.push('/');
 
 
       console.log('Cierre de sesión exitoso');

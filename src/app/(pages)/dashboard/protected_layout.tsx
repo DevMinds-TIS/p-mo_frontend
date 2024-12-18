@@ -11,7 +11,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                router.push('/landing');
+                router.push('/');
             } else {
                 setLoading(false);
             }
