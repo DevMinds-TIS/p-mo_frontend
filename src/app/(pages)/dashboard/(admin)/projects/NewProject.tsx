@@ -8,6 +8,8 @@ import {
     Button,
     useDisclosure,
     Input,
+    RangeValue,
+    DateValue,
 } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
@@ -43,7 +45,9 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
     const [projectName, setProjectName] = useState("");
     const [projectCode, setProjectCode] = useState("");
-    const [dateRange, setDateRange] = useState<{ start: string | null; end: string | null }>({ start: null, end: null });
+    const [dateRange, setDateRange] = useState<{ value: RangeValue<DateValue> | null }>({
+        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
+    });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
     const [invitationError, setInvitationError] = useState<string | null>(null); // Error for invitation file
@@ -112,8 +116,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         formData.append("nameproject", projectName);
         formData.append("codeproject", projectCode);
 
-        const startProjectDate = dateRange.start ? new Date(dateRange.start) : null;
-        const endProjectDate = dateRange.end ? new Date(dateRange.end) : null;
+        const startProjectDate = dateRange?.value?.start ? new Date(dateRange?.value?.start.toString()) : null;
+        const endProjectDate = dateRange?.value?.end ? new Date(dateRange?.value?.end.toString()) : null;
 
         const termProject = calculateTermProject(startProjectDate, endProjectDate);
 
@@ -206,9 +210,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                             maxValue={maxDate}
                                             visibleMonths={3}
                                             pageBehavior="single"
-                                            onChange={(range) =>
-                                                setDateRange({ start: range.start.toString(), end: range.end.toString() })
-                                            }
+                                            onChange={(value) => setDateRange({ value })}
                                         />
                                     </I18nProvider>
                                     <div className="space-y-2">
