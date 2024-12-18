@@ -4,9 +4,11 @@ import { Alert, Divider, Listbox, ListboxItem } from "@nextui-org/react";
 import { useAlert } from "@/contexts/AlertContext";
 import Image from "next/image";
 import Header from "./(pages)/landing/Header";
+import { useState } from "react";
 
 export default function Page() {
     const { alertTitle, alertDescription, alertVisible, alertColor, hideAlert } = useAlert();
+    const [ functionImage, setFunctionImage ] = useState<string>("/proyecto-slide.png");
 
     return (<>
         <Header />
@@ -23,24 +25,24 @@ export default function Page() {
             <div className="flex w-full justify-between p-4">
                 <div className="w-1/3 space-y-4">
                     <h1 id="project-scroll" className={`${inria.className} text-5xl font-bold`}>Funcionalidades</h1>
-                    <Listbox className={`${bricolage.className}`} aria-label="Features" variant="flat" onAction={(key) => alert(key)}>
-                        <ListboxItem key="projects" className="p-4 mb-2">
+                    <Listbox className={`${bricolage.className}`} aria-label="Features" variant="flat" onAction={(key:any) => setFunctionImage(key)}>
+                        <ListboxItem key="/proyecto-slide.png" className="p-4 mb-2">
                             <p id="space-scroll" className="text-3xl font-bold scroll-mt-[90px]">Proyectos</p>
                             <p>Puerta de inicio para todos los involucrados</p>
                         </ListboxItem>
-                        <ListboxItem key="spaces" className="p-4 mb-2">
+                        <ListboxItem key="/espacio-slide.png" className="p-4 mb-2">
                             <p id="team-scroll" className="text-3xl font-bold">Espacios</p>
                             <p>Puerta de inicio para los docentes</p>
                         </ListboxItem>
-                        <ListboxItem key="teams" className="p-4 mb-2">
+                        <ListboxItem key="/equipo-slide.png" className="p-4 mb-2">
                             <p id="add-member-scroll" className="text-3xl font-bold">Equipos</p>
                             <p>Puerta de inicio para los estudiantes</p>
                         </ListboxItem>
-                        <ListboxItem key="tests" className="p-4 mb-2">
+                        <ListboxItem key="/evaluacion-slide.png" className="p-4 mb-2">
                             <p className="text-3xl font-bold">Evaluaciones</p>
                             <p>Puerta de inicio para todos los involucrados</p>
                         </ListboxItem>
-                        <ListboxItem key="reports" className="p-4">
+                        <ListboxItem key="/reportes-slide.png" className="p-4">
                             <p className="text-3xl font-bold">Reportes</p>
                             <p>Recopilación de información clara y concisa</p>
                         </ListboxItem>
@@ -49,9 +51,9 @@ export default function Page() {
                 <div className="flex w-2/4 items-center">
                     <Image
                         alt="Pantallazo general de la aplicación"
-                        src={"/prueba.png"}
-                        width={100}
-                        height={100}
+                        src={functionImage}
+                        width={1280}
+                        height={720}
                         className="w-full rounded-xl border-5"
                     />
                 </div>
