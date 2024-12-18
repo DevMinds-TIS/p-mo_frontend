@@ -41,7 +41,7 @@ export default function LogIn() {
             await login(email, passwd);
             showAlert("¡Inicio de sesión exitoso!", "", "success");
             onClose();
-            router.push('/');
+            router.push('/profile');
         } catch (error) {
             console.error('Error:', error);
             showAlert("Error al iniciar sesión.", "Correo o contraseña inválidos. Por favor, inténtelo de nuevo.", "danger");

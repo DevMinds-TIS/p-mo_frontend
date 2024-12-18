@@ -92,7 +92,7 @@ export default function TeacherSignIn({ onClose }: { onClose: () => void }) {
             await registerTeacher(userData);
             showAlert("¡Registro exitoso!", "El usuario ha sido creado exitosamente y ha iniciado sesión.", "success");
             onClose();
-            router.push('/dashboard/profile');
+            router.push('/profile');
         } catch (error) {
             console.error('Error:', error);
             showAlert("Error de registro", "Error al registrar el docente. Por favor, intente de nuevo.", "danger");

@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+import { ThemeSwitcher } from "@/app/ThemeSwitcher";
+import LogIn from "../../_lib/components/topBar/auth/LogIn";
+
+export default function Landing(){
+    return(
+        <section>
+            {/* <div className="flex justify-center p-2">
+                <ThemeSwitcher/>
+            </div> */}
+            {/* <LogIn/> */}
+            Hola mundo
+        </section>    
+=======
 'use client';
 import { Divider } from "@nextui-org/react";
 import Image from "next/image";
@@ -74,5 +88,6 @@ export default function Landing() {
                 </div>
             </div>
         </section>
+>>>>>>> develop
     );
 }

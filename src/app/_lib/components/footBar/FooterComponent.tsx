@@ -89,7 +89,7 @@ export default function FooterComponent() {
     const footerThemeClass = theme === "light" ? "bg-dark text-light" : "bg-light text-dark";
 
     return (
-        <section className={`border-t flex flex-col w-full gap-2 ${bricolage.className} ${footerThemeClass}`}>
+        <section className={`border-t flex flex-col w-full h-screen gap-2 ${bricolage.className} ${footerThemeClass}`}>
             <div className="w-1/2 flex flex-col gap-2 p-4">
                 <h1 className={`${inria.className} font-bold text-4xl`}>
                     Project Management Officer
@@ -107,11 +107,10 @@ export default function FooterComponent() {
                                     Enlaces
                                 </h1>
                                 <div className="flex gap-2">
-                                    <Link href={"#"}></Link>
-                                        <BankIcon size={25} />
-                                    <Globe02Icon size={25} />
-                                    <CourtHouseIcon size={25} />
-                                    <Github01Icon size={25} />
+                                    <BankIcon size={25}/>
+                                    <Globe02Icon size={25}/>
+                                    <CourtHouseIcon size={25}/>
+                                    <Github01Icon size={25}/>
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-2">
@@ -151,8 +150,8 @@ export default function FooterComponent() {
                         <p className="flex items-center gap-1">Todos los derechos reservados <Copyright size={32} weight="fill" /> 2024</p>
                     </div>
                 </div>
-                <div className="w-[30%] p-2 flex justify-center">
-                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={80} height={80} className="w-64" />
+                <div className="w-[30%] p-2">
+                    <Image src="/p-mo.svg" alt="Logo de la aplicación" width={100} height={100} className="w-full" />
                 </div>
             </div>
         </section>

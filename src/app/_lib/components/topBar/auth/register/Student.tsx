@@ -1,17 +1,20 @@
 "use client";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Avatar, Button, Input, Select, SelectedItems, SelectItem, SharedSelection } from "@nextui-org/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import { useRouter } from 'next/navigation';
 import userStudent from "@/app/_lib/landing/useUserForm";
 import React, { useEffect, useState } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlert } from "@/contexts/AlertContext";
+import { useTeacherList } from "@/contexts/TeacherListContext";
+import { User } from '@/types/User';
 
 export default function StudentSignIn({ onClose }: { onClose: () => void }) {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
     const router = useRouter();
-    const { registerStudent, fetchTeachers } = useAuth();
+    const { registerStudent } = useAuth();
     const { showAlert } = useAlert();
+    const { teachers } = useTeacherList();
     const {
         email,
         setEmail,
@@ -46,10 +49,6 @@ export default function StudentSignIn({ onClose }: { onClose: () => void }) {
     } = userStudent();
 
     const [isLoading, setIsLoading] = useState(false);
-
-    type Teacher = { key: number; label: string; };
-
-    const [teachers, setTeachers] = useState<Teacher[]>([]);
     const [docenteId, setDocenteId] = useState<number | null>(null);
     const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
     const [isInvalidUMSSEmail, setIsInvalidUMSSEmail] = useState(false);
@@ -64,17 +63,25 @@ export default function StudentSignIn({ onClose }: { onClose: () => void }) {
     };
 
     useEffect(() => {
-        const loadTeachers = async () => {
-            try {
-                const teachersList = await fetchTeachers();
-                setTeachers(teachersList);
-            } catch (error) {
-                console.error('Error al obtener los docentes:', error);
-            }
-        };
+        if (teachers && teachers.length > 0) {
+            console.log('Teachers loaded:', teachers);
+        }
+    }, [teachers]);
 
-        loadTeachers();
-    }, [fetchTeachers]);
+    const handleSelectionChange = (keys: SharedSelection) => {
+        if (keys === "all") {
+            setSelectedKeys(new Set<string>());
+        } else {
+            setSelectedKeys(new Set(keys as Set<string>));
+            const key = Array.from(keys)[0];
+            const selectedTeacher = teachers?.find(teacher => teacher.ID_Usuario.toString() === key);
+            if (selectedTeacher) {
+                setDocenteId(selectedTeacher.ID_Usuario);
+            } else {
+                console.error('Error: El valor seleccionado no corresponde a ningún docente válido.');
+            }
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -100,7 +107,7 @@ export default function StudentSignIn({ onClose }: { onClose: () => void }) {
             await registerStudent(userData);
             showAlert("¡Registro exitoso!", "El usuario ha sido creado exitosamente y ha iniciado sesión.", "success");
             onClose();
-            router.push('/');
+            router.push('/profile');
         } catch (error) {
             console.error('Error:', error);
             showAlert("Error al registrar", "Error al registrar el estudiante. Por favor, intente de nuevo.", "danger");
@@ -196,27 +203,53 @@ export default function StudentSignIn({ onClose }: { onClose: () => void }) {
                     }
                 }}
             />
-            <Select
-                label="Docente"
-                placeholder="Seleccione a su tutor/docente"
-                selectedKeys={selectedKeys}
-                onSelectionChange={(keys) => {
-                    setSelectedKeys(keys as Set<string>);
-                    const key = Array.from(keys)[0];
-                    const selectedTeacher = teachers.find(teacher => teacher.key.toString() === key);
-                    if (selectedTeacher) {
-                        setDocenteId(selectedTeacher.key);
-                    } else {
-                        console.error('Error: El valor seleccionado no corresponde a ningún docente válido.');
-                    }
-                }}
-            >
-                {teachers.map((teacher: Teacher) => (
-                    <SelectItem key={teacher.key.toString()} value={teacher.key.toString()}>
-                        {teacher.label}
-                    </SelectItem>
-                ))}
-            </Select>
+            <div>
+                <Select
+                    classNames={{
+                        base: "w-full",
+                        trigger: "h-12",
+                    }}
+                    label="Docente"
+                    placeholder="Seleccione a su tutor/docente"
+                    labelPlacement="outside"
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={handleSelectionChange}
+                    renderValue={(items: SelectedItems<User>) => {
+                        return Array.from(items).map((item) => {
+                            const selectedTeacher = teachers?.find(teacher => teacher.ID_Usuario.toString() === item.key);
+                            return selectedTeacher ? (
+                                <div key={selectedTeacher.ID_Usuario} className="flex items-center gap-2">
+                                    <Avatar
+                                        name={`${selectedTeacher?.Nombre?.[0] || ''}${selectedTeacher?.Apellido?.[0] || ''}`}
+                                        src={selectedTeacher?.Perfil ? `${storageUrl}/${selectedTeacher.Perfil}` : undefined}
+                                        size="md"
+                                    />
+                                    <div className="flex flex-col">
+                                        <span>{selectedTeacher.Nombre} {selectedTeacher.Apellido}</span>
+                                        <span className="text-default-500 text-tiny">({selectedTeacher.Correo})</span>
+                                    </div>
+                                </div>
+                            ) : null;
+                        });
+                    }}
+                >
+                    {teachers?.map((teacher) => (
+                        <SelectItem key={teacher.ID_Usuario.toString()} textValue={teacher.Nombre}>
+                            <div className="flex gap-2 items-center">
+                                <Avatar
+                                    name={!teacher?.Perfil ? `${teacher?.Nombre?.[0] || ''}${teacher?.Apellido?.[0] || ''}` : undefined}
+                                    src={teacher?.Perfil ? `${storageUrl}/${teacher.Perfil}` : undefined}
+                                    size="md"
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-small">{teacher.Nombre} {teacher.Apellido}</span>
+                                    <span className="text-tiny text-default-400">{teacher.Correo}</span>
+                                </div>
+                            </div>
+                        </SelectItem>
+                    )) ?? []}
+                </Select>
+            </div>
             {isLoading ? (
                 <Button isLoading className="w-full h-14 text-light" color="success">
                     Registrando estudiante...
