@@ -34,7 +34,7 @@ export default function EditProject({ onNewProject }: NewProjectProps) {
 
     const [projectName, setProjectName] = useState("");
     const [projectCode, setProjectCode] = useState("");
-    const [dateRange, setDateRange] = useState<{ start: string | null, end: string | null }>({ start: null, end: null });
+    const [dateRange, setDateRange] = useState<{ start: string | null | undefined, end: string | null | undefined }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
 
@@ -153,7 +153,7 @@ export default function EditProject({ onNewProject }: NewProjectProps) {
                                             maxValue={maxDate}
                                             visibleMonths={3}
                                             pageBehavior="single"
-                                            onChange={(range) => setDateRange({ start: range.start.toString(), end: range.end.toString() })}
+                                            onChange={(range) => setDateRange({ start: range?.start.toString(), end: range?.end.toString() })}
                                         />
                                     </I18nProvider>
                                     <div className="space-y-2">
