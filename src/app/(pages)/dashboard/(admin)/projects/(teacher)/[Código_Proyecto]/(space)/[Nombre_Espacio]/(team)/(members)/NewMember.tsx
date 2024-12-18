@@ -317,7 +317,7 @@ export default function NewMember({ params, onNewMember }: NewMemberProps) {
                                 )}
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
+                                <Button type="submit" className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold">
                                     Agregar
                                 </Button>
                             </ModalFooter>

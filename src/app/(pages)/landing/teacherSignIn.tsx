@@ -218,21 +218,21 @@ export default function TeacherSignIn() {
                     >
                     </Input>
                     <Button
-                        className="text-white bg-[#ff9b5a] h-14"
+                        className="text-white bg-[#2E6CB5] h-14"
                         isDisabled={!isRequestEnabled || isRequestSent}
                         onClick={handleRequestCode}
                     >
                         Solicitar
                     </Button>
                 </div>
-                <Button
-                    type="submit"
-                    isDisabled={!isSingupValid || isInvalidUMSSTeacherEmail}
-                    className="w-full h-14 bg-[#FF9B5A] text-white"
-                >
-                    Unirse
-                </Button>
-            </form>
+            <Button
+                type="submit"
+                isDisabled={!isSingupValid || isInvalidUMSSTeacherEmail}
+                className="w-full h-14 bg-[#2E6CB5] text-white"
+            >
+                Unirse
+            </Button>
+        </form>
 
             {/* Mostrar el modal de error si hay mensaje */}
             {errorMessage && <ErrorModal message={errorMessage} onClose={() => setErrorMessage('')} />}

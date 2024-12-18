@@ -176,7 +176,7 @@ export default function AdminSignIn() {
                                         type={isVisible ? "text" : "password"}
                                         maxLength={20}
                                     />
-                                    <Button type="submit" isDisabled={!isSingupValid} className="w-full h-14 bg-[#FF9B5A] text-white">
+                                    <Button type="submit" isDisabled={!isSingupValid} className="w-full h-14 bg-[#2E6CB5] text-white">
                                         Unirse
                                     </Button>
                                     {/* Error Modal */}

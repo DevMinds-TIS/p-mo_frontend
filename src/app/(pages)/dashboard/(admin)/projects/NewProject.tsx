@@ -225,7 +225,7 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                 <ModalFooter>
                                     <Button
                                         type="submit"
-                                        className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold"
+                                        className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold"
                                         isDisabled={
                                             !projectCode || // Código del proyecto vacío
                                             namespaceError !== "" || // Error en el código (espacios u otros)

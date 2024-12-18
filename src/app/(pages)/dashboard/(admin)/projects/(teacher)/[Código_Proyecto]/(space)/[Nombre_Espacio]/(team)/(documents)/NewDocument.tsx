@@ -198,7 +198,7 @@ export default function NewDocument({ params, onNewDocument }: NewDocumentProps)
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" className="w-full h-12 bg-[#FF9B5A] text-white text-lg font-bold">
+                                <Button type="submit" className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold">
                                     Guardar
                                 </Button>
                             </ModalFooter>

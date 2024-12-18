@@ -167,7 +167,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const userRoleId = user?.Roles?.[0]?.ID_Rol ?? 0;
   const filteredNavItems = getNavItems(userRoleId);
 
-
   return (
     <ProtectedLayout>
       <main className="h-screen overflow-hidden">
@@ -197,7 +196,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Popover con Perfil y Cerrar Sesión */}
               <Popover placement="right-end" className="gap-x-4">
                 <PopoverTrigger>
-                  <NavbarItem className="flex items-center gap-x-2 hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white hover:cursor-pointer p-2">
+                  <NavbarItem className="flex items-center gap-x-2 hover:scale-105 hover:bg-[#2e6cb5] hover:rounded-lg hover:text-white hover:cursor-pointer p-2">
                     <Avatar
                       name={!user?.Perfil ? `${user?.Nombre?.[0] || ''}${user?.Apellido?.[0] || ''}` : undefined}
                       src={user?.Perfil ? `${storageUrl}/${user.Perfil}` : undefined}
@@ -230,18 +229,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </PopoverContent>
               </Popover>
 
-
               {/* Botón de Modo Noche sin texto */}
               <ThemeSwitcher />
             </div>
           </Navbar>
 
-
           <section className="flex h-full overflow-hidden">
             <Navbar className={`flex flex-col ${isExpanded ? 'w-56 rounded-r-xl' : 'w-16'} border-r`} height={"100%"} classNames={{ wrapper: "flex flex-col h-full px-0 gap-0" }}>
               <NavbarContent className="flex flex-col w-auto p-4" style={{ justifyContent: 'space-between' }}>
                 {filteredNavItems.map((item: { href: string, icon: any, label: string }, index: number) => (
-                  <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#FE7F2D] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#EA6611] rounded-lg text-white" : ""}`}>
+                  <NavbarItem key={index} className={`flex content-center ${isExpanded ? 'w-full' : 'w-auto'} hover:scale-105 hover:bg-[#2e6cb5] hover:rounded-lg hover:text-white p-2 ${pathName && pathName.startsWith(item.href) ? "bg-[#1c4778] rounded-lg text-white" : ""}`}>
                     <Link href={item.href} className="flex items-center w-full gap-x-2" color="foreground">
                       {renderIcon(item.icon)}
                       <p className={`text-xl ${isExpanded ? 'block' : 'hidden'}`}>{item.label}</p>

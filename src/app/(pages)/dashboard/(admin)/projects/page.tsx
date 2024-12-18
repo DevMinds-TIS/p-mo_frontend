@@ -181,7 +181,7 @@ export default function ProjectsPage() {
                                         } ${isTeacher || isStudent
                                             ? "rounded-lg"
                                             : "none"
-                                        } bg-[#ff9b5a] p-2`}
+                                        } bg-[#2E6CB5] p-2`}
                                 >
                                     <FolderLinksIcon size={30} color="#FFF" />
                                     <span className="text-white">
@@ -192,7 +192,7 @@ export default function ProjectsPage() {
                                     <Popover placement="right" backdrop="blur">
                                         <PopoverTrigger>
                                             <Button
-                                                className="min-w-0 p-2 items-center rounded-r-lg bg-[#ff9b5a]"
+                                                className="min-w-0 p-2 items-center rounded-r-lg bg-[#2E6CB5]"
                                                 size="lg"
                                                 radius="none"
                                             >
