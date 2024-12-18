@@ -107,8 +107,7 @@ export default function FooterComponent() {
                                     Enlaces
                                 </h1>
                                 <div className="flex gap-2">
-                                    <Link href={"#"}></Link>
-                                        <BankIcon size={25} />
+                                    <BankIcon size={25} />
                                     <Globe02Icon size={25} />
                                     <CourtHouseIcon size={25} />
                                     <Github01Icon size={25} />
