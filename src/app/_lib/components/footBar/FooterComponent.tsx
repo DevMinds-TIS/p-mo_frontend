@@ -107,10 +107,18 @@ export default function FooterComponent() {
                                     Enlaces
                                 </h1>
                                 <div className="flex gap-2">
-                                    <BankIcon size={25} />
-                                    <Globe02Icon size={25} />
-                                    <CourtHouseIcon size={25} />
-                                    <Github01Icon size={25} />
+                                    <a href="https://www.bnb.com.bo/" target="_blank">
+                                        <BankIcon size={25} />
+                                    </a>
+                                    <a href="https://www.facebook.com/" target="_blank">
+                                        <Globe02Icon size={25} />
+                                    </a>
+                                    <a href="https://www.umss.edu.bo/" target="_blank">
+                                        <CourtHouseIcon size={25} />
+                                    </a>
+                                    <a href="https://www.github.com/DevMinds-TIS" target="_blank">
+                                        <Github01Icon size={25} />
+                                    </a>
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-2">
