@@ -30,7 +30,7 @@ const ErrorModal: React.FC<ModalProps> = ({ message, onClose, className }) => {
             </div>
             <button
               onClick={handleClose}
-              className="mt-6 mx-auto block px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center justify-center space-x-2"
+              className="mt-6 mx-auto block px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 items-center justify-center space-x-2"
             >
               <span>Cerrar</span>
             </button>

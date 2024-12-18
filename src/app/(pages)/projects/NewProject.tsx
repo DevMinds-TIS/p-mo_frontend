@@ -27,6 +27,8 @@ export default function NewProject() {
     const [dateRange, setDateRange] = useState<{ start: string | null, end: string | null }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
+    const [invitationError, setInvitationError] = useState<string | null>(null);
+    const [specificationError, setSpecificationError] = useState<string | null>(null);
 
     useEffect(() => {
         validateForm();
@@ -34,41 +36,73 @@ export default function NewProject() {
 
     const validateForm = () => {
         let formErrors: { [key: string]: string } = {};
-    
+
         // Validación de nombre del proyecto
         if (!projectName) {
             formErrors["projectName"] = "El nombre del proyecto es obligatorio.";
         } else if (projectName.length < 7) {
             formErrors["projectName"] = "El nombre del proyecto debe tener al menos 7 caracteres.";
         }
-    
+
         // Validación de código del proyecto
         if (!projectCode) {
             formErrors["projectCode"] = "El código del proyecto es obligatorio.";
         } else if (projectCode.includes(" ")) {
             formErrors["projectCode"] = "El código del proyecto no debe tener espacios.";
         }
-    
+
         // Validación del tamaño del archivo de invitación
         if (invitationFile && invitationFile.size > 2 * 1024 * 1024) {
             formErrors["invitationFile"] = "El archivo de invitación no debe ser mayor a 2 MB.";
         }
-    
+
         // Validación del tamaño del archivo de especificaciones
         if (specificationFile && specificationFile.size > 2 * 1024 * 1024) {
             formErrors["specificationFile"] = "El archivo de especificaciones no debe ser mayor a 2 MB.";
         }
-    
+
         setErrors(formErrors);
         setIsFormValid(Object.keys(formErrors).length === 0);
-    };    
+    };
+
+    const handleFileValidation = (file: File | null, setError: React.Dispatch<React.SetStateAction<string | null>>): File | null => {
+        if (file) {
+            if (file.type !== "application/pdf") {
+                setError("Solo se permiten archivos en formato PDF.");
+                return null;
+            } else {
+                setError(null);
+                return file;
+            }
+        }
+        return null;
+    };
+
+    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
+
+    const handleNamespaceChange = (value: string) => {
+        if (/\s/.test(value)) {
+            setNamespaceError("El código no puede contener espacios.");
+        } else {
+            setNamespaceError("");
+        }
+        setProjectCode(value);
+    };
+
+    // const handleInvitationFileChange = (newFile: File | null) => {
+    //     setInvitationFile(newFile);
+    // };
+
+    // const handleSpecificationFileChange = (newFile: File | null) => {
+    //     setSpecificationFile(newFile);
+    // };
 
     const handleInvitationFileChange = (newFile: File | null) => {
-        setInvitationFile(newFile);
+        setInvitationFile(handleFileValidation(newFile, setInvitationError));
     };
 
     const handleSpecificationFileChange = (newFile: File | null) => {
-        setSpecificationFile(newFile);
+        setSpecificationFile(handleFileValidation(newFile, setSpecificationError));
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -154,9 +188,11 @@ export default function NewProject() {
                                     label="Código del proyecto"
                                     placeholder="Escribe el código del proyecto"
                                     value={projectCode}
-                                    onChange={(e) => setProjectCode(e.target.value)}
+                                    // onChange={(e) => setProjectCode(e.target.value)}
+                                    onChange={(e) => handleNamespaceChange(e.target.value)}
                                     errorMessage={errors["projectCode"]}
                                 />
+                                {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -178,12 +214,14 @@ export default function NewProject() {
                                 <div className="space-y-2">
                                     <p>Invitación del proyecto</p>
                                     <FileUpload onChange={handleInvitationFileChange} />
-                                    {errors["invitationFile"] && <span className="text-foreground">{errors["invitationFile"]}</span>}
+                                    {invitationError && <p className="text-red-500 text-sm mt-1">{invitationError}</p>}
+                                    {/* {errors["invitationFile"] && <span className="text-foreground">{errors["invitationFile"]}</span>} */}
                                 </div>
                                 <div className="space-y-2">
                                     <p>Pliego de especificaciones del proyecto</p>
                                     <FileUpload onChange={handleSpecificationFileChange} />
-                                    {errors["specificationFile"] && <span className="text-foreground">{errors["specificationFile"]}</span>}
+                                    {specificationError && <p className="text-red-500 text-sm mt-1">{specificationError}</p>}
+                                    {/* {errors["specificationFile"] && <span className="text-foreground">{errors["specificationFile"]}</span>} */}
                                 </div>
                             </DrawerBody>
                             <DrawerFooter>
@@ -192,7 +230,15 @@ export default function NewProject() {
                                         Creando proyecto...
                                     </Button>
                                 ) : (
-                                    <Button color="success" className="w-full h-12" type="submit" isDisabled={!isFormValid}>
+                                    <Button color="success" className="w-full h-12" type="submit" isDisabled={
+                                        !isFormValid ||
+                                        !projectCode ||
+                                        namespaceError !== "" ||
+                                        invitationError !== null ||
+                                        specificationError !== null ||
+                                        invitationFile?.type !== "application/pdf" ||
+                                        specificationFile?.type !== "application/pdf"
+                                    }>
                                         Crear proyecto
                                     </Button>
                                 )}
@@ -201,6 +247,6 @@ export default function NewProject() {
                     </>
                 </DrawerContent>
             </Drawer>
-        </section>
+        </section >
     );
 }
