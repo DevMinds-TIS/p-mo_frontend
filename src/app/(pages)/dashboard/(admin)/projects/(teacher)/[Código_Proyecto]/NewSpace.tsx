@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, DateRangePicker } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, DateRangePicker, RangeValue } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { parseDate, isWeekend, DateValue } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
@@ -83,13 +83,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [project, setProject] = useState<Project | null>(null);
     const [namespace, setNamespace] = useState<string>("");
-    const [dateRange, setDateRange] = useState<{ start: DateValue; end: DateValue }>({
-        start: parseDate(new Date().toISOString().split('T')[0]),
-        end: parseDate(new Date().toISOString().split('T')[0]),
+    const [dateRange, setDateRange] = useState<{ value: RangeValue<DateValue> | null }>({
+        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
     });
-    const [registrationRange, setRegistrationRange] = useState<{ start: DateValue; end: DateValue }>({
-        start: parseDate(new Date().toISOString().split('T')[0]),
-        end: parseDate(new Date().toISOString().split('T')[0]),
+    const [registrationRange, setRegistrationRange] = useState<{ value: RangeValue<DateValue> | null }>({
+        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
     });
     const [limitspace, setLimitspace] = useState<number | null>(null);
     const [limitMessage, setLimitMessage] = useState<string>("");
@@ -136,10 +134,10 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
         }
         const formData = new FormData();
         formData.append("namespace", namespace);
-        formData.append("startspace", dateRange.start ? dateRange.start.toString() : "");
-        formData.append("endspace", dateRange.end ? dateRange.end.toString() : "");
-        formData.append("starregistrationspace", registrationRange.start ? registrationRange.start.toString() : "");
-        formData.append("endregistrationspace", registrationRange.end ? registrationRange.end.toString() : "");
+        formData.append("startspace", dateRange?.value?.start ? dateRange?.value?.start.toString() : "");
+        formData.append("endspace", dateRange?.value?.end ? dateRange?.value?.end.toString() : "");
+        formData.append("starregistrationspace", registrationRange?.value?.start ? registrationRange?.value?.start.toString() : "");
+        formData.append("endregistrationspace", registrationRange?.value?.end ? registrationRange?.value?.end.toString() : "");
         formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");
         if (project) {
             formData.append("idproject", project.ID_Proyecto.toString());
@@ -215,7 +213,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={3}
                                         pageBehavior="single"
-                                        onChange={setDateRange}
+                                        onChange={(value) => setDateRange({ value })}
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
@@ -228,7 +226,7 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={2}
                                         pageBehavior="single"
-                                        onChange={setRegistrationRange}
+                                        onChange={(value) => setRegistrationRange({ value })}
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
