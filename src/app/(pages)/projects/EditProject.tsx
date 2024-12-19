@@ -32,8 +32,8 @@ export default function EditProject({ project }: EditProjectProps) {
     const [projectName, setProjectName] = useState(project.Nombre_Proyecto);
     const [projectCode, setProjectCode] = useState(project.Código_Proyecto);
     const [dateRange, setDateRange] = useState<{ start: string | null, end: string | null }>({
-        start: project.Fecha_Inicio || "",
-        end: project.Fecha_Fin || ""
+        start: project.Fecha_Inicio || null,
+        end: project.Fecha_Fin || null
     });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
@@ -211,6 +211,10 @@ export default function EditProject({ project }: EditProjectProps) {
                                         maxValue={maxDate}
                                         visibleMonths={3}
                                         pageBehavior="single"
+                                        value={{
+                                            start: dateRange.start ? parseDate(dateRange.start) : parseDate(minDate.toString()),
+                                            end: dateRange.end ? parseDate(dateRange.end) : parseDate(maxDate.toString())
+                                        }}
                                         onChange={(range) => {
                                             if (range) {
                                                 setDateRange({

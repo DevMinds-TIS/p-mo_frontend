@@ -14,25 +14,29 @@ const DocumentContext = createContext<DocumentContextProps | undefined>(undefine
 
 export const DocumentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [documents, setDocuments] = useState<Document[]>([]);
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState<string | null>(null);
 
     const fetchDocuments = useCallback(async () => {
-        const storedDocuments = localStorage.getItem('documents');
-        if (storedDocuments) {
-            setDocuments(JSON.parse(storedDocuments));
-        } else {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/documents`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const data = await response.json();
-            setDocuments(data.data);
-            localStorage.setItem('documents', JSON.stringify(data.data));
+        if (token) {
+            const storedDocuments = localStorage.getItem('documents');
+            if (storedDocuments) {
+                setDocuments(JSON.parse(storedDocuments));
+            } else {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/documents`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                setDocuments(data.data);
+                localStorage.setItem('documents', JSON.stringify(data.data));
+            }
         }
     }, [token]);
 
     useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
         fetchDocuments();
     }, [fetchDocuments]);
 
@@ -55,18 +59,20 @@ export const DocumentProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
 
     const deleteDocument = (documentId: number) => {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/documents/${documentId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(() => {
-            setDocuments(prevDocuments => {
-                const updatedDocuments = prevDocuments.filter(doc => doc.ID_Documento !== documentId);
-                localStorage.setItem('documents', JSON.stringify(updatedDocuments));
-                return updatedDocuments;
-            });
-        }).catch(err => console.error(err));
+        if (token) {
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/documents/${documentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(() => {
+                setDocuments(prevDocuments => {
+                    const updatedDocuments = prevDocuments.filter(doc => doc.ID_Documento !== documentId);
+                    localStorage.setItem('documents', JSON.stringify(updatedDocuments));
+                    return updatedDocuments;
+                });
+            }).catch(err => console.error(err));
+        }
     };
 
     return (
