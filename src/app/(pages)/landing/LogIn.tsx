@@ -1,14 +1,144 @@
+// "use client";
+// import Image from "next/image";
+// import {Button, Divider, Input, Link} from "@nextui-org/react";
+// import {EyeFilledIcon} from "@nextui-org/shared-icons";
+// import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
+// import React, { useState } from "react";
+// import userForms from "@/app/_lib/landing/useUserForm";
+// import SingUp from "./SingUp";
+// import { useRouter } from 'next/navigation';
+
+// export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
+//     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+//     const router = useRouter();
+//     const {
+//         email,
+//         setEmail,
+//         passwd,
+//         setPasswd,
+//         passwordError,
+//         isPasswdTouched,
+//         setIsPasswdTouched,
+//         isEmailTouched,
+//         setIsEmailTouched,
+//         isInvalidEmail,
+//         isInvalidPasswd,
+//         isLoginValid,
+//         isVisible,
+//         setIsVisible,
+//         toggleVisibility,
+//     } = userForms();
+
+//     const [errorMessage, setErrorMessage] = useState("");
+
+//     const handleLogin = async (e: { preventDefault: () => void; }) => {
+//         e.preventDefault();
+
+//         const loginData = {
+//             emailuser: email,
+//             passworduser: passwd,
+//         };
+
+//         try {
+//             const response = await fetch(`${backendUrl}/login`, {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify(loginData),
+//             });
+
+//             if (!response.ok) {
+//                 setErrorMessage("El correo o la contraseña son incorrectos.");
+//                 //throw new Error('Error al iniciar sesión');
+//                 return;
+//             }
+//             const result = await response.json();
+//             console.log('Inicio de sesión exitoso:', result);
+//             // Almacena el token en el localStorage
+//             localStorage.setItem('token', result.token);
+//             const userRequest = await fetch(`${backendUrl}/user`, {
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     Authorization: `Bearer ${result.token}`,
+//                 },
+//             });
+//             const userRequestData = await userRequest.json();
+//             setUser(userRequestData.data);
+//             // Redirige al dashboard u otra página
+//             router.push('/');
+//         } catch (error) {
+//             console.error('Error:', error);
+//             setErrorMessage("El correo o la contraseña son incorrectos.");
+//         }
+//     };
+
+//     return(
+//         <section className="gap-10 p-3">
+//             <div className="flex flex-col md:justify-center items-center self-center gap-4">
+//                 <h1 className="text-5xl">Inicia Sesión</h1>
+//                 <form onSubmit={handleLogin} className="w-full space-y-4">
+//                     <Input
+//                         value={email}
+//                         isClearable
+//                         type="email"
+//                         label="Correo Electrónico"
+//                         placeholder="Ingrese su correo electrónico"
+//                         isInvalid={isEmailTouched && isInvalidEmail}
+//                         errorMessage="Por favor, ingrese un correo electrónico valido"
+//                         onValueChange={(email) => {
+//                             setEmail(email);
+//                             setIsEmailTouched(true);
+//                             setErrorMessage("");
+//                         }}
+//                         maxLength={60}
+//                     />
+//                     <Input
+//                         value={passwd}
+//                         label="Contraseña"
+//                         placeholder="Ingrese su contraseña"
+//                         isInvalid={isPasswdTouched && isInvalidPasswd}
+//                         errorMessage={passwordError}
+//                         onValueChange={(passwd) => {
+//                             setPasswd(passwd);
+//                             setIsPasswdTouched(true);
+//                             setErrorMessage("");
+//                         }}
+//                         endContent={
+//                             <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+//                                 {isVisible ? (
+//                                     <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+//                                 ) : (
+//                                     <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+//                                 )}
+//                             </button>
+//                         }
+//                         type={isVisible ? "text" : "password"}
+//                         maxLength={20}
+//                     />
+//                     {errorMessage && (
+//                         <p className="text-red-500 text-sm text-center mt-2">{errorMessage}</p>
+//                     )}
+//                     <Button type="submit" isDisabled={!isLoginValid} className="w-full h-14 bg-[#2E6CB5] text-white">
+//                         Iniciar Sesión
+//                     </Button>
+//                 </form>
+//                 <Link href="#" className="h-8 text-[#777777]">¿Olvidó su contraseña?</Link>
+//             </div>
+//         </section>
+//     );
+// }
+
+
 "use client";
 import Image from "next/image";
-import {Button, Divider, Input, Link} from "@nextui-org/react";
-import {EyeFilledIcon} from "@nextui-org/shared-icons";
-import {EyeSlashFilledIcon} from "@nextui-org/shared-icons";
+import { Button, Input, Link } from "@nextui-org/react";
+import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import React, { useState } from "react";
 import userForms from "@/app/_lib/landing/useUserForm";
-import SingUp from "./SingUp";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
-export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
+export default function LogIn({ setUser }: { setUser: (user: any) => void }) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const router = useRouter();
     const {
@@ -30,9 +160,19 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
     } = userForms();
 
     const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // Manejo de estado de carga
 
-    const handleLogin = async (e: { preventDefault: () => void; }) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validación previa al envío
+        if (!isLoginValid) {
+            setErrorMessage("Por favor, complete todos los campos correctamente.");
+            return;
+        }
+
+        setIsLoading(true); // Bloquea el botón durante la solicitud
+        setErrorMessage(""); // Limpia mensajes de error previos
 
         const loginData = {
             emailuser: email,
@@ -41,39 +181,48 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
 
         try {
             const response = await fetch(`${backendUrl}/login`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(loginData),
             });
 
             if (!response.ok) {
-                setErrorMessage("El correo o la contraseña son incorrectos.");
-                //throw new Error('Error al iniciar sesión');
+                if (response.status === 401) {
+                    setErrorMessage("Correo o contraseña incorrectos.");
+                } else {
+                    setErrorMessage("Ocurrió un error en el servidor. Intente nuevamente.");
+                }
                 return;
             }
+
             const result = await response.json();
-            console.log('Inicio de sesión exitoso:', result);
-            // Almacena el token en el localStorage
-            localStorage.setItem('token', result.token);
+            localStorage.setItem("token", result.token);
+
             const userRequest = await fetch(`${backendUrl}/user`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${result.token}`,
                 },
             });
+
+            if (!userRequest.ok) {
+                throw new Error("Error al obtener datos del usuario.");
+            }
+
             const userRequestData = await userRequest.json();
             setUser(userRequestData.data);
-            // Redirige al dashboard u otra página
-            router.push('/');
+            router.push("/");
         } catch (error) {
-            console.error('Error:', error);
-            setErrorMessage("El correo o la contraseña son incorrectos.");
+            console.error("Error durante el inicio de sesión:", error);
+            setErrorMessage("Error de red o servidor. Intente nuevamente.");
+        } finally {
+            setIsLoading(false); // Habilita el botón nuevamente
         }
     };
 
-    return(
+    return (
         <section className="gap-10 p-3">
             <div className="flex flex-col md:justify-center items-center self-center gap-4">
                 <h1 className="text-5xl">Inicia Sesión</h1>
@@ -85,7 +234,7 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
                         label="Correo Electrónico"
                         placeholder="Ingrese su correo electrónico"
                         isInvalid={isEmailTouched && isInvalidEmail}
-                        errorMessage="Por favor, ingrese un correo electrónico valido"
+                        errorMessage="Por favor, ingrese un correo electrónico válido"
                         onValueChange={(email) => {
                             setEmail(email);
                             setIsEmailTouched(true);
@@ -105,7 +254,12 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
                             setErrorMessage("");
                         }}
                         endContent={
-                            <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                            <button
+                                className="focus:outline-none"
+                                type="button"
+                                onClick={toggleVisibility}
+                                aria-label="toggle password visibility"
+                            >
                                 {isVisible ? (
                                     <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
                                 ) : (
@@ -119,11 +273,17 @@ export default function LogIn({ setUser }: { setUser: (user: any) => void; }) {
                     {errorMessage && (
                         <p className="text-red-500 text-sm text-center mt-2">{errorMessage}</p>
                     )}
-                    <Button type="submit" isDisabled={!isLoginValid} className="w-full h-14 bg-[#2E6CB5] text-white">
-                        Iniciar Sesión
+                    <Button
+                        type="submit"
+                        isDisabled={!isLoginValid || isLoading}
+                        className="w-full h-14 bg-[#2E6CB5] text-white"
+                    >
+                        {isLoading ? "Cargando..." : "Iniciar Sesión"}
                     </Button>
                 </form>
-                <Link href="#" className="h-8 text-[#777777]">¿Olvidó su contraseña?</Link>
+                <Link href="#" className="h-8 text-[#777777]">
+                    ¿Olvidó su contraseña?
+                </Link>
             </div>
         </section>
     );
