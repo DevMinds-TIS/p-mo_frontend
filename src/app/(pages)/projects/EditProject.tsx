@@ -6,6 +6,7 @@ import { I18nProvider } from "@react-aria/i18n";
 import React, { useState, useEffect } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
 import { useUser } from '@/contexts/UserContext';
+import { useDocumentContext } from '@/contexts/DocumentContext';
 import { useProject } from '@/contexts/ProjectContext';
 import { useAlert } from "@/contexts/AlertContext";
 import { Project } from "@/types/Project";
@@ -23,6 +24,7 @@ export default function EditProject({ project }: EditProjectProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { showAlert } = useAlert();
     const [isLoading, setIsLoading] = useState(false);
+    const { documents, fetchDocuments } = useDocumentContext();
     const currentYear = new Date().getFullYear();
     const minDate = parseDate(`${currentYear}-01-01`);
     const maxDate = parseDate(`${currentYear}-12-31`);
@@ -35,9 +37,18 @@ export default function EditProject({ project }: EditProjectProps) {
     });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
+    const [invitationError, setInvitationError] = useState<string | null>(null);
+    const [specificationError, setSpecificationError] = useState<string | null>(null);
     const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
-    const existingInvitationFile = project.Documentos?.find(doc => doc.Nombre_Documento === 'Invitación del proyecto') || null;
-    const existingSpecificationFile = project.Documentos?.find(doc => doc.Nombre_Documento === 'Pliego de especificaciones') || null;
+
+    useEffect(() => {
+        fetchDocuments();
+    }, [fetchDocuments]);
+
+    const projectDocuments = documents.filter(doc => doc.ID_Proyecto === project.ID_Proyecto);
+
+    const existingInvitationFile = projectDocuments.find(doc => doc.Nombre_Documento === 'Invitación del proyecto') || null;
+    const existingSpecificationFile = projectDocuments.find(doc => doc.Nombre_Documento === 'Pliego de especificaciones') || null;
 
     const existingInvitationFileUrl = existingInvitationFile ? `${storageUrl}/${existingInvitationFile.Ruta_Documento}` : undefined;
     const existingSpecificationFileUrl = existingSpecificationFile ? `${storageUrl}/${existingSpecificationFile.Ruta_Documento}` : undefined;
@@ -49,26 +60,22 @@ export default function EditProject({ project }: EditProjectProps) {
     const validateForm = () => {
         let formErrors: { [key: string]: string } = {};
 
-        // Validación de nombre del proyecto
         if (!projectName) {
             formErrors["projectName"] = "El nombre del proyecto es obligatorio.";
         } else if (projectName.length < 7) {
             formErrors["projectName"] = "El nombre del proyecto debe tener al menos 7 caracteres.";
         }
 
-        // Validación de código del proyecto
         if (!projectCode) {
             formErrors["projectCode"] = "El código del proyecto es obligatorio.";
         } else if (projectCode.includes(" ")) {
             formErrors["projectCode"] = "El código del proyecto no debe tener espacios.";
         }
 
-        // Validación del tamaño del archivo de invitación
         if (invitationFile && invitationFile.size > 2 * 1024 * 1024) {
             formErrors["invitationFile"] = "El archivo de invitación no debe ser mayor a 2 MB.";
         }
 
-        // Validación del tamaño del archivo de especificaciones
         if (specificationFile && specificationFile.size > 2 * 1024 * 1024) {
             formErrors["specificationFile"] = "El archivo de especificaciones no debe ser mayor a 2 MB.";
         }
@@ -77,12 +84,37 @@ export default function EditProject({ project }: EditProjectProps) {
         setIsFormValid(Object.keys(formErrors).length === 0);
     };
 
+
+    const handleFileValidation = (file: File | null, setError: React.Dispatch<React.SetStateAction<string | null>>): File | null => {
+        if (file) {
+            if (file.type !== "application/pdf") {
+                setError("Solo se permiten archivos en formato PDF.");
+                return null;
+            } else {
+                setError(null);
+                return file;
+            }
+        }
+        return null;
+    };
+
+    const [namespaceError, setNamespaceError] = useState<string>("");
+
+    const handleNamespaceChange = (value: string) => {
+        if (/\s/.test(value)) {
+            setNamespaceError("El código no puede contener espacios.");
+        } else {
+            setNamespaceError("");
+        }
+        setProjectCode(value);
+    };
+
     const handleInvitationFileChange = (newFile: File | null) => {
-        setInvitationFile(newFile);
+        setInvitationFile(handleFileValidation(newFile, setInvitationError));
     };
 
     const handleSpecificationFileChange = (newFile: File | null) => {
-        setSpecificationFile(newFile);
+        setSpecificationFile(handleFileValidation(newFile, setSpecificationError));
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -195,7 +227,7 @@ export default function EditProject({ project }: EditProjectProps) {
                                         onChange={handleInvitationFileChange}
                                         existingFile={existingInvitationFile ? { name: existingInvitationFile.Nombre_Documento, url: existingInvitationFileUrl as string } : null}
                                     />
-                                    {errors["invitationFile"] && <span className="text-foreground">{errors["invitationFile"]}</span>}
+                                    {invitationError && <p className="text-danger text-sm mt-1">{invitationError}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <p>Pliego de especificaciones del proyecto</p>
