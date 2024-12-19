@@ -1,101 +1,40 @@
+"use client";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input, DateRangePicker, RangeValue } from "@nextui-org/react";
 import { AddSquareIcon } from "hugeicons-react";
 import { parseDate, isWeekend, DateValue } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
-import ErrorModal from "@/app/mensajes"; // Import the ErrorModal
-
-type Project = {
-    ID_Proyecto: number;
-    Código_Proyecto: string;
-    Fecha_Inicio: string;
-    Fecha_Fin: string;
-};
-
-type Space = {
-    ID_Espacio: number;
-    ID_Proyecto: number;
-    ID_Usuario: number;
-    Nombre_Espacio: string;
-    Usuario: User;
-    Inscritos: number;
-};
-
-type Role = {
-    ID_Rol: number;
-    Nombre_Rol: string;
-};
-
-type User = {
-    data: User;
-    ID_Usuario: number;
-    Roles: Role[];
-    Nombre: string;
-    Apellido: string;
-    Correo: string;
-    Perfil: string;
-};
+import { useUser } from '@/contexts/UserContext';
+import { useProject } from '@/contexts/ProjectContext';
+import { useSpaceContext } from '@/contexts/SpaceContext';
+import { Space } from "@/types/Space";
+import { Project } from "@/types/Project";
 
 type NewSpaceProps = {
     params: { Código_Proyecto: string };
     onNewSpace: (space: Space) => void;
 };
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-const fetchProjectByCode = async (code: string): Promise<Project | null> => {
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('No token found');
-    const response = await fetch(`${backendUrl}/projects`, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-    if (!response.ok) throw new Error('Error al obtener los proyectos');
-    const data = await response.json();
-    const projects: Project[] = data.data;
-
-    const project = projects.find((project) => project.Código_Proyecto === code);
-    return project || null;
-};
-
-const fetchUser = async (): Promise<User> => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('No token found');
-    }
-    const response = await fetch(`${backendUrl}/user`, {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Error al obtener los datos del usuario');
-    }
-    const data = await response.json();
-    return data.data;
-};
-
 export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const { user, fetchUser } = useUser();
+    const { projects, fetchProjects } = useProject();
+    const { addSpace } = useSpaceContext();
     const [project, setProject] = useState<Project | null>(null);
     const [namespace, setNamespace] = useState<string>("");
-    const [dateRange, setDateRange] = useState<{ value: RangeValue<DateValue> | null }>({
-        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
+    const [dateRange, setDateRange] = useState<{ start: DateValue | null, end: DateValue | null }>({
+        start: parseDate(new Date().toISOString().split('T')[0]),
+        end: parseDate(new Date().toISOString().split('T')[0])
     });
-    const [registrationRange, setRegistrationRange] = useState<{ value: RangeValue<DateValue> | null }>({
-        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
+    const [registrationRange, setRegistrationRange] = useState<{ start: DateValue | null, end: DateValue | null }>({
+        start: parseDate(new Date().toISOString().split('T')[0]),
+        end: parseDate(new Date().toISOString().split('T')[0])
     });
     const [limitspace, setLimitspace] = useState<number | null>(null);
     const [limitMessage, setLimitMessage] = useState<string>("");
     const [registered, setRegistered] = useState<File | null>(null);
-    const [user, setUser] = useState<User | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string>(""); // State for success message
-    const [errorMessage, setErrorMessage] = useState<string>(""); // State for error message
-    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
+    const [namespaceError, setNamespaceError] = useState<string>("");
 
     const handleNamespaceChange = (value: string) => {
         if (/\s/.test(value)) {
@@ -111,61 +50,46 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const projectData = await fetchProjectByCode(params.Código_Proyecto);
-                setProject(projectData);
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            fetchUser(Number(userId));
+        }
+        fetchProjects();
+    }, [fetchUser, fetchProjects]);
 
-                const userData = await fetchUser();
-                setUser(userData);
-            } catch (error) {
-                console.error('Error al obtener los datos del proyecto o usuario:', error);
-            }
-        };
-        fetchData();
-    }, [params.Código_Proyecto]);
+    useEffect(() => {
+        const selectedProject = projects?.find(p => p.Código_Proyecto === params.Código_Proyecto);
+        setProject(selectedProject ?? null);
+    }, [projects, params.Código_Proyecto]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("No token found");
+        if (!user || !project) {
+            console.error("No user or project found");
             return;
         }
-        const formData = new FormData();
-        formData.append("namespace", namespace);
-        formData.append("startspace", dateRange?.value?.start ? dateRange?.value?.start.toString() : "");
-        formData.append("endspace", dateRange?.value?.end ? dateRange?.value?.end.toString() : "");
-        formData.append("starregistrationspace", registrationRange?.value?.start ? registrationRange?.value?.start.toString() : "");
-        formData.append("endregistrationspace", registrationRange?.value?.end ? registrationRange?.value?.end.toString() : "");
-        formData.append("limitspace", limitspace !== null ? limitspace.toString() : "");
-        if (project) {
-            formData.append("idproject", project.ID_Proyecto.toString());
-        }
-        if (user) {
-            formData.append("iduser", user.ID_Usuario.toString());
-        }
-        if (registered) {
-            formData.append("registered", registered);
-        }
-        console.log(formData);
+
+        const newSpace: Space = {
+            ID_Espacio: 0, // ID generado por el backend
+            ID_Proyecto: project.ID_Proyecto,
+            ID_Usuario: user.ID_Usuario,
+            Nombre_Espacio: namespace,
+            Inscritos: 0, // Se puede ajustar según la lógica
+            Fecha_Inicio: dateRange.start ? dateRange.start.toString() : "",
+            Fecha_Fin: dateRange.end ? dateRange.end.toString() : "",
+            Límite_Espacio: limitspace ?? 0,
+            Fecha_Inicio_Registro: registrationRange.start ? registrationRange.start.toString() : "",
+            Fecha_Fin_Registro: registrationRange.end ? registrationRange.end.toString() : "",
+            created_at: "", // Se completa en el backend
+            updated_at: ""  // Se completa en el backend
+        };
+
         try {
-            const response = await fetch(`${backendUrl}/spaces`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData,
-            });
-            if (!response.ok) {
-                throw new Error("Error al crear el espacio");
-            }
-            const result = await response.json();
-            console.log("Espacio creado exitosamente:", result.data);
-            onNewSpace(result.data);
-            setSuccessMessage("Espacio creado exitosamente."); // Set success message
+            addSpace(newSpace);
             onOpenChange();
+            onNewSpace(newSpace);
         } catch (error) {
             console.error("Error al crear el espacio:", error);
-            setErrorMessage("Error al crear el espacio."); // Set error message
         }
     };
 
@@ -204,7 +128,6 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                     className="mb-2"
                                 />
                                 {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
-
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -213,13 +136,13 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={3}
                                         pageBehavior="single"
-<<<<<<< HEAD:src/app/(pages)/dashboard/(admin)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
-                                        onChange={(value) => setDateRange({ value })}
-=======
-                                        // onChange={setDateRange}
->>>>>>> develop:src/app/(pages)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
-                                        minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
-                                        maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
+                                        value={{
+                                            start: dateRange.start ?? parseDate(new Date().toISOString().split('T')[0]),
+                                            end: dateRange.end ?? parseDate(new Date().toISOString().split('T')[0])
+                                        }}
+                                        onChange={(range) => setDateRange({ start: range?.start ?? null, end: range?.end ?? null })}
+                                        minValue={project ? parseDate(project.Fecha_Inicio ?? '') : undefined}
+                                        maxValue={project ? parseDate(project.Fecha_Fin ?? '') : undefined}
                                     />
                                 </I18nProvider>
                                 <I18nProvider locale="es-BO">
@@ -230,13 +153,13 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={2}
                                         pageBehavior="single"
-<<<<<<< HEAD:src/app/(pages)/dashboard/(admin)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
-                                        onChange={(value) => setRegistrationRange({ value })}
-=======
-                                        // onChange={setRegistrationRange}
->>>>>>> develop:src/app/(pages)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
-                                        minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
-                                        maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
+                                        value={{
+                                            start: registrationRange.start ?? parseDate(new Date().toISOString().split('T')[0]),
+                                            end: registrationRange.end ?? parseDate(new Date().toISOString().split('T')[0])
+                                        }}
+                                        onChange={(range) => setRegistrationRange({ start: range?.start ?? null, end: range?.end ?? null })}
+                                        minValue={project ? parseDate(project.Fecha_Inicio ?? '') : undefined}
+                                        maxValue={project ? parseDate(project.Fecha_Fin ?? '') : undefined}
                                     />
                                 </I18nProvider>
                                 <Input
@@ -265,41 +188,14 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                 </div>
                             </ModalBody>
                             <ModalFooter>
-                                <Button
-                                    type="submit"
-                                    className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold"
-                                    isDisabled={
-                                        !namespace || // Nombre del espacio vacío
-                                        namespaceError !== "" || // Error en el nombre (espacios u otros)
-                                        !registered || // Archivo no cargado
-                                        registered?.type !== "application/pdf" || // Archivo no es PDF
-                                        limitspace === null || // Límite no definido
-                                        limitspace < 2 // Límite menor que 2
-                                    }
-                                >
-                                    Crear
+                                <Button type="submit" color="primary" className="w-full h-12" isDisabled={!namespace || namespaceError !== "" || !registered || registered?.type !== "application/pdf" || limitspace === null || limitspace < 2}>
+                                    Crear espacio
                                 </Button>
                             </ModalFooter>
                         </form>
                     )}
                 </ModalContent>
             </Modal>
-
-            {/* Display success or error messages */}
-            {successMessage && (
-                <ErrorModal
-                    message={successMessage}
-                    onClose={() => setSuccessMessage('')} // Clear success message on close
-                    className="z-100"
-                />
-            )}
-            {errorMessage && (
-                <ErrorModal
-                    message={errorMessage}
-                    onClose={() => setErrorMessage('')} // Clear error message on close
-                    className="z-100"
-                />
-            )}
         </section>
     );
 }

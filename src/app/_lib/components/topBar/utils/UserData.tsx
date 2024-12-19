@@ -67,12 +67,12 @@ export default function UserData() {
                     </div>
                 </DropdownItem>
                 <DropdownItem key="profile">
-                    <div className="flex items-center gap-4">
+                    <Link href={"/profile"} className="flex items-center gap-4">
                         <UserIcon />
                         <p>
                             Perfil
                         </p>
-                    </div>
+                    </Link>
                 </DropdownItem>
                 <DropdownItem key="logout" className="bg-danger text-light" color="danger" onPress={handleLogout}>
                     <div className="flex items-center gap-4">

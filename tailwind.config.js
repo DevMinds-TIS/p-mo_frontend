@@ -67,7 +67,7 @@ module.exports = {
       themes: {
         dark: {
           colors: {
-            // background: "#202020",
+            background: "#202020",
             foreground: "#F2F0E3",
             default: {
               DEFAULT: "#3D3D3D",

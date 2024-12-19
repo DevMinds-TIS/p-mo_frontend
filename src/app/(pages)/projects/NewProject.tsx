@@ -37,26 +37,22 @@ export default function NewProject() {
     const validateForm = () => {
         let formErrors: { [key: string]: string } = {};
 
-        // Validación de nombre del proyecto
         if (!projectName) {
             formErrors["projectName"] = "El nombre del proyecto es obligatorio.";
         } else if (projectName.length < 7) {
             formErrors["projectName"] = "El nombre del proyecto debe tener al menos 7 caracteres.";
         }
 
-        // Validación de código del proyecto
         if (!projectCode) {
             formErrors["projectCode"] = "El código del proyecto es obligatorio.";
         } else if (projectCode.includes(" ")) {
             formErrors["projectCode"] = "El código del proyecto no debe tener espacios.";
         }
 
-        // Validación del tamaño del archivo de invitación
         if (invitationFile && invitationFile.size > 2 * 1024 * 1024) {
             formErrors["invitationFile"] = "El archivo de invitación no debe ser mayor a 2 MB.";
         }
 
-        // Validación del tamaño del archivo de especificaciones
         if (specificationFile && specificationFile.size > 2 * 1024 * 1024) {
             formErrors["specificationFile"] = "El archivo de especificaciones no debe ser mayor a 2 MB.";
         }
@@ -78,7 +74,7 @@ export default function NewProject() {
         return null;
     };
 
-    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
+    const [namespaceError, setNamespaceError] = useState<string>("");
 
     const handleNamespaceChange = (value: string) => {
         if (/\s/.test(value)) {
@@ -88,14 +84,6 @@ export default function NewProject() {
         }
         setProjectCode(value);
     };
-
-    // const handleInvitationFileChange = (newFile: File | null) => {
-    //     setInvitationFile(newFile);
-    // };
-
-    // const handleSpecificationFileChange = (newFile: File | null) => {
-    //     setSpecificationFile(newFile);
-    // };
 
     const handleInvitationFileChange = (newFile: File | null) => {
         setInvitationFile(handleFileValidation(newFile, setInvitationError));
@@ -165,6 +153,10 @@ export default function NewProject() {
         }
     };
 
+    const filterInvalidCharacters = (value: string) => {
+        return value.replace(/[@^%&)(}{\][/?!$#]/g, '');
+    };    
+
     return (
         <section>
             <Button onPress={onOpen} color="primary" className="flex items-center">
@@ -188,11 +180,10 @@ export default function NewProject() {
                                     label="Código del proyecto"
                                     placeholder="Escribe el código del proyecto"
                                     value={projectCode}
-                                    // onChange={(e) => setProjectCode(e.target.value)}
-                                    onChange={(e) => handleNamespaceChange(e.target.value)}
+                                    onChange={(e) => handleNamespaceChange(filterInvalidCharacters(e.target.value))}
                                     errorMessage={errors["projectCode"]}
                                 />
-                                {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
+                                {namespaceError && <p className="text-danger text-sm mt-1">{namespaceError}</p>}
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -213,15 +204,19 @@ export default function NewProject() {
                                 </I18nProvider>
                                 <div className="space-y-2">
                                     <p>Invitación del proyecto</p>
-                                    <FileUpload onChange={handleInvitationFileChange} />
-                                    {invitationError && <p className="text-red-500 text-sm mt-1">{invitationError}</p>}
-                                    {/* {errors["invitationFile"] && <span className="text-foreground">{errors["invitationFile"]}</span>} */}
+                                    <FileUpload
+                                        onChange={handleInvitationFileChange}
+                                        className="h-60"
+                                    />
+                                    {invitationError && <p className="text-danger text-sm mt-1">{invitationError}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <p>Pliego de especificaciones del proyecto</p>
-                                    <FileUpload onChange={handleSpecificationFileChange} />
-                                    {specificationError && <p className="text-red-500 text-sm mt-1">{specificationError}</p>}
-                                    {/* {errors["specificationFile"] && <span className="text-foreground">{errors["specificationFile"]}</span>} */}
+                                    <FileUpload
+                                        onChange={handleSpecificationFileChange}
+                                        className="h-60"
+                                    />
+                                    {specificationError && <p className="text-danger text-sm mt-1">{specificationError}</p>}
                                 </div>
                             </DrawerBody>
                             <DrawerFooter>

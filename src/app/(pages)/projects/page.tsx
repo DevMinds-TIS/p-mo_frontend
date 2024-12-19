@@ -32,7 +32,7 @@ export default function ProjectsPage() {
             }
         };
         fetchData();
-    }, [user, fetchUser, fetchProjects, projects]); // Añadir 'projects' como dependencia
+    }, [user, fetchUser, fetchProjects, projects]);
 
     const isLoadingProjects = !projects || projects.length === 0;
 
@@ -66,7 +66,9 @@ export default function ProjectsPage() {
                         placeholder="Encuéntrame"
                         className="w-full sm:w-auto"
                         startContent={
-                            <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+                            <SearchIcon
+                                className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"
+                            />
                         }
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -90,7 +92,8 @@ export default function ProjectsPage() {
                                         } ${isTeacher || isStudent
                                             ? "rounded-lg"
                                             : "none"
-                                        } bg-secondary p-2`}
+                                        } bg-secondary p-2 text-light`}
+                                    color="primary"
                                 >
                                     <FolderLinksIcon size={30} />
                                     <span>
@@ -111,7 +114,7 @@ export default function ProjectsPage() {
                                         </PopoverTrigger>
                                         <PopoverContent>
                                             <div className="flex flex-col gap-2 p-1">
-                                                <EditProject project={project}/>
+                                                <EditProject project={project} />
                                             </div>
                                         </PopoverContent>
                                     </Popover>

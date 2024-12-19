@@ -55,7 +55,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
               });
             }
           }}
-          className={`${fileEnter ? "border-4" : "border-2"} flex flex-col w-full h-full border-dashed rounded-lg ${className}`}
+          className={`${fileEnter ? "border-4" : "border-2"} flex flex-col w-full h-full border-dashed border-foreground rounded-lg ${className}`}
         >
           <label htmlFor="file" className="h-full flex flex-col justify-center text-center hover:cursor-pointer">
             Haz click para subir o arrastra y suelta
@@ -85,7 +85,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onChange, existingFile, 
             </Tooltip>
           )}
           {!readOnly && (
-            <Button onClick={() => handleFileChange(null)} color="danger" className="w-full h-12 font-bold text-lg">
+            <Button onPress={() => handleFileChange(null)} color="danger" className="w-full h-12 font-bold text-lg">
               Descartar
             </Button>
           )}
