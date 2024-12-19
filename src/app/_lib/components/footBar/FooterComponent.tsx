@@ -5,6 +5,7 @@ import Image from "next/image";
 import { bricolage, inria } from "@/app/fonts";
 import Link from "next/link";
 import { BankIcon, CourtHouseIcon, Github01Icon, Globe02Icon } from "hugeicons-react";
+import { Tooltip } from "@nextui-org/react";
 
 export default function FooterComponent() {
     const { theme } = useTheme();
@@ -30,18 +31,27 @@ export default function FooterComponent() {
                                     Enlaces
                                 </h1>
                                 <div className="flex gap-2">
-                                    <a href="https://www.bnb.com.bo/" target="_blank">
-                                        <BankIcon size={25} />
-                                    </a>
-                                    <a href="https://www.facebook.com/" target="_blank">
-                                        <Globe02Icon size={25} />
-                                    </a>
-                                    <a href="https://www.umss.edu.bo/" target="_blank">
-                                        <CourtHouseIcon size={25} />
-                                    </a>
-                                    <a href="https://www.github.com/DevMinds-TIS" target="_blank">
-                                        <Github01Icon size={25} />
-                                    </a>
+                                    <Tooltip content="Universidad Mayor de San Simon">
+                                        <a href="https://www.umss.edu.bo/" target="_blank">
+                                            <BankIcon size={25} />
+                                        </a>
+                                    </Tooltip>
+                                    <Tooltip content="Facebook U.M.S.S.">
+                                        <a href="https://www.facebook.com/UmssBolOficial/?locale=es_LA" target="_blank">
+                                            <Globe02Icon size={25} />
+                                        </a>
+                                    </Tooltip>
+                                    <Tooltip content="Carrera de Ing. de Sistemas">
+                                        <a href="https://www.cs.umss.edu.bo/" target="_blank">
+                                            <CourtHouseIcon size={25} />
+                                        </a>
+                                    </Tooltip>
+                                    <Tooltip content="Organizacion DevMinds S.R.L.">
+                                        <a href="https://www.github.com/DevMinds-TIS" target="_blank">
+                                            <Github01Icon size={25} />
+                                        </a>
+                                    </Tooltip>
+
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-2">
