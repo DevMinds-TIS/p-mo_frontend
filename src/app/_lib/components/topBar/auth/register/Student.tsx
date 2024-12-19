@@ -251,11 +251,11 @@ export default function StudentSignIn({ onClose }: { onClose: () => void }) {
                 </Select>
             </div>
             {isLoading ? (
-                <Button isLoading className="w-full h-14 text-light" color="success">
+                <Button isLoading className="w-full h-14 text-light" color="primary">
                     Registrando estudiante...
                 </Button>
             ) : (
-                <Button type="submit" color="success" isDisabled={!isSingupValid || !docenteId || isInvalidUMSSEmail} className="w-full h-14">
+                <Button type="submit" color="primary" isDisabled={!isSingupValid || !docenteId || isInvalidUMSSEmail} className="w-full h-14">
                     Registrarse
                 </Button>
             )}

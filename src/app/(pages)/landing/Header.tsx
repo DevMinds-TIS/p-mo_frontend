@@ -64,7 +64,7 @@ export default function Header() {
         onLoginClose();
         onRegisterClose();
         setIsProfilePopoverOpen(false);
-    }, [user, onLoginClose, onRegisterClose]);
+    }, [user]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");

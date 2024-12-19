@@ -4,6 +4,10 @@
 @tailwind utilities;
 
 
+body {
+  @apply bg-[#CCC] dark:bg-[#212121];
+}
+
 .bg-dark {
     background-color: #202020;
   }

@@ -24,7 +24,7 @@ export default function UserData() {
                     isBordered
                     as="button"
                     className="transition-transform"
-                    color="secondary"
+                    color="primary"
                     name={`${user?.Nombre} ${user?.Apellido}`}
                     size="sm"
                     src={user?.Perfil ? `${process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL}/${user.Perfil}` : "NO"}
