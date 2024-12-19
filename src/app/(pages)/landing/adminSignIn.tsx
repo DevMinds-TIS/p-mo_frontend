@@ -100,7 +100,7 @@ export default function AdminSignIn() {
 
     return (
         <section className="w-full">
-            <Button onPress={handleButtonClick} className="bg-transparent text-5xl h-full pt-2 px-0 cursor-default">
+            <Button onPress={handleButtonClick}>
                 Únete
             </Button>
             <Modal isOpen={isOpen} onOpenChange={(isOpen) => { if (!isOpen) { handleModalClose(); } onOpenChange(); }} scrollBehavior="outside" placement="center" size="xl" backdrop="blur">

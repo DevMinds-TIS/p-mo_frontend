@@ -41,7 +41,7 @@ export default function LogIn() {
             await login(email, passwd);
             showAlert("¡Inicio de sesión exitoso!", "", "success");
             onClose();
-            router.push('/');
+            router.push('/profile');
         } catch (error) {
             console.error('Error:', error);
             showAlert("Error al iniciar sesión.", "Correo o contraseña inválidos. Por favor, inténtelo de nuevo.", "danger");
@@ -103,16 +103,16 @@ export default function LogIn() {
                                     maxLength={20}
                                 />
                                 <div className="flex py-2 px-1 justify-between">
-                                    <Link color="success" href="#" size="sm">
+                                    <Link color="primary" href="#" size="sm">
                                         ¿Olvidó su contraseña?
                                     </Link>
                                 </div>
                                 {isLoading ? (
-                                    <Button isLoading className="w-full h-14 text-light" color="success">
+                                    <Button isLoading className="w-full h-14 text-light" color="primary">
                                         Iniciando...
                                     </Button>
                                 ) : (
-                                    <Button type="submit" isDisabled={!isLoginValid} color="success" className="w-full h-14">
+                                    <Button type="submit" isDisabled={!isLoginValid} color="primary" className="w-full h-14">
                                         Iniciar Sesión
                                     </Button>
                                 )}

@@ -213,7 +213,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={3}
                                         pageBehavior="single"
+<<<<<<< HEAD:src/app/(pages)/dashboard/(admin)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
                                         onChange={(value) => setDateRange({ value })}
+=======
+                                        // onChange={setDateRange}
+>>>>>>> develop:src/app/(pages)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />
@@ -226,7 +230,11 @@ export default function NewSpace({ params, onNewSpace }: NewSpaceProps) {
                                         labelPlacement="outside"
                                         visibleMonths={2}
                                         pageBehavior="single"
+<<<<<<< HEAD:src/app/(pages)/dashboard/(admin)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
                                         onChange={(value) => setRegistrationRange({ value })}
+=======
+                                        // onChange={setRegistrationRange}
+>>>>>>> develop:src/app/(pages)/projects/(teacher)/[Código_Proyecto]/NewSpace.tsx
                                         minValue={project ? parseDate(project.Fecha_Inicio) : undefined}
                                         maxValue={project ? parseDate(project.Fecha_Fin) : undefined}
                                     />

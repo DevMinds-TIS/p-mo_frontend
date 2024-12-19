@@ -84,7 +84,7 @@ module.exports = {
               focus: "#006AD9",
             },
             success: {
-              DEFAULT: "#003770",
+              DEFAULT: "#4bb543",
               foreground: "#F2F0E3",
               light: "#003770",
               background: "#003770",
@@ -96,7 +96,7 @@ module.exports = {
               foreground: "#F2F0E3",
             },
             content1: {
-              DEFAULT: "#202020",
+              DEFAULT: "#212121",
               foreground: "#F2F0E3",
             },
             // content2: "#242424",
@@ -127,7 +127,7 @@ module.exports = {
               focus: "#006AD9",
             },
             success: {
-              DEFAULT: "#003770",
+              DEFAULT: "#4bb543",
               foreground: "#F2F0E3",
               light: "#003770",
               background: "#003770",

@@ -1,6 +1,8 @@
 "use client";
+import { createContext, useContext, ReactNode, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { User } from '@/types/User';
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { useUser } from './UserContext';
 
 interface AuthContextProps {
   user: User | null;
@@ -9,7 +11,6 @@ interface AuthContextProps {
   registerAdmin: (userData: Record<string, any>) => Promise<void>;
   registerStudent: (userData: Record<string, any>) => Promise<void>;
   registerTeacher: (userData: Record<string, any>) => Promise<void>;
-  fetchTeachers: () => Promise<{ key: number; label: string }[]>;
   requestTeacherCode: (email: string, name: string) => Promise<void>;
 }
 
@@ -17,7 +18,15 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, [setUser]);
 
   const login = async (emailuser: string, passworduser: string) => {
     const response = await fetch(`${backendUrl}/login`, {
@@ -27,11 +36,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     const data = await response.json();
     setUser(data.user);
+    console.log("USERDATA", data);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const logout = async () => {
     await fetch(`${backendUrl}/logout`, { method: 'POST' });
     setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/');
   };
 
   const registerAdmin = async (userData: Record<string, any>) => {
@@ -42,6 +57,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     const data = await response.json();
     setUser(data.user);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const registerStudent = async (userData: Record<string, any>) => {
@@ -52,6 +69,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     const data = await response.json();
     setUser(data.user);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const registerTeacher = async (userData: Record<string, any>) => {
@@ -62,25 +81,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
     const data = await response.json();
     setUser(data.user);
-  };
-
-  const fetchTeachers = async () => {
-    const response = await fetch(`${backendUrl}/role-user`);
-    const data = await response.json();
-    const teacherIds = data.data.filter((user: { 'ID_Rol': number }) => user['ID_Rol'] === 2).map((user: { 'ID_Usuario': number }) => user['ID_Usuario']);
-
-    const teachersResponse = await fetch(`${backendUrl}/users`);
-    const teachersData = await teachersResponse.json();
-
-    if (Array.isArray(teachersData.data)) {
-      return teachersData.data.filter((user: { 'ID_Usuario': number }) => teacherIds.includes(user['ID_Usuario']))
-        .map((teacher: { 'ID_Usuario': number; Nombre: string; Apellido: string }) => ({
-          key: teacher['ID_Usuario'],
-          label: `${teacher['Nombre']} ${teacher['Apellido']}`,
-        }));
-    } else {
-      throw new Error('Error: Expected an array but got:', teachersData.data);
-    }
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const requestTeacherCode = async (email: string, name: string) => {
@@ -94,8 +96,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw new Error('Error al solicitar el código');
     } console.log('Código solicitado exitosamente');
   };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, registerAdmin, registerStudent, registerTeacher, fetchTeachers, requestTeacherCode }}>
+    <AuthContext.Provider value={{ user, login, logout, registerAdmin, registerStudent, registerTeacher, requestTeacherCode }}>
       {children}
     </AuthContext.Provider>
   );
