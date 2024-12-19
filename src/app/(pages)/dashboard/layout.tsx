@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
   const router = useRouter();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const toggleNavbar = () => {
     setIsExpanded(!isExpanded);
   };
@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
       localStorage.removeItem('token');
-      router.push('/landing');
+      router.push('/');
 
 
       console.log('Cierre de sesión exitoso');

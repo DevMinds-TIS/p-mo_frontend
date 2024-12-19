@@ -240,11 +240,11 @@ export default function EditProject({ project }: EditProjectProps) {
                             </DrawerBody>
                             <DrawerFooter>
                                 {isLoading ? (
-                                    <Button isLoading className="w-full h-14 text-light" color="success">
+                                    <Button isLoading className="w-full h-14 text-light" color="primary">
                                         Actualizando proyecto...
                                     </Button>
                                 ) : (
-                                    <Button color="success" className="w-full h-12" type="submit" isDisabled={!isFormValid}>
+                                    <Button color="primary" className="w-full h-12" type="submit" isDisabled={!isFormValid}>
                                         Actualizar proyecto
                                     </Button>
                                 )}

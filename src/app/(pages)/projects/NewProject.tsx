@@ -211,11 +211,11 @@ export default function NewProject() {
                             </DrawerBody>
                             <DrawerFooter>
                                 {isLoading ? (
-                                    <Button isLoading className="w-full h-14 text-light" color="success">
+                                    <Button isLoading className="w-full h-14 text-light" color="primary">
                                         Creando proyecto...
                                     </Button>
                                 ) : (
-                                    <Button color="success" className="w-full h-12" type="submit" isDisabled={
+                                    <Button color="primary" className="w-full h-12" type="submit" isDisabled={
                                         !isFormValid ||
                                         !projectCode ||
                                         namespaceError !== "" ||

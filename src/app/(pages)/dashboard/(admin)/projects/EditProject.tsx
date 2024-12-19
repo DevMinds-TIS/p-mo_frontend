@@ -1,19 +1,8 @@
-import ErrorModal from "@/app/mensajes"; // Import the ErrorModal
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,
-    Input,
-    RangeValue,
-    DateValue,
-} from "@nextui-org/react";
-import { AddSquareIcon } from "hugeicons-react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
+import { AddSquareIcon, PencilEdit02Icon } from "hugeicons-react";
 import { DateRangePicker } from "@nextui-org/react";
 import { parseDate } from "@internationalized/date";
+import { isWeekend } from "@internationalized/date";
 import { I18nProvider } from "@react-aria/i18n";
 import React, { useEffect, useState } from "react";
 import { FileUpload } from "@/app/_lib/components/FileUpload";
@@ -34,7 +23,7 @@ type NewProjectProps = {
     onNewProject: (project: Project) => void;
 };
 
-export default function NewProject({ onNewProject }: NewProjectProps) {
+export default function EditProject({ onNewProject }: NewProjectProps) {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const currentYear = new Date().getFullYear();
@@ -45,14 +34,9 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
 
     const [projectName, setProjectName] = useState("");
     const [projectCode, setProjectCode] = useState("");
-    const [dateRange, setDateRange] = useState<{ value: RangeValue<DateValue> | null }>({
-        value: { start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) },
-    });
+    const [dateRange, setDateRange] = useState<{ start: string | null | undefined, end: string | null | undefined }>({ start: null, end: null });
     const [invitationFile, setInvitationFile] = useState<File | null>(null);
     const [specificationFile, setSpecificationFile] = useState<File | null>(null);
-    const [invitationError, setInvitationError] = useState<string | null>(null); // Error for invitation file
-    const [specificationError, setSpecificationError] = useState<string | null>(null); // Error for specification file
-    const [message, setMessage] = useState<string | null>(null); // State for success or error messages
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -83,51 +67,36 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
         fetchUserData();
     }, [backendUrl]);
 
-    const handleFileValidation = (file: File | null, setError: React.Dispatch<React.SetStateAction<string | null>>): File | null => {
-        if (file) {
-            if (file.type !== "application/pdf") {
-                setError("Solo se permiten archivos en formato PDF.");
-                return null;
-            } else {
-                setError(null);
-                return file;
-            }
-        }
-        return null;
-    };
-
     const handleInvitationFileChange = (newFile: File | null) => {
-        setInvitationFile(handleFileValidation(newFile, setInvitationError));
+        setInvitationFile(newFile);
     };
 
     const handleSpecificationFileChange = (newFile: File | null) => {
-        setSpecificationFile(handleFileValidation(newFile, setSpecificationError));
+        setSpecificationFile(newFile);
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const token = localStorage.getItem("token");
         if (!token) {
-            setMessage("Error: No se encontró el token de autenticación.");
+            console.error("No token found");
             return;
         }
         const formData = new FormData();
         formData.append("iduser", user?.ID_Usuario.toString() || "");
         formData.append("nameproject", projectName);
         formData.append("codeproject", projectCode);
-
-        const startProjectDate = dateRange?.value?.start ? new Date(dateRange?.value?.start.toString()) : null;
-        const endProjectDate = dateRange?.value?.end ? new Date(dateRange?.value?.end.toString()) : null;
-
-        const termProject = calculateTermProject(startProjectDate, endProjectDate);
-
-        formData.append("startproject", startProjectDate ? startProjectDate.toISOString().split("T")[0] : "");
-        formData.append("endproject", endProjectDate ? endProjectDate.toISOString().split("T")[0] : "");
-        formData.append("termproject", termProject);
-
-        if (invitationFile) formData.append("invitation", invitationFile);
-        if (specificationFile) formData.append("specification", specificationFile);
-
+        formData.append("startproject", dateRange.start ? new Date(dateRange.start).toISOString().split('T')[0] : "");
+        formData.append("endproject", dateRange.end ? new Date(dateRange.end).toISOString().split('T')[0] : "");
+        const documents = [
+            { file: invitationFile, field: "invitation" },
+            { file: specificationFile, field: "specification" }
+        ];
+        documents.forEach(document => {
+            if (document.file) {
+                formData.append(document.field, document.file);
+            }
+        });
         try {
             const response = await fetch(`${backendUrl}/projects`, {
                 method: "POST",
@@ -142,45 +111,20 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
             const result = await response.json();
             console.log("Proyecto creado exitosamente:", result);
             onNewProject(result.data);
-            setMessage("Se creó el proyecto de forma exitosa."); // Show success message
-            onOpenChange(); // Close modal
+            onOpenChange();
         } catch (error) {
             console.error("Error al crear el proyecto:", error);
-            setMessage("Error al crear el proyecto."); // Show error message
         }
-    };
-
-    const calculateTermProject = (startProjectDate: Date | null, endProjectDate: Date | null): string => {
-        if (!startProjectDate || !endProjectDate) return "";
-
-        const year = startProjectDate.getFullYear();
-        const startMonth = startProjectDate.getMonth() + 1;
-        const endMonth = endProjectDate.getMonth() + 1;
-
-        if (startMonth <= 6 && endMonth <= 6) {
-            return `1/${year}`;
-        } else if (startMonth >= 7 && endMonth >= 7) {
-            return `2/${year}`;
-        } else {
-            return `Span/${year}`;
-        }
-    };
-
-    const [namespaceError, setNamespaceError] = useState<string>(""); // Estado para mensaje de error del nombre
-    
-    const handleNamespaceChange = (value: string) => {
-        if (/\s/.test(value)) {
-            setNamespaceError("El código no puede contener espacios.");
-        } else {
-            setNamespaceError("");
-        }
-        setProjectCode(value);
     };
 
     return (
         <section>
-            <Button onPress={onOpen} className="min-w-0 p-0 bg-transparent items-center">
-                <AddSquareIcon size={30} />
+            <Button
+                onPress={onOpen}
+                className="transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-yellow-700 bg-transparent w-full justify-start"
+                startContent={<PencilEdit02Icon />}
+            >
+                Editar proyecto
             </Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="outside" backdrop="blur" placement="center">
                 <ModalContent>
@@ -199,9 +143,8 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                         label="Código del proyecto"
                                         placeholder="Escribe el código del proyecto"
                                         value={projectCode}
-                                        onChange={(e) => handleNamespaceChange(e.target.value)}
+                                        onChange={(e) => setProjectCode(e.target.value)}
                                     />
-                                    {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
                                     <I18nProvider locale="es-BO">
                                         <DateRangePicker
                                             allowsNonContiguousRanges
@@ -210,34 +153,21 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                                             maxValue={maxDate}
                                             visibleMonths={3}
                                             pageBehavior="single"
-                                            onChange={(value) => setDateRange({ value })}
+                                            onChange={(range) => setDateRange({ start: range?.start.toString(), end: range?.end.toString() })}
                                         />
                                     </I18nProvider>
                                     <div className="space-y-2">
                                         <p>Invitación del proyecto</p>
                                         <FileUpload onChange={handleInvitationFileChange} />
-                                        {invitationError && <p className="text-red-500 text-sm mt-1">{invitationError}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <p>Pliego de especificaciones del proyecto</p>
                                         <FileUpload onChange={handleSpecificationFileChange} />
-                                        {specificationError && <p className="text-red-500 text-sm mt-1">{specificationError}</p>}
                                     </div>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button
-                                        type="submit"
-                                        className="w-full h-12 bg-[#2E6CB5] text-white text-lg font-bold"
-                                        isDisabled={
-                                            !projectCode || // Código del proyecto vacío
-                                            namespaceError !== "" || // Error en el código (espacios u otros)
-                                            invitationError !== null || // Error en archivo de invitación
-                                            specificationError !== null || // Error en archivo de especificaciones
-                                            invitationFile?.type !== "application/pdf" || // Archivo de invitación no es PDF
-                                            specificationFile?.type !== "application/pdf" // Archivo de especificaciones no es PDF
-                                        }
-                                    >
-                                        Crear
+                                    <Button type="submit" className="w-full">
+                                        Guardar
                                     </Button>
                                 </ModalFooter>
                             </form>
@@ -245,13 +175,6 @@ export default function NewProject({ onNewProject }: NewProjectProps) {
                     )}
                 </ModalContent>
             </Modal>
-            {message && (
-                <ErrorModal
-                    message={message}
-                    onClose={() => setMessage(null)} // Clear the message on close
-                    className="z-100"
-                />
-            )}
         </section>
     );
 }

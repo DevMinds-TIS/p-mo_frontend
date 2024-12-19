@@ -1,6 +1,6 @@
 "use client";
 import { inria, bricolage } from "@/app/fonts";
-import { Alert, Listbox, ListboxItem } from "@nextui-org/react";
+import { Alert, Divider, Listbox, ListboxItem } from "@nextui-org/react";
 import { useAlert } from "@/contexts/AlertContext";
 import Image from "next/image";
 
@@ -13,13 +13,14 @@ export default function Page() {
         <h1 className={`${inria.className} text-center text-6xl md:text-7xl`}>Bienvenido al evaluador basado en proyectos</h1>
         <h1 className={`${inria.className} text-center text-6xl md:text-7xl italic`}>P-MO</h1>
       </div>
+      <Divider/>
       <div className="p-4">
         <Image
           alt="Pantallazo general de la aplicación"
-          src={"/prueba.png"}
-          width={100}
-          height={100}
-          className="w-full rounded-xl"
+          src={"/proyecto-slide.png"}
+          width={90}
+          height={90}
+          className="w-full rounded-xl border-2"
         />
       </div>
       <div className="flex-col m-24 space-y-4">
@@ -55,7 +56,7 @@ export default function Page() {
         <div className="flex w-2/4 items-center">
           <Image
             alt="Pantallazo general de la aplicación"
-            src={"/prueba.png"}
+            src={"/proyecto-slide.png"}
             width={100}
             height={100}
             className="w-full rounded-xl border-5"

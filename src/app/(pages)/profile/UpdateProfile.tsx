@@ -255,11 +255,11 @@ export default function UpdateProfile() {
                                         </div>
                                     </div>
                                     {isLoading ? (
-                                        <Button isLoading className="w-full h-14 text-light" color="success">
+                                        <Button isLoading className="w-full h-14 text-light" color="primary">
                                             Actualizando datos...
                                         </Button>
                                     ) : (
-                                        <Button color="success" className="w-full h-12" type="submit">
+                                        <Button color="primary" className="w-full h-12" type="submit">
                                             Actualizar
                                         </Button>
                                     )}

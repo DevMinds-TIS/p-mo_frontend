@@ -74,7 +74,7 @@ export default function ProjectsPage() {
                     {isAdmin && <NewProject />}
                 </div>
             </section>
-            <section className="flex flex-wrap mt-4 gap-8">
+            <section className="flex flex-wrap mt-4 gap-8 justify-between">
                 {isLoadingProjects ? (
                     <ProjectsSkeletons />
                 ) : filteredProjects.length > 0 ? (
