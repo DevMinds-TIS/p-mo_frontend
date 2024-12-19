@@ -10,6 +10,7 @@ import NavBarComponent from "./_lib/components/topBar/NavbarComponent";
 import { TeacherListProvider } from "@/contexts/TeacherListContext";
 import { ProjectProvider } from "@/contexts/ProjectContext";
 import { DocumentProvider } from "@/contexts/DocumentContext";
+import { SpaceProvider } from "@/contexts/SpaceContext";
 
 export const metadata: Metadata = {
   title: 'P-MO',
@@ -25,13 +26,15 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
               <TeacherListProvider>
                 <AlertProvider>
                   <ProjectProvider>
-                    <DocumentProvider>
-                      <NavBarComponent />
-                      <section>
-                        {children}
-                      </section>
-                      <FooterComponent />
-                    </DocumentProvider>
+                    <SpaceProvider>
+                      <DocumentProvider>
+                        <NavBarComponent />
+                        <section>
+                          {children}
+                        </section>
+                        <FooterComponent />
+                      </DocumentProvider>
+                    </SpaceProvider>
                   </ProjectProvider>
                 </AlertProvider>
               </TeacherListProvider>

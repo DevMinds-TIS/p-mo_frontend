@@ -153,6 +153,10 @@ export default function NewProject() {
         }
     };
 
+    const filterInvalidCharacters = (value: string) => {
+        return value.replace(/[@^%&)(}{\][/?!$#]/g, '');
+    };    
+
     return (
         <section>
             <Button onPress={onOpen} color="primary" className="flex items-center">
@@ -176,10 +180,10 @@ export default function NewProject() {
                                     label="Código del proyecto"
                                     placeholder="Escribe el código del proyecto"
                                     value={projectCode}
-                                    onChange={(e) => handleNamespaceChange(e.target.value)}
+                                    onChange={(e) => handleNamespaceChange(filterInvalidCharacters(e.target.value))}
                                     errorMessage={errors["projectCode"]}
                                 />
-                                {namespaceError && <p className="text-red-500 text-sm mt-1">{namespaceError}</p>}
+                                {namespaceError && <p className="text-danger text-sm mt-1">{namespaceError}</p>}
                                 <I18nProvider locale="es-BO">
                                     <DateRangePicker
                                         allowsNonContiguousRanges
@@ -200,12 +204,18 @@ export default function NewProject() {
                                 </I18nProvider>
                                 <div className="space-y-2">
                                     <p>Invitación del proyecto</p>
-                                    <FileUpload onChange={handleInvitationFileChange} />
+                                    <FileUpload
+                                        onChange={handleInvitationFileChange}
+                                        className="h-60"
+                                    />
                                     {invitationError && <p className="text-danger text-sm mt-1">{invitationError}</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <p>Pliego de especificaciones del proyecto</p>
-                                    <FileUpload onChange={handleSpecificationFileChange} />
+                                    <FileUpload
+                                        onChange={handleSpecificationFileChange}
+                                        className="h-60"
+                                    />
                                     {specificationError && <p className="text-danger text-sm mt-1">{specificationError}</p>}
                                 </div>
                             </DrawerBody>
