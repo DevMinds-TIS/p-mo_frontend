@@ -29,18 +29,36 @@ export default function useUserForms() {
     return "";
   };
 
+  // const validateName = (name: string) => {
+  //   if (name.length < 3) {
+  //     return "El nombre debe contener al menos 3 caracteres";
+  //   }
+  //   return "";
+  // };
   const validateName = (name: string) => {
-    if (name.length < 3) {
+    if ((name || "").length < 3) {
       return "El nombre debe contener al menos 3 caracteres";
     }
     return "";
   };
+
+
+
+
+  // const validateLastname = (lastname: string) => {
+  //   if (lastname.length < 5) {
+  //     return "El apellido debe contener al menos 5 caracteres";
+  //   }
+  //   return "";
+  // };
+
   const validateLastname = (lastname: string) => {
-    if (lastname.length < 5) {
+    if ((lastname || "").length < 5) {
       return "El apellido debe contener al menos 5 caracteres";
     }
     return "";
   };
+
 
   const validateCode = (code: string) => {
     if (code.length < 5) {

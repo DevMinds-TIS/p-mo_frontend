@@ -24,7 +24,10 @@ export default function Profile() {
         return <ProfileSkeletons />;
     }
 
-    const isStudent = user.Roles.some(role => role.ID_Rol === 3);
+    // const isStudent = user.Roles.some(role => role.ID_Rol === 3);
+
+    const isStudent = user?.Roles?.some(role => role.ID_Rol === 3);
+
 
     return (
         <section className="flex flex-col gap-y-8 p-4">
