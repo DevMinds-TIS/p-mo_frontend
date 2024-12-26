@@ -48,6 +48,8 @@ const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const storageUrl = process.env.NEXT_PUBLIC_LARAVEL_PUBLIC_BACKEND_URL;
 
 const fetchTeamAndUserById = async (teamName: string): Promise<{ team: Team | null, user: User | null }> => {
+
+
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
@@ -250,7 +252,7 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
         <section>
             <div className="flex w-full h-10 justify-between items-center p-4">
                 <h1 className="text-3xl">
-                    Equipo
+                    Equipos
                 </h1>
                 {isStudent && (
                     <EditTeam params={{ Nombre_Equipo: team.Nombre_Equipo }} onUpdateTeam={setTeam} />
@@ -417,6 +419,20 @@ export default function TeamPage({ params }: { params: { Nombre_Equipo: string }
             </div>
             <DocumentsPage params={{ Nombre_Equipo: team.Nombre_Equipo }} />
             <MembersPage params={{ Nombre_Equipo: team.Nombre_Equipo }} />
+
+            <h1 className="text-3xl">
+                Sprint Planning
+            </h1>
+            <h1 className="mb-4"></h1>
+            <a
+                href="/projects/planning"
+                className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                Ir a Planning
+            </a>
+
+            <h1 className="mb-4"></h1>
+
         </section>
     );
 }
