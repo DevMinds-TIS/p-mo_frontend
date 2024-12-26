@@ -117,15 +117,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }
         const data: User = await response.json();
         setUser(data.data);
+
+        // Guardar los datos en sessionStorage
+        sessionStorage.setItem('userData', JSON.stringify(data.data));
+        
         console.log(user);
         console.log(data);
       } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
       }
     };
-   
+
     if (!user) {
-        fetchUserData();
+      fetchUserData();
     }
   }, [backendUrl, user]);
 
@@ -183,7 +187,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {filteredPathArray.map((path, index) => (
                     <BreadcrumbItem key={index}>
                       <Link href={`/dashboard/${filteredPathArray.slice(0, index + 1).join('/')}`}>
-                        {translations[path] === "Perfil" ? "" : translations[path]  || (path.charAt(0).toUpperCase() + path.slice(1))}
+                        {translations[path] === "Perfil" ? "" : translations[path] || (path.charAt(0).toUpperCase() + path.slice(1))}
                       </Link>
                     </BreadcrumbItem>
                   ))}
