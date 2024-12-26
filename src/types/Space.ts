@@ -1,14 +1,31 @@
-export interface Space {
+// export interface Space {
+//     ID_Espacio: number;
+//     ID_Proyecto: number;
+//     ID_Usuario: number;
+//     Nombre_Espacio: string;
+//     Inscritos: number;
+//     Fecha_Inicio: string;
+//     Fecha_Fin: string;
+//     Límite_Espacio: number;
+//     Fecha_Inicio_Registro: string;
+//     Fecha_Fin_Registro: string;
+//     created_at: string;
+//     updated_at: string;
+// }
+
+export type Space = {
     ID_Espacio: number;
     ID_Proyecto: number;
     ID_Usuario: number;
     Nombre_Espacio: string;
     Inscritos: number;
-    Fecha_Inicio: string;
-    Fecha_Fin: string;
-    Límite_Espacio: number;
-    Fecha_Inicio_Registro: string;
-    Fecha_Fin_Registro: string;
+    Fecha_Inicio?: string;
+    Fecha_Fin?: string;
+    Fecha_Inicio_Registro?: string;
+    Fecha_Fin_Registro?: string;
+    Límite_Espacio?: number;
     created_at: string;
     updated_at: string;
-}
+};
+
+
